@@ -1,0 +1,28 @@
+{
+  
+    "Hero": {
+      "title": "BUILD WEB3 WITH __ FRIENDS",
+      "subtitle": "AiWeb3 DAO mission is to accelerate the education and impact of a new wave of web3 builders"
+    },
+    "Buttons" : {
+     "join" : "Get involved",
+     "partener" : "Partener with us"
+    },
+    "About"  : {
+      "intro" : "We are a..",
+      "title_1" : "DEVELOPER OWNED &\n GOVERNED COMMUNITY",
+      "title_2" : "LEARNING & \n BUILDING FOR WEB3"
+    },
+    "vision" : {
+   "title" : "Our Vision",
+   "subtitle" : "Create an environment that fosters, supports and incentivises a diverse \n community of builders to help create a better, more equitable future."
+    },
+    "parteners" : {
+   "title" : "Our Partners",
+    "subtitle"  : "Were proud to partner with some of the best communites \n protocols and products."
+    },
+    "LocaleSwitcher": {
+      "label": "Change language",
+      "locale": "{locale, select, de {🇩🇪 Deutsch} en {🇺🇸 English} Hz {hz Chinese} other {kabuu}}"
+    }
+  }  

@@ -1,0 +1,11 @@
+{
+  
+    "Header": {
+      "title": "another langue",
+      "subtitle": "Good Green News"
+    },
+    "LocaleSwitcher": {
+      "label": "Change language",
+      "locale": "{locale, select, de {🇩🇪 Deutsch} en {🇺🇸 English} Hz {hz Chinese} other {Unknown}}"
+    }
+  }

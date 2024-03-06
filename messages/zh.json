@@ -1,0 +1,28 @@
+{
+  
+  "Hero": {
+    "title": "与朋友一起构建Web3",
+    "subtitle": "AiWeb3 DAO的使命是加速培训和影响新一波Web3构建者的教育"
+  },
+  "Buttons" : {
+   "join" : "参与其中",
+   "partener" : "与我们合作"
+  },
+  "About"  : {
+    "intro" : "我们是...",
+    "title_1" : "由开发者拥有和管理的社区，致力于共 &\n 同打造一个开放、包容的生态系统。",
+    "title_2" : "为Web3进行学习和构建，探索新的技术和应用场景,  \n 为未来做好准备。"
+  },
+  "vision" : {
+ "title" : "我们的愿景",
+ "subtitle" : "打造一个环境，培育、支持并激励一个多元化的构建者社区，\n 帮助创造一个更好、更公平的未来"
+  },
+  "parteners" : {
+ "title" : "我们的合作伙伴",
+  "subtitle"  : "我们很荣幸能与一些最优秀的社区 \n 协议和产品合作"
+  },
+  "LocaleSwitcher": {
+    "label": "Change language",
+    "locale": "{locale, select, de {🇩🇪 Deutsch} en {🇺🇸 English} Hz {hz Chinese} other {kabuu}}"
+  }
+}  
