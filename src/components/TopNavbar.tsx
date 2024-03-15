@@ -26,7 +26,11 @@ export default function TopNavbar() {
        </div>
        </Link>
       
-         
+           <div className='flex items-center space-x-4'>
+              <Link href={`/blog`} className='capitalize font-semibold bg-gray-700 py-1.5 px-3 rounded-xl'>blogs</Link>
+              <Link href={`/nfts`} className='capitalize font-semibold  bg-gray-700 py-1.5 px-3 rounded-xl'>nfts</Link>
+
+           </div>
           <div className='flex items-center gap-3'>
             <div className='cursor-pointer  w-[30px] h-[30px] flex items-center justify-center rounded-full ring-rose-400 hover:ring-1' >
             <RiTwitterXLine style={{width : "20px", height : "20px "}} />
