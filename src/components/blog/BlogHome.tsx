@@ -4,9 +4,10 @@ import React from 'react'
 import BlogHeader from './BlogHeder'
 import BlogCard from './BlogCard'
 import Image from 'next/image'
+import { useGetBlogPosts2 } from '@/hooks/useGetBlogs2'
 export default function BlogHome() {
-    const {data, loading, error} = useGetBlogPosts()
-
+    const {data, loading, error} = useGetBlogPosts2()
+  console.log("the filtered  data", data)
 
       if(loading) {
         return(
@@ -21,7 +22,7 @@ export default function BlogHome() {
     <div>
         <BlogHeader />
         <div className='flex flex-wrap  w-full  gap-3 items-center justify-center '>
-          {data?.spaceById?.posts?.map((post, i) => {
+          {data?.posts?.map((post, i) => {
 
             return(
               <BlogCard  blog={post} key={i} />

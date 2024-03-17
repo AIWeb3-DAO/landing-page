@@ -3,6 +3,8 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {motion} from 'framer-motion'
+import { openLinkInNewTab } from '@/lib/utils'
+
 export default function BlogCard(blog: any) {
     console.log("individual blog," , blog)
   return (
@@ -10,7 +12,9 @@ export default function BlogCard(blog: any) {
         {
        blog?.blog.image &&
        
-    <div  className='border border-zinc-700 w-11/12 sm:w-2/6 cursor-pointer  lg:w-[300px]  lg:h-[340px] p-1 rounded-xl overflow-hidden hover:bg-zinc-900 my-3'>
+    <div  className='border border-zinc-700 w-11/12 sm:w-2/6 cursor-pointer  lg:w-[300px]  lg:h-[340px] p-1 rounded-xl overflow-hidden hover:bg-zinc-900 my-3'
+      onClick={() => openLinkInNewTab(`https://grillapp.net/10900/${blog?.blog?.id}`)}
+    >
         {
 
   <motion.img
