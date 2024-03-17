@@ -45,18 +45,18 @@ export default function Hero({title, subtitle, joinBtn, partenerBtn} : Props) {
                className='ml-3 text-rose-500'
              />
         </h1>*/}
-         <h1 className={`text-7xl font-extrabold my-6`}>{title}</h1>
-         <p className='font-semibold text-lg text-gray-400'>{subtitle}</p>
+         <h1 className={` text-4xl text-center md:text-7xl font-extrabold my-6`}>{title}</h1>
+         <p className='md:font-semibold text-lg text-gray-400 text-center'>{subtitle}</p>
            <div className='mt-8 '>
                 <div className='flex items-center space-x-5'>
                      <motion.div 
-                     className='flex gap-2 items-center bg-white text-gray-700 py-2.5 px-3.5 rounded-xl cursor-pointer '
+                     className='flex gap-2 items-center bg-white text-gray-700 md:py-2.5 md:px-3.5 py-2 px-3  rounded-xl cursor-pointer '
                      
                      >
                      <CiStar className='w-5 h-5' />
                       <p className='font-semibold'>{joinBtn}</p>
                      </motion.div>
-                     <motion.div className='flex gap-2 items-center border border-gray-400 text-gray-300 py-2.5 px-3.5 rounded-xl cursor-pointer '>
+                     <motion.div className='flex gap-2 items-center border border-gray-400 text-gray-300 md:py-2.5 md:px-3.5 py-2 px-3 rounded-xl cursor-pointer '>
                      <CiStar className='w-5 h-5' />
                       <p className='font-semibold'>{partenerBtn}</p>
                      </motion.div>

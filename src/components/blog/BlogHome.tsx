@@ -11,7 +11,7 @@ export default function BlogHome() {
 
       if(loading) {
         return(
-          <div className='w-screen h-screen flex items-center justify-center'>
+          <div className='w-screen h-screen flex items-center justify-center '>
             <Image  src={`/img/logo.jpg`} width={200} height={200} alt='logo' className='w-12 h-12 rounded-full cursor-pointer animate-spin' />
 
           </div>
@@ -19,9 +19,9 @@ export default function BlogHome() {
         )
       }
   return (
-    <div>
+    <div className=''>
         <BlogHeader />
-        <div className='flex flex-wrap  w-full  gap-3 items-center justify-center '>
+        <div className='flex flex-wrap gap-x-3 items-center justify-center'>
           {data?.posts?.map((post, i) => {
 
             return(

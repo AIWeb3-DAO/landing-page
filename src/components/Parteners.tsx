@@ -21,9 +21,9 @@ export default function Parteners({title, subtitle} : Props) {
     }}
      className='flex items-center justify-center flex-col min-h-screen'
    >
-    <h1 className=' text-5xl text-center my-5 font-bold'>{title}</h1>
-<p className='text-xl font-semibold text-gray-300 text-center my-7 whitespace-pre-line'>{subtitle}</p>
-<div className='flex gap-3  w-full justify-between space-x-7 '>
+    <h1 className=' text-3xl md:text-5xl text-center my-5 font-bold'>{title}</h1>
+<p className=' text-lg md:text-xl font-semibold text-gray-300 text-center my-7 whitespace-pre-line'>{subtitle}</p>
+<div className='flex flex-col md:flex-row gap-3  w-full md:justify-between justify-center space-x-7 items-center p-2 '>
   <div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
      <Image      
    src={`https://pbs.twimg.com/profile_images/1379064847439175692/upOKBONH_400x400.jpg`}
@@ -53,7 +53,7 @@ export default function Parteners({title, subtitle} : Props) {
 
   </div>
 
-   <div className='flex space-x-2 justify-between my-5 '>
+   <div className='flex flex-wrap space-x-4 space-y-4 justify-between my-5 p-3 '>
     
      <div className='flex items-center justify-center flex-col border border-gray-700 rounded-md p-2 cursor-pointer'>
      <Image      

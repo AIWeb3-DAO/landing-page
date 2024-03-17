@@ -23,10 +23,10 @@ export default function About({intro, title_2, title_1} : Props) {
           }}
            className='flex items-center justify-center flex-col'
          >
-          <h1 className=' text-xl text-center my-3'>{intro}</h1>
-            <h1 className='text-5xl text-center font-extrabold whitespace-pre-line'  >{title_1}</h1>
-             <div className='w-[3px] bg-gray-400 h-[170px] my-4 rounded-lg'></div>
-             <h1 className='text-5xl text-center font-extrabold whitespace-pre-line'>{title_2}
+          <h1 className=' text-lg md:text-xl text-center my-3'>{intro}</h1>
+            <h1 className='text-3xl md:text-5xl text-center font-extrabold whitespace-pre-line'  >{title_1}</h1>
+             <div className='w-[2px] md:w-[3px] bg-gray-400 h-[170px] my-4 rounded-lg'></div>
+             <h1 className='text-3xl md:text-5xl text-center font-extrabold whitespace-pre-line'>{title_2}
 </h1>
         </motion.div>
     </div>
