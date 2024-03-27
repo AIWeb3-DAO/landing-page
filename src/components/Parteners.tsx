@@ -24,34 +24,170 @@ export default function Parteners({title, subtitle} : Props) {
     <h1 className=' text-3xl md:text-5xl text-center my-5 font-bold'>{title}</h1>
 <p className=' text-lg md:text-xl font-semibold text-gray-300 text-center my-7 whitespace-pre-line'>{subtitle}</p>
 <div className='flex flex-col md:flex-row gap-3  w-full md:justify-between justify-center space-x-7 items-center p-2 '>
-  <div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
-     <Image      
-   src={`https://pbs.twimg.com/profile_images/1379064847439175692/upOKBONH_400x400.jpg`}
+  
+
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Polkadot_Logo.png`}
   height={300}
   width={300}
   alt='image'
   className='max-w-16 h-16 rounded-full '
  />
- <h1 className='font-bold text-2xl my-3'>Acala Network</h1>
- <p className='my-6 text-gray-300'>Acala is an appchain powering Web3 finance. DeFi on 
-@Polkadot
-</p>
-  </div>
+ <h1 className='font-bold text-2xl my-3'>Polkadot</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
 
-  <div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
-     <Image      
-   src={`https://pbs.twimg.com/profile_images/1701876489048801280/sNthcwHe_400x400.png`}
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Kusama_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Kusama Network</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Astar_Logo.png`}
   height={300}
   width={300}
   alt='image'
   className='max-w-16 h-16 rounded-full '
  />
  <h1 className='font-bold text-2xl my-3'>Astar Network</h1>
- <p className='my-6 text-gray-300'>A Scalable Network Powering a Global Web3 Vision for All.
-</p>
-  </div>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
 
-  </div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/InvArch_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>InvArch</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Bifrost_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Bifrost</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Vara_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Vara Network</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Centrifuge_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Centrifuge</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Zeitgeist_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Zeitgeist</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Ajuna_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Ajuna</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Subwallet_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Subwallet</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Neurolanche_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Neurolanche</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Polkadot_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Polkadot</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+<div className='w-2/4 border border-gray-700 p-3 rounded-lg'>
+     <Image src={`/img/Kusama_Logo.png`}
+  height={300}
+  width={300}
+  alt='image'
+  className='max-w-16 h-16 rounded-full '
+ />
+ <h1 className='font-bold text-2xl my-3'>Kusama Network</h1>
+ <p className='my-6 text-gray-300'>
+ </p>
+</div>
+
+
+
 
    <div className='flex flex-wrap space-x-4 space-y-4 justify-between my-5 p-3 '>
     
@@ -101,6 +237,9 @@ export default function Parteners({title, subtitle} : Props) {
 <h1 className='font-bold text-2xl'>Polkadot</h1>
  <h2 className='text-gray-400 uppercase text-sm'>Polkadot ama partener</h2>
      </div>
+
+
+  </div>
      
    </div>
   </motion.div>
