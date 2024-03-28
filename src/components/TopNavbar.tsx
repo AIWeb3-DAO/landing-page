@@ -6,19 +6,22 @@ import {RiTwitterXLine, RiDiscordLine} from 'react-icons/ri'
 import Image from 'next/image'
 import { openLinkInNewTab } from '@/lib/utils'
 import LocaleSwitcher from './LocalSwitcher';
-
+//import { useRouter } from 'next/router'
 //import { useRouter } from 'next/router';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 
 export default function TopNavbar() {
-  const pathname = usePathname();
-  let locale  = 'zh';
+
+   
+  //const pathname = usePathname();
+
+  /*let locale  = 'zh';
   if (pathname) {
     locale = pathname.split('/')[1]; // 'en' or 'zh'
   }
-  console.log(pathname);
+  console.log(pathname); */
 
   //type LocaleLinks = {
   //  en: string;
@@ -33,7 +36,7 @@ export default function TopNavbar() {
     zh: 'https://t.me/AIweb3dao', // Example link for Chinese locale
   };
   // Use the current locale to get the correct Twitter link
-  const currentTGLink = TGLink[locale as keyof typeof TGLink] || TGLink.zh; // Default to Chinese if undefined
+  //const currentTGLink = TGLink[locale as keyof typeof TGLink] || TGLink.zh; // Default to Chinese if undefined
   return (
     <div className='w-full bg-gray-800/80 sticky top-0  z-20'>
     <div className='  border-b border-b-gray-800/30 flex justify-between items-center py-5 px-3 h-[65px]  max-w-6xl w-full  mx-auto'>
@@ -53,6 +56,7 @@ export default function TopNavbar() {
            <div className='flex items-center space-x-4'>
               <Link href={`/blog`} className='capitalize md:font-semibold bg-gray-700 py-1 px-2 md:py-1.5 md:px-3 rounded-xl'>blogs</Link>
               <Link href={`/nfts`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>nfts</Link>
+              <Link href={`/events`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>events</Link>
 
            </div>
           <div className=' items-center gap-3 hidden md:flex'>
@@ -62,13 +66,13 @@ export default function TopNavbar() {
               </div>
             </a>
 
-
+    {/*}
             <a href={currentTGLink} target="_blank" rel="noopener noreferrer">
                 <div className='cursor-pointer  w-[30px] h-[30px] flex items-center justify-center rounded-full ring-rose-400 hover:ring-1' >
                 <PiTelegramLogo style={{width : "20px", height : "20px"}} />
                 </div>
             </a>
-
+  */}
             <a href="https://discord.gg/pQtZG8UQfk" target="_blank" rel="noopener noreferrer">
                 <div className='cursor-pointer  w-[30px] h-[30px] flex items-center justify-center rounded-full ring-rose-400 hover:ring-1' >
                 <RiDiscordLine style={{width : "20px", height : "20px"}} />

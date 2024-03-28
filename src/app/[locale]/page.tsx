@@ -28,13 +28,13 @@ export default function Home({params: {locale}}: Props) {
 
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-between  bg-[url("/img/stars.svg")] bg-gray-900 ${inter.className} text-gray-300`}>
+    <main className={`flex flex-col items-center justify-between  bg-[url("/img/stars.svg")] bg-gray-900 ${inter.className} text-gray-300`}>
     <TopNavbar  />
    <Hero title={t("title")} subtitle={t("subtitle")} joinBtn={b("join")} partenerBtn={b("partener")} />
    <About intro={a("intro")} title_1={a("title_1")} title_2={a("title_2")} />
    <Vision title={v("title")} subtitle={v("subtitle")} />
    <Parteners title={p("title")} subtitle={p("subtitle")} />
-  
+  <p>hello  world</p>
     </main>
   );
 }
