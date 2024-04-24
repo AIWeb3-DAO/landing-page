@@ -11,7 +11,11 @@ import UpcomingEvents from './UpcomingEvents'
 import Soon from '../Soon'
 export default function Events() {
   return (
-    <div className='w-full max-w-7xl'>
+    //<div className='w-full h-screen flex flex-col items-center justify-center'>
+
+    <div className='w-full max-w-7xl'>   
+    
+    <UpcomingEvents />
     <Soon   />
     </div>
   )
