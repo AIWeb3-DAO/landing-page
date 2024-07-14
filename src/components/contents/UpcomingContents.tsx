@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Image from 'next/image'
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from './firebaseConfig'; // Adjust the import path as needed
 
 import {
   Carousel,
@@ -26,6 +28,51 @@ export default function UpcomingContents() {
     // implement the logic here
   };
 
+  const [videos, setVideos] = useState([]);
+
+  console.log('UpcomingContents component rendered');
+
+  useEffect(() => {
+    console.log('useEffect in TestComponent executed');
+  }, []);
+
+  useEffect(() => {
+    console.log('useEffect hook executed');
+
+    const fetchVideos = async () => {
+      const querySnapshot = await getDocs(collection(db, 'youtube'));
+      const videosList = [];
+
+      if (querySnapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        videosList.push({
+          id: doc.id,
+          youtubeURL: data.youtubeURL,
+          author: data.author,
+          contributors: data.contributors || '',
+          tokens: data.tokens,
+        });
+      });
+
+      console.log('Fetched videos: ', videosList); // Log the fetched videos list
+      setVideos(videosList);
+    };
+
+    console.log("Now we will fetch videos ... ")
+
+    fetchVideos();
+
+    console.log("Fetching is over ")
+  }, []);
+
+  console.log(videos)
+  console.log(setVideos)
+  console.log("done ??? ")
+ 
   return (
     <div>
 
@@ -140,39 +187,26 @@ export default function UpcomingContents() {
       <p className="separator-paragraph">Here&apos;s a paragraph to separate the sections. It provides additional information or context for the upcoming videos.</p>
 
       <section className="section">
-        <h2>Another Section with More Videos</h2>
+        <h2>Another Section with More Videos, this part is coming from the database </h2>
         <div className="video-grid">
-          <div className="video-item">
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/ScMzIvxBSi4"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p>
-              This video discusses the future of Polkadot and its upcoming projects.
-            </p>
-          </div>
-          <div className="video-item">
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/E7wJTI-1dvQ"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p>
-              This video provides insights into the latest updates and developments in the Polkadot ecosystem.
-            </p>
-          </div>
-          {/* 添加更多视频和描述 */}
+          {videos.map((video, index) => (
+            <div className="video-item" key={index}>
+              <iframe
+                width="100%"
+                height="315"
+                src={`https://www.youtube.com/embed/${video.youtubeURL}`}
+                title={`YouTube video player - ${video.author}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+              <p>{video.description}</p>
+            </div>
+          ))}
         </div>
       </section>
+
+
 
       <style jsx>{`
         .section {

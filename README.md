@@ -17,6 +17,7 @@ $ npm run build
 $ lsof -i :3000 and kill -9 id if you need to restart 
 $ npm start 
 
+npm install dotenv
 
 # to do list 
 1. add airdrop/events page that will share the latest updates in the eco and AIWeb3, the main website will share the time, event/airdrop details, rewards, and link, which will redirect to a new website with more details 
