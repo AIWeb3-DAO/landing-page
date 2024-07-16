@@ -17,6 +17,8 @@ $ npm run build
 $ lsof -i :3000 and kill -9 id if you need to restart 
 $ npm start 
 
+You also need to open server folder and run the server.js cod
+
 npm install dotenv
 
 # to do list 

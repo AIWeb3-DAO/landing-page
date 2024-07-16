@@ -58,6 +58,8 @@ export default function TopNavbar() {
               <Link href={`/nfts`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>nfts</Link>
               <Link href={`/events`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>events</Link>
               <Link href={`/contents`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>contents</Link>
+              <Link href={`/news`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>news</Link>
+
 
            </div>
           <div className=' items-center gap-3 hidden md:flex'>

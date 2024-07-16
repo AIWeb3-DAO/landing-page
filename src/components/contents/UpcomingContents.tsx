@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Image from 'next/image'
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from './firebaseConfig'; // Adjust the import path as needed
+import { dbPromise } from './firebaseConfig'; // Adjust the import path as needed
 
 import {
   Carousel,
@@ -11,8 +11,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-
-
 
 export default function UpcomingContents() {
 
@@ -36,42 +34,43 @@ export default function UpcomingContents() {
     console.log('useEffect in TestComponent executed');
   }, []);
 
-  useEffect(() => {
-    console.log('useEffect hook executed');
+  // useEffect(() => {
+  //   console.log('Firebase API Key:', firebaseConfig.apiKey);
+  // }, []);
+  
+    useEffect(() => {
+      const fetchVideos = async () => {
+        try {
+          const db = await dbPromise;
+          if (db) {
+            const querySnapshot = await getDocs(collection(db, 'youtube'));
+            const videosList = [];
+            querySnapshot.forEach((doc) => {
+              const data = doc.data();
+              const url = new URL(data.youtubeURL);
+              const videoId = url.searchParams.get('v');
+              if (videoId) {
+                videosList.push({
+                  id: doc.id,
+                  youtubeURL: videoId,
+                  author: data.author,
+                  contributors: data.contributors || '',
+                  tokens: data.tokens,
+                });
+              } else {
+                console.error('Invalid YouTube URL:', data.youtubeURL);
+              }
+            });
+            setVideos(videosList);
+          }
+        } catch (error) {
+          console.error('Error fetching videos:', error);
+        }
+      };
+  
+      fetchVideos(); // Call the async function within the useEffect
+    }, []);
 
-    const fetchVideos = async () => {
-      const querySnapshot = await getDocs(collection(db, 'youtube'));
-      const videosList = [];
-
-      if (querySnapshot.empty) {
-        console.log('No matching documents.');
-        return;
-      }
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        videosList.push({
-          id: doc.id,
-          youtubeURL: data.youtubeURL,
-          author: data.author,
-          contributors: data.contributors || '',
-          tokens: data.tokens,
-        });
-      });
-
-      console.log('Fetched videos: ', videosList); // Log the fetched videos list
-      setVideos(videosList);
-    };
-
-    console.log("Now we will fetch videos ... ")
-
-    fetchVideos();
-
-    console.log("Fetching is over ")
-  }, []);
-
-  console.log(videos)
-  console.log(setVideos)
-  console.log("done ??? ")
  
   return (
     <div>
