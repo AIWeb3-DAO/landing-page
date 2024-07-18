@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-import Image from 'next/image'
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { dbPromise } from './firebaseConfig'; // Adjust the import path as needed
 
 import {
@@ -13,7 +11,6 @@ import {
 } from "@/components/ui/carousel"
 
 export default function UpcomingContents() {
-
   const [inputValue, setInputValue] = useState('');
 
   const handleButtonClick = () => {
@@ -31,50 +28,65 @@ export default function UpcomingContents() {
   console.log('UpcomingContents component rendered');
 
   useEffect(() => {
-    console.log('useEffect in TestComponent executed');
+    const fetchVideos = async () => {
+      try {
+        const db = await dbPromise;
+        if (db) {
+          // Fetch the current timestamp from keyINFO/time
+          const timeDoc = await getDoc(doc(db, 'keyINFO', 'time'));
+          const currentTime = timeDoc.exists() ? timeDoc.data().timestamp.toMillis() : Date.now();
+
+          const querySnapshot = await getDocs(collection(db, 'youtube'));
+          const videosList = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const url = new URL(data.youtubeURL);
+            const videoId = url.searchParams.get('v');
+            if (videoId) {
+              const videoTimestamp = data.timestamp.toMillis(); // Assuming `data.timestamp` is a Firestore Timestamp object
+              const timeDifference = currentTime - videoTimestamp;
+              const timeDifferenceInHours = Math.floor(timeDifference / (1000 * 60 * 60)); // Convert milliseconds to hours
+              const timeDifferenceInMins  = Math.floor(timeDifference / (1000 * 60)); // Convert milliseconds to minutes
+
+              // this code will calculate the ratio based on the timeDifferenceInHours
+              // it is set to between 0 and 400 hours, and the ratio is between 30 and 50 
+              const max_HOURS = 400 
+              let hoursDIFF = timeDifferenceInHours;
+              if (hoursDIFF < 0) {
+                hoursDIFF = 0;
+              }
+              if (hoursDIFF > max_HOURS){
+                hoursDIFF = max_HOURS;
+              }
+              const slope = -20 / 400 ;       // (end_value - start_value) / total_time
+              const current_ratio = 30 - slope * hoursDIFF;
+
+              videosList.push({
+                id: doc.id,
+                youtubeURL: videoId,
+                author: data.author,
+                contributors: data.contributors || '',
+                tokens: data.tokens,
+                description: `Posted ${timeDifferenceInHours} hours ( ${timeDifferenceInMins} ) mins ago, and the current time is ${currentTime}`,
+                currentRatio: current_ratio,
+              });
+            } else {
+              console.error('Invalid YouTube URL:', data.youtubeURL);
+            }
+          });
+          console.log("the video list is: ", videosList);
+          setVideos(videosList);
+        }
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+
+    fetchVideos(); // Call the async function within the useEffect
   }, []);
 
-  // useEffect(() => {
-  //   console.log('Firebase API Key:', firebaseConfig.apiKey);
-  // }, []);
-  
-    useEffect(() => {
-      const fetchVideos = async () => {
-        try {
-          const db = await dbPromise;
-          if (db) {
-            const querySnapshot = await getDocs(collection(db, 'youtube'));
-            const videosList = [];
-            querySnapshot.forEach((doc) => {
-              const data = doc.data();
-              const url = new URL(data.youtubeURL);
-              const videoId = url.searchParams.get('v');
-              if (videoId) {
-                videosList.push({
-                  id: doc.id,
-                  youtubeURL: videoId,
-                  author: data.author,
-                  contributors: data.contributors || '',
-                  tokens: data.tokens,
-                });
-              } else {
-                console.error('Invalid YouTube URL:', data.youtubeURL);
-              }
-            });
-            setVideos(videosList);
-          }
-        } catch (error) {
-          console.error('Error fetching videos:', error);
-        }
-      };
-  
-      fetchVideos(); // Call the async function within the useEffect
-    }, []);
-
- 
   return (
     <div>
-
       <button onClick={handleButtonClick} style={{ marginBottom: '20px', padding: '10px', fontSize: '16px' }}>
         Click Me to connect to the wallet
       </button>
@@ -83,12 +95,12 @@ export default function UpcomingContents() {
       <hr />
 
       <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter some text for signing the message"
-          style={{ marginRight: '10px', padding: '5px', fontSize: '16px' }}
-        />
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Enter some text for signing the message"
+        style={{ marginRight: '10px', padding: '5px', fontSize: '16px' }}
+      />
 
       <button onClick={handleButtonClick2} style={{ marginBottom: '20px', padding: '10px', fontSize: '16px' }}>
         sign a message if you click this button,
@@ -123,62 +135,7 @@ export default function UpcomingContents() {
               大家可以通过下面命令到discord参与， 使用100积分，这个视频ID是1： !voting 1 100
             </p>
           </div>
-          <div className="video-item">
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/VYOjWnS4cMY"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p>
-              This video delves into Kusama, Polkadot&apos;s canary network, and its importance for developers.
-            </p>
-          </div>
-          <div className="video-item">
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/3JZ_D3ELwOQ"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p>
-              Learn about Polkadot&apos;s unique cross-chain communication capabilities in this informative video.
-            </p>
-          </div>
-          <div className="video-item">
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/lWA2pjMjpBs"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p>
-              This video highlights some of the upcoming features and updates in the Polkadot ecosystem.
-            </p>
-          </div>
-          <div className="video-item">
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/5qap5aO4i9A"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p>
-              A comprehensive guide to Polkadot&apos;s governance model and how it ensures network security and stability.
-            </p>
-          </div>
+
         </div>
       </section>
 
@@ -200,12 +157,20 @@ export default function UpcomingContents() {
                 allowFullScreen
               ></iframe>
               <p>{video.description}</p>
+              <p>可以通过discord 输入下面命令用积分支持这个视频内容, 比如支持10积分： !votingYoutube {video.id} 10， 当前对于这个视频，积分和AIWEB代币的兑换比例为 {video.currentRatio}：1, 越早参与，兑换1个AIWEB需要的积分越少！</p>
+              <p>
+                贡献的人的钱包地址以及贡献的代币额度: 
+                <ul>
+                  {video.contributors.map((contributor, i) => (
+                    <li key={i}>{contributor}: {video.tokens[i]}</li>
+                  ))}
+                </ul>
+              </p>
+
             </div>
           ))}
         </div>
       </section>
-
-
 
       <style jsx>{`
         .section {

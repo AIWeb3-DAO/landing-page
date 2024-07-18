@@ -2,6 +2,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors'); // Import the cors middleware
+const { spawn } = require('child_process');
+const path = require('path');
 
 dotenv.config();
 
@@ -28,3 +30,18 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+
+
+// Run updateTIME.js in the background
+const updateTimeProcess = spawn('node', [path.resolve(__dirname, 'updateTIME.mjs')], {
+  stdio: 'inherit'
+});
+
+updateTimeProcess.on('error', (err) => {
+  console.error('Failed to start updateTIME.mjs:', err);
+});
+
+updateTimeProcess.on('exit', (code, signal) => {
+  if (code) console.error('updateTIME.mjs exited with code', code);
+  if (signal) console.error('updateTIME.mjs was killed with signal', signal);
+});
