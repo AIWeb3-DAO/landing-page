@@ -165,6 +165,7 @@ export default function UpcomingContents() {
                     <li key={i}>{contributor}: {video.tokens[i]}</li>
                   ))}
                 </ul>
+                <strong>Total Tokens:</strong> {video.tokens.reduce((acc, token) => acc + token, 0)}
               </p>
 
             </div>
