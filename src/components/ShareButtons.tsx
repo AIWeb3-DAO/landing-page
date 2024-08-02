@@ -37,7 +37,7 @@ export default function ShareButtons({ url}: any) {
         setisUrlCopied(false);
       }, 2000);
     } catch (err) {
-      alert("Failed to copy: ", err);
+      alert("Failed to copy: " + err);
     }
   };
   return (
