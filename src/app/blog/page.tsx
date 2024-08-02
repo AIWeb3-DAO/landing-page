@@ -1,11 +1,13 @@
-'use client'
-import { BlogHome } from '@/components/blog'
+import { NavbarDemo } from '@/components/TopNavbar'
+import BlogHome from '@/components/blogs/Home'
 import React from 'react'
+
 
 export default function page() {
   return (
-    <div className='bg-black text-gray-300 min-h-screen'> 
-      <BlogHome   />
+    <div className='w-full min-h-screen '>
+      <NavbarDemo />
+    <BlogHome    />
     </div>
   )
 }

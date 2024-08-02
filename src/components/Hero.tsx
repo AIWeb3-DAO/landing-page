@@ -1,80 +1,35 @@
-'use client'
+"use client";
+import React from "react";
+import { SparklesCore } from "../components/ui/Sparkless";
 
-import Image from 'next/image';
-import React from 'react'
-import { TypeAnimation } from 'react-type-animation';
-import {motion} from 'framer-motion'
-import { Poppins } from 'next/font/google';
-import { CiStar } from "react-icons/ci";
-import {useTranslations} from 'next-intl';
-import NextIntlClientProvider from 'next-intl';
-
- type Props = {
-    title? : string
-    subtitle?: string
-    joinBtn ? : any
-    partenerBtn ? : any
- }
-export default function Hero({title, subtitle, joinBtn, partenerBtn} : Props) {
+export function Hero() {
   return (
+    <div className="h-[30rem] w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
+      <h1 className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white relative z-20">
+        Aceternity
+      </h1>
 
-    <div className='min-h-[60vh]   flex items-center justify-center'>
-         <motion.div
-          initial={{y: 400}}
-          animate ={{
-            y : -20
-          }}
-          transition={{
-            duration : 2
-          }}
-         >
-            <div className='xs:min-h[30vh] md:min-h-[40vh] flex flex-col items-center justify-center'>
-       {/*} <h1 className='xs:text-4xl xs:leading-snug sm:text-5xl sm:leading-snug md:text-6xl md:leading-snug lg:text-7xl lg:leading-snug text-center font-extrabold text-gray-300'>
-            A video sharing platform < br />
-             Empowering    
+       <h2>Ai  web3  dao</h2>
+      <div className="w-[40rem] h-40 relative">
+        {/* Gradients */}
+        <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
+        <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
+        <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
+        <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
 
-             <TypeAnimation
-               sequence={[
-                 "Creators",
-                 2000,
-                 "Users",
-                 2000
-               ]}
-               wrapper='span'
-               repeat={Infinity}
-               className='ml-3 text-rose-500'
-             />
-        </h1>*/}
-         <h1 className={` text-4xl text-center md:text-7xl font-extrabold my-6`}>{title}</h1>
-         <p className='md:font-semibold text-lg text-gray-400 text-center'>{subtitle}</p>
-           <div className='mt-8 '>
-                <div className='flex items-center space-x-5'>
-                     <motion.div 
-                     className='flex gap-2 items-center bg-white text-gray-700 md:py-2.5 md:px-3.5 py-2 px-3  rounded-xl cursor-pointer '
-                     
-                     >
-                     <CiStar className='w-5 h-5' />
-                      <p className='font-semibold'>{joinBtn}</p>
-                     </motion.div>
-                     <motion.div className='flex gap-2 items-center border border-gray-400 text-gray-300 md:py-2.5 md:px-3.5 py-2 px-3 rounded-xl cursor-pointer '>
-                     <CiStar className='w-5 h-5' />
-                      <p className='font-semibold'>{partenerBtn}</p>
-                     </motion.div>
-                </div>
-           </div>
-        </div>
-      {/*}  <div className='mt-5 px-4'>
-             <Image
-    src={`https://pbs.twimg.com/profile_images/1637269369658171392/CHS2SlUh_400x400.jpg`}
-  width={1200}
-  height={800}
-  alt='zenvid'
-  className=''
-  loading='lazy'
-/>
-            </div>*/}
-        </motion.div>
-        </div>
-   
-  )
+        {/* Core component */}
+        <SparklesCore
+          background="transparent"
+          minSize={0.4}
+          maxSize={1}
+          particleDensity={1200}
+          className="w-full h-full"
+          particleColor="#FFFFFF"
+        />
+
+        {/* Radial Gradient to prevent sharp edges */}
+        <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+      </div>
+    </div>
+  );
 }

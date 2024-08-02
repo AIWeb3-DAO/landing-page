@@ -1,90 +1,145 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { HoveredLink, Menu, MenuItem, ProductItem } from "../components/ui/Navbar-menu";
+import { cn } from "@/utils/cn";
+import Onboard from '@subwallet-connect/core';
+import injectedModule from '@subwallet-connect/injected-wallets';
+import subwalletModule from '@subwallet-connect/subwallet';
+import subwalletPolkadotModule from '@subwallet-connect/subwallet-polkadot';
+import type {EIP1193Provider, SubstrateProvider} from "@subwallet-connect/common";
+import {ethers} from 'ethers';
+import {ApiPromise, WsProvider} from '@polkadot/api';
+import { stringToHex } from "@polkadot/util";
 
-import Link from 'next/link'
-import React from 'react'
-import {PiTelegramLogo} from 'react-icons/pi'
-import {RiTwitterXLine, RiDiscordLine} from 'react-icons/ri'
-import Image from 'next/image'
-import { openLinkInNewTab } from '@/lib/utils'
-import LocaleSwitcher from './LocalSwitcher';
-//import { useRouter } from 'next/router'
-//import { useRouter } from 'next/router';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+export function NavbarDemo() {
 
-
-export default function TopNavbar() {
-
-   
-  //const pathname = usePathname();
-
-  /*let locale  = 'zh';
-  if (pathname) {
-    locale = pathname.split('/')[1]; // 'en' or 'zh'
-  }
-  console.log(pathname); */
-
-  //type LocaleLinks = {
-  //  en: string;
-  //  zh: string;
-  //};
-  //const searchParams = useSearchParams();
-  //const locale = searchParams.get('locale') || 'zh'; // Default to 'zh' if not found
-  // Define your Telegram links based on locale
-  //const locale = 'zh'
-  const TGLink = {
-    en: 'https://t.me/aiweb3dao_eng',
-    zh: 'https://t.me/AIweb3dao', // Example link for Chinese locale
-  };
-  // Use the current locale to get the correct Twitter link
-  //const currentTGLink = TGLink[locale as keyof typeof TGLink] || TGLink.zh; // Default to Chinese if undefined
   return (
-    <div className='w-full bg-gray-800/80 sticky top-0  z-20'>
-    <div className='  border-b border-b-gray-800/30 flex justify-between items-center py-5 px-3 h-[65px]  max-w-6xl w-full  mx-auto'>
-       <Link href={`/`}>
-       <div className='flex items-center gap-2'>
-         <Image
-          width={90}
-          height={90}
-          alt='logo'
-          src={`/img/logo3.png`}
-          className='rounded-full '
-         />
-       <h1 className='font-semibold'>AIWeb3 DAO</h1>
-       </div>
-       </Link>
+
+    <div className="relative  flex items-center justify-center w-full">
+      <Navbar className="top-2" />
       
-           <div className='flex items-center space-x-4'>
-              <Link href={`/blog`} className='capitalize md:font-semibold bg-gray-700 py-1 px-2 md:py-1.5 md:px-3 rounded-xl'>blogs</Link>
-              <Link href={`/nfts`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>nfts</Link>
-              <Link href={`/events`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>events</Link>
-              <Link href={`/contents`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>contents</Link>
-              <Link href={`/news`} className='capitalize md:font-semibold  bg-gray-700 py-1 px-2 md:py-1.5 md:px-3  rounded-xl'>news</Link>
+    
+
+    </div>
+  );
+}
+
+function Navbar({ className }: { className?: string }) {
+  const [active, setActive] = useState<string | null>(null);
 
 
-           </div>
-          <div className=' items-center gap-3 hidden md:flex'>
-            <a href="https://twitter.com/aiweb3dao" target="_blank" rel="noopener noreferrer">
-              <div className='cursor-pointer  w-[30px] h-[30px] flex items-center justify-center rounded-full ring-rose-400 hover:ring-1' >
-              <RiTwitterXLine style={{width : "20px", height : "20px "}} />
-              </div>
-            </a>
+  const [wallet1, setwallet] = useState()
 
-    {/*}
-            <a href={currentTGLink} target="_blank" rel="noopener noreferrer">
-                <div className='cursor-pointer  w-[30px] h-[30px] flex items-center justify-center rounded-full ring-rose-400 hover:ring-1' >
-                <PiTelegramLogo style={{width : "20px", height : "20px"}} />
-                </div>
-            </a>
-  */}
-            <a href="https://discord.gg/pQtZG8UQfk" target="_blank" rel="noopener noreferrer">
-                <div className='cursor-pointer  w-[30px] h-[30px] flex items-center justify-center rounded-full ring-rose-400 hover:ring-1' >
-                <RiDiscordLine style={{width : "20px", height : "20px"}} />
-                </div>
-            </a>
+  const MAINNET_RPC_URL = 'https://mainnet.infura.io/v3/<INFURA_KEY>'
+const ws = 'wss://rpc.polkadot.io'
 
-             <LocaleSwitcher  />
+const ws2 = 'wss://rpc.polkadot.io'
+
+const injected = injectedModule()
+const subwalletWallet = subwalletModule()
+const subwalletPolkadotWalet = subwalletPolkadotModule()
+
+
+
+
+
+/*const onboard = Onboard({
+
+  wallets: [ subwalletPolkadotWalet],
+  chains: [
+    {
+      id: '0x1',
+      token: 'ETH',
+      label: 'Ethereum Mainnet',
+      rpcUrl: MAINNET_RPC_URL
+    }
+  ],
+  chainsPolkadot: [
+    {
+      id: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
+      namespace: 'substrate',
+      token: 'DOT',
+      label: 'Polkadot',
+      rpcUrl: `polkadot.api.subscan.io`,
+      decimal: 10
+    },
+    {
+      id: 'lashbox_simple_container_4274',
+      namespace: 'substrate',
+      token: 'AIWEB',
+      label: 'aiweb3',
+      rpcUrl: `wss://fraa-flashbox-4274-rpc.a.stagenet.tanssi.network`,
+      decimal: 12
+    }
+  ]
+  })*/
+
+
+
+
+
+
+
+
+
+
+
+  return (
+    <div className="flex justify-between w-full  h-24 sticky top-0 z-40 items-center px-3">
+       
+    <div
+      className={cn("fixed top-10 inset-x-0 border rounded-3xl border-gray-700    max-w-2xl mx-auto z-50", className)}
+    >
+    
+      <Menu setActive={setActive}>
+        <MenuItem setActive={setActive} active={active} item="Services">
+          <div className="flex flex-col space-y-4 text-sm">
+          <HoveredLink href="/about">About us</HoveredLink>
+          <HoveredLink href="/news">Polkadot news</HoveredLink>
+          <HoveredLink href="/blog">Our blog and articles content</HoveredLink>
+          <HoveredLink href="/videos">Videos content</HoveredLink>
+          
           </div>
+        </MenuItem>
+        <MenuItem setActive={setActive} active={active} item="Social">
+          <div className="  text-sm grid grid-cols-2 gap-10 p-4">
+            <ProductItem
+              title="Discord"
+              href="https://discord.com/invite/pQtZG8UQfk"
+              src="https://pbs.twimg.com/profile_images/1719768085815803905/Qt-WhTGg_400x400.jpg"
+              description="Join our Chinese Discord community."
+            />
+            <ProductItem
+              title="Chinese Telegram"
+              href="https://t.me/aiweb3dao"
+              src="https://pbs.twimg.com/profile_images/1183117696730390529/LRDASku7_400x400.jpg"
+              description="Join our Chinese Telegram community"
+            />
+
+            <ProductItem
+              title="Eng Telegram"
+              href="https://t.me/aiweb3dao_eng"
+              src="https://pbs.twimg.com/profile_images/1183117696730390529/LRDASku7_400x400.jpg"
+              description="Join our English Telegram community."
+            />            
+         
+          </div>
+        </MenuItem>
+        {/*}
+        <MenuItem setActive={setActive} active={active} item="Pricing">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="/hobby">Hobby</HoveredLink>
+            <HoveredLink href="/individual">Individual</HoveredLink>
+            <HoveredLink href="/team">Team</HoveredLink>
+            <HoveredLink href="/enterprise">Enterprise</HoveredLink>
+          </div>
+        </MenuItem>
+  */}
+      </Menu>
+
+      
+      </div>
+   
     </div>
-    </div>
-  )
+  );
 }
