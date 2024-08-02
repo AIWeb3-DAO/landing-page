@@ -3,7 +3,7 @@
 import React, {useState, useEffect} from 'react'
 import { usePathname } from 'next/navigation'
 import { MdKeyboardArrowLeft } from "react-icons/md";
-import { SUPABASE_KEY, SUPABASE_URL } from '@/constant'
+//import { SUPABASE_KEY, SUPABASE_URL } from '@/constants'
 import { FiDatabase } from "react-icons/fi";
 import EventCard from './EventCard';
 import { supabaseClient } from '@/utils/spClient';
