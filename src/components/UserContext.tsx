@@ -5,13 +5,21 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 //import { GET_USER_PROFILES_BY_ADDRESS } from '@/graphql/fragments/getUserProfiles';
 //import { apolloClient } from '@/graphql/apolloClient';
 
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode, JwtPayload } from 'jwt-decode';
+interface UserProfile extends JwtPayload {
+  // Add other properties that your JWT payload contains
+  // Example:
+  name?: string;
+  email?: string;
+}
+
+//import { jwtDecode } from "jwt-decode";
  type providerProps = {
   isGeneratingToken ? : any
   isWaitingForSignature ? :any
   logout : any
      verifyNonce : any
-     userProfile : any
+     userProfile: UserProfile | null;
      toggleHandleModal: any
      isShowHandleModal : any
      selectedGame? : any
@@ -34,7 +42,7 @@ export const useUserContext = (): providerProps => {
   }
 export const UserContextProvider =({children} : ContextProps) => {
     //const {signMessageAsync}  = useSignMessage()
-   const [userProfile, setuserProfile] = useState(null)
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
    const [isShowHandleModal, setisShowHandleModal] = useState(false)
    const [isGeneratingToken, setisGeneratingToken] = useState(false)
    const [isWaitingForSignature, setisWaitingForSignature] = useState(false)
@@ -57,7 +65,7 @@ export const UserContextProvider =({children} : ContextProps) => {
       useEffect(() => {
         const token = localStorage.getItem('kbg2_accessToken');
         if (token) {
-            const decoded = jwtDecode(token);
+            const decoded = jwtDecode<UserProfile>(token);
             setuserProfile(decoded);
         }
     }, []);
@@ -109,7 +117,7 @@ export const UserContextProvider =({children} : ContextProps) => {
         setisWaitingForSignature(false)
         console.log("The jwt tokens:", token);
         localStorage.setItem('kbg2_accessToken', token?.token);
-        const decoded = jwtDecode(token?.token);
+        const decoded = jwtDecode<UserProfile>(token?.token);
         setuserProfile(decoded);
     } catch (error) {
       console.log(error)
