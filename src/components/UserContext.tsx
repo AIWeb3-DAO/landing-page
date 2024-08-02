@@ -43,7 +43,7 @@ export const useUserContext = (): providerProps => {
   }
 export const UserContextProvider =({children} : ContextProps) => {
     //const {signMessageAsync}  = useSignMessage()
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [userProfile, setuserProfile] = useState<UserProfile | null>(null);
    const [isShowHandleModal, setisShowHandleModal] = useState(false)
    const [isGeneratingToken, setisGeneratingToken] = useState(false)
    const [isWaitingForSignature, setisWaitingForSignature] = useState(false)
