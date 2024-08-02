@@ -11,6 +11,7 @@ interface UserProfile extends JwtPayload {
   // Example:
   name?: string;
   email?: string;
+  id?: string;
 }
 
 //import { jwtDecode } from "jwt-decode";
