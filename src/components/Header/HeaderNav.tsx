@@ -8,8 +8,13 @@ import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import Image from 'next/image';
 
+interface UserData {
+  address: string;
+  // Add other properties if needed
+}
+
 export default function HeaderNav() {
-    const [userData, setuserData] = useState(null)
+    const [userData, setuserData] = useState<UserData | null>(null)
     const {userProfile}  =  useUserContext()
 const {theme, setTheme}  = useTheme()
 const [testTruth, settestTruth] = useState(true)
