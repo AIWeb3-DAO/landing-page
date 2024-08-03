@@ -28,13 +28,13 @@ export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [lastDoc, setLastDoc] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchNews = async (page: number) => {
+  const fetchNews = async () => {
     setLoading(true);
     let q;
 
-    if (page === 1) {
+    if (!lastDoc) {
       q = query(collection(FB_DB, "news"), orderBy("timestamp", "desc"), limit(10));
     } else {
       q = query(
@@ -51,34 +51,19 @@ export default function NewsPage() {
       ...doc.data()
     })) as NewsItem[];
 
-    setLastDoc(querySnapshot.docs[querySnapshot.docs.length - 1]);
-    setNews(newsList);
+    if (newsList.length === 0) {
+      setHasMore(false);
+    } else {
+      setLastDoc(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      setNews(prevNews => [...prevNews, ...newsList]);
+    }
+
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchNews(page);
-  }, [page]);
-
-  const handleNextPage = () => {
-    setPage(prevPage => prevPage + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(prevPage => prevPage - 1);
-    }
-  };
-
-  console.log("the news ", news);
-
-  if (loading) {
-    return (
-      <div className='w-full h-screen flex items-center justify-center'>
-        <p className='uppercase text-xl'>Loading ....</p>
-      </div>
-    );
-  }
+    fetchNews();
+  }, []);
 
   return (
     <>
@@ -92,7 +77,8 @@ export default function NewsPage() {
             {news?.map((item, i) => (
               <div key={i} className='border-l-2 border-yellow-100 my-5 p-4'>
                 <div>
-                  <h1 className='font-semibold text-xl my-3'>{item?.otherINFO} </h1>  <span className='text-sm text-gray-400'>{formatTimestamp(item?.timestamp)}</span>
+                  <h1 className='font-semibold text-xl my-3'>{item?.otherINFO}</h1>  
+                  <span className='text-sm text-gray-400'>{item?.timestamp.toDate().toLocaleString()}</span>
                   <p>{item?.news}</p>
                 </div>
                 <div>
@@ -104,6 +90,16 @@ export default function NewsPage() {
           <div className='w-4/12 hidden lg:flex border-dashed p-3 bg-zinc-900 rounded-xl'>
             <h1 className='uppercase font-semibold'>Trending</h1>
           </div>
+        </div>
+        <div className='flex justify-center my-5'>
+          {hasMore && !loading && (
+            <button onClick={fetchNews}>
+              Load More
+            </button>
+          )}
+          {loading && (
+            <p className='uppercase text-xl'>Loading ....</p>
+          )}
         </div>
       </div>
     </>
