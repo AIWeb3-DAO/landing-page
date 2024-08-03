@@ -6,13 +6,23 @@ import { collection, query, orderBy, limit, getDocs, startAfter } from "firebase
 import { FB_DB } from '@/lib/fbClient';
 import { FaXTwitter } from 'react-icons/fa6';
 import HeaderNav from '../Header/HeaderNav';
+import { Timestamp } from '@firebase/firestore';
 
 interface NewsItem {
   id: string;
   otherINFO: string;
   news: string;
+  timestamp: string;
   // Add other properties if needed
 }
+
+const formatTimestamp = (timestamp) => {
+  if (!timestamp) return '';
+  
+  // Assuming timestamp is a Firestore Timestamp object
+  const date = new Date(timestamp.seconds * 1000);
+  return date.toLocaleString(); // Customize this as needed
+};
 
 export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -82,7 +92,7 @@ export default function NewsPage() {
             {news?.map((item, i) => (
               <div key={i} className='border-l-2 border-yellow-100 my-5 p-4'>
                 <div>
-                  <h1 className='font-semibold text-xl my-3'>{item?.otherINFO}</h1>
+                  <h1 className='font-semibold text-xl my-3'>{item?.otherINFO} </h1>  <span className='text-sm text-gray-400'>{formatTimestamp(item?.timestamp)}</span>
                   <p>{item?.news}</p>
                 </div>
                 <div>
