@@ -84,14 +84,14 @@ export default function PlayePage() {
            
          />
 
-     
-
 
          </div>
          <div  className='my-4 px-3 '>
-         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>This  is just  testing  video we want to see</h1>
- 
-         <FullVideoStats  stats={videoData?.contributors} createdAt={videoData?.timestamp?.seconds}  /> 
+         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>AIWeb3 is full of love, if you like this video, tip and support the content creator! </h1>
+
+         <p>For the testnet, you can use the point on AIWeb3 discord to support the creators while earning the AIWEB token!</p>
+         <p>Visit AIWeb3 official discord, #bot-channel, and enter the following if you want to contribute 10 points (keep in mind the ratio, you will earn more AIWEB token from the latest video)): <b>!tipCreator {id} 10</b></p>
+         <FullVideoStats  stats={videoData?.contributors} tokenstats={videoData?.tokens} createdAt={videoData?.timestamp?.seconds}  /> 
        
     
          </div>

@@ -35,6 +35,7 @@ export default function Watach() {
           const data = doc.data();
           const url = new URL(data.youtubeURL);
           const videoId = url.searchParams.get('v');
+          //console.log("the video ID: " + videoId);
           if (videoId) {
             const videoTimestamp = data.timestamp.toMillis(); // Assuming `data.timestamp` is a Firestore Timestamp object
             const timeDifference = currentTime - videoTimestamp;
@@ -52,7 +53,8 @@ export default function Watach() {
               hoursDIFF = max_HOURS;
             }
             const slope = -20 / 400 ;       // (end_value - start_value) / total_time
-            const current_ratio = 30 - slope * hoursDIFF;
+            const current_ratio = (30 - slope * hoursDIFF).toFixed(2);  // keep two decimal
+            
 
             videosList.push({
               id: doc.id,
@@ -60,7 +62,7 @@ export default function Watach() {
               author: data.author,
               contributors: data.contributors || '',
               tokens: data.tokens,
-              description: `Posted ${timeDifferenceInHours} hours ( ${timeDifferenceInMins} ) mins ago, and the current time is ${currentTime}`,
+              description: `Posted ${timeDifferenceInHours} hours ( ${timeDifferenceInMins}  mins) ago`,
               currentRatio: current_ratio,
             });
             setisLoading(false)
@@ -103,7 +105,7 @@ export default function Watach() {
 
   <div  className='h-[30vh] flex items-center justify-center'>
      <div  className=' p-2  max-w-xl  mx-auto  '>
-      <h1  className='text-center text-2xl'>Explore a curated list of videos featuring the latest Polkadot news and educational content.</h1>
+      <h1  className='text-center text-2xl'>Check Polkadot eco videos, support the best content creators while also earn the reward!</h1>
      </div>
      </div>
     
