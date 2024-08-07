@@ -59,6 +59,7 @@ export default function Watach() {
             videosList.push({
               id: doc.id,
               youtubeURL: videoId,
+              youtubeTitle:data.youtubeTitle,
               author: data.author,
               contributors: data.contributors || '',
               tokens: data.tokens,
@@ -86,7 +87,7 @@ export default function Watach() {
    }, [])
 
 
-     console.log("all videos  is  here ", videos)
+     
 
 
 

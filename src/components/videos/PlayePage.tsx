@@ -87,6 +87,7 @@ export default function PlayePage() {
 
          </div>
          <div  className='my-4 px-3 '>
+         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>{videoData?.youtubeTitle}</h1>
          <h1 className='text-lg sm:text-xl md:text-2xl text-text '>AIWeb3 is full of love, if you like this video, tip and support the content creator! </h1>
 
          <p>For the testnet, you can use the point on AIWeb3 discord to support the creators while earning the AIWEB token!</p>
