@@ -1,5 +1,7 @@
 # Ai web3 dao landing page
 
+You need to run the updateTIME script in the server folder to keep the time updated!
+
 A brief description of this project and  how whats next
 
 
