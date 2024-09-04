@@ -16,7 +16,7 @@ export default function VideoCard({video}  : Props) {
           
           <p className='font-semibold'> Reward ratio: {video?.currentRatio} : 1   {video?.description}</p>
           <p className='font-semibold'> Create by : {video?.author}  </p>
-          <p className='font-semibold'> Total contributed tokens : {video?.tokens?.reduce((sum, token) => sum + token, 0)} </p>
+          <p className='font-semibold'> Total contributed tokens : {video?.tokens?.reduce((sum : number, token : number) => sum + token, 0)} </p>
          
           </div>
           </Link>

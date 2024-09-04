@@ -11,9 +11,10 @@ import Comments from './Comments';
 import HeaderNav from '../Header/HeaderNav';
 import { useRouter, usePathname } from 'next/navigation';
 import { FB_APP, FB_DB } from '@/lib/fbClient';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc,DocumentData } from 'firebase/firestore';
 export default function PlayePage() {
-  const [videoData, setVideoData] = useState(null);
+  //const [videoData, setVideoData] = useState(null);
+  const [videoData, setVideoData] = useState<DocumentData | null>(null); // Allow state to be either null or DocumentData
   const [loading, setLoading] = useState(true);
   const pathname = usePathname()
 
@@ -45,7 +46,7 @@ export default function PlayePage() {
     console.log("the router", videoData)
 
 
-    function formatTimestamp(seconds) {
+    function formatTimestamp(seconds: number) {
       // Convert seconds to milliseconds
       const milliseconds = seconds * 1000;
     

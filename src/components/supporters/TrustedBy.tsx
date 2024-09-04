@@ -1,6 +1,7 @@
 
 "use client"
 import React from 'react'
+// @ts-ignore
 import Slider from 'react-infinite-logo-slider'
 import { ecosystems } from '@/constants'
 export default function TrustedBy() {

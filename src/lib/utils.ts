@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 
 
-export function timeAgo(timestampInSeconds) {
+export function timeAgo(timestampInSeconds : number) {
   const currentTime = new Date().getTime(); // Current time in milliseconds
   const postTime = timestampInSeconds * 1000; // Convert post time to milliseconds
   const difference = currentTime - postTime;

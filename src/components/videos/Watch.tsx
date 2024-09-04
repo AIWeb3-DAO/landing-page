@@ -10,8 +10,23 @@ import VideoCard from './VideoCard'
 import { fireBaseConfig } from '@/lib/fbClient'
 import  {getFirestore, getDoc, collection, doc, getDocs}  from 'firebase/firestore'
 import {initializeApp}  from "firebase/app"
+
+
+interface Video {
+  id: string;
+  youtubeURL: string;
+  youtubeTitle: string;
+  author: string;
+  contributors: string;
+  tokens: string[];
+  description: string;
+  currentRatio: string;
+}
+
 export default function Watach() {
-  const [videos, setVideos] = useState([])
+  //const [videos, setVideos] = useState([])
+
+  const [videos, setVideos] = useState<Video[]>([]) // Add explicit type for videos
   const [isLoading, setisLoading] = useState(true)
 
 
@@ -30,7 +45,9 @@ export default function Watach() {
         const currentTime = timeDoc.exists() ? timeDoc.data().timestamp.toMillis() : Date.now();
 
         const querySnapshot = await getDocs(collection(db, 'youtube'));
-        let videosList = []
+        
+        let videosList: Video[] = []; // Explicitly typed array for videos
+        
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           const url = new URL(data.youtubeURL);
