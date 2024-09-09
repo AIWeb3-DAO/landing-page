@@ -72,6 +72,19 @@ export default function Watach() {
             const slope = -20 / 400 ;       // (end_value - start_value) / total_time
             const current_ratio = (30 - slope * hoursDIFF).toFixed(2);  // keep two decimal
             
+            // Calculate total tokens
+            const totalTokens = data.tokens?.reduce((sum: number, token: number) => sum + token, 0) || 0;
+            // Calculate the Recency Score
+            // Higher score for the first 48 hours, and decays after that
+            let recencyScore = 0;
+            if (timeDifferenceInHours <= 48) {
+              recencyScore = 100 - (timeDifferenceInHours / 48) * 100; // Scale down to 0 after 48 hours
+            }
+
+            // Final Score: Weight recency and tokens differently
+            // In the first 48 hours, recency has more weight
+            const combinedScore = recencyScore + totalTokens * 0.5; // Adjust the 0.5 weight as per preference
+
 
             videosList.push({
               id: doc.id,
@@ -82,6 +95,10 @@ export default function Watach() {
               tokens: data.tokens,
               description: `Posted ${timeDifferenceInHours} hours ( ${timeDifferenceInMins}  mins) ago`,
               currentRatio: current_ratio,
+              timestamp: videoTimestamp, // Store timestamp for sorting
+              totalTokens, // Store the total tokens for future use
+              recencyScore, // Store the recency score for future use
+              combinedScore, // Store the combined score for sorting
             });
             setisLoading(false)
           } else {
@@ -90,6 +107,9 @@ export default function Watach() {
           }
         });
                console.log("the video list is: ", videosList);
+        
+        // Sort the videos based on their combinedScore in descending order (higher score first)
+        videosList.sort((a, b) => b.combinedScore - a.combinedScore);
         setVideos(videosList);
         setisLoading(false)
       }   
