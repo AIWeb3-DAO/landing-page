@@ -78,7 +78,7 @@ export default function NewsPage() {
               <div key={i} className='border-l-2 border-yellow-100 my-5 p-4'>
                 <div>
                   <h1 className='font-semibold text-xl my-3'>{item?.otherINFO}</h1>  
-                  <span className='text-sm text-gray-400'>{new Date(item?.timestamp).toLocaleString()}</span>
+                  <span className='text-sm text-gray-400'>{new Date(item?.timestamp?.seconds * 1000).toLocaleString()}</span>
                   <p>{item?.news}</p>
                 </div>
                 <div>
