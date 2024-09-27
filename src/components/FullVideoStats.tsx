@@ -18,7 +18,7 @@ import {
 //import moment from 'moment';
 //import { WEBSITE_URL } from '@/assets/constant';
 import TipModal from './TipModal';
-
+import ConfettiExplosion from 'react-confetti-explosion';
 import { useUserContext } from './UserContext';
 import { ModalBody, ModalContent, ModalProvider, ModalTrigger } from './ui/animated-modal';
 import { timeAgo } from '@/lib/utils';
@@ -27,14 +27,15 @@ type statsProps = {
   stats?: any
   tokenstats?: any
   createdAt?: any
-  videId?: any
+  videoId?: any
   tips?: any
 
 }
-export default function FullVideoStats({ stats, tokenstats, createdAt, videId, tips }: statsProps) {
+export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, tips }: statsProps) {
+  const [isTokenSent, setisTokenSent] = useState(true)
   const currentDate = new Date();
   const videoCreatedAt = new Date(createdAt);
-  const { userProfile } = useUserContext()
+  const { wallet, connectWallet } = useUserContext()
   //@ts-ignore
   const diffInMilliseconds = currentDate - videoCreatedAt;
   const diffInHours = diffInMilliseconds / (60 * 60 * 1000);
@@ -75,38 +76,31 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
         </div>
 
 
-        <ModalProvider>
-          <ModalTrigger>
-            <div className='flex items-center gap-2 hover:text-text-primary cursor-pointer' >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+        {wallet  ?  (
+ <ModalProvider>
+ <ModalTrigger>
+       <div className='flex items-center gap-2 hover:text-text-primary cursor-pointer' >
+       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>
 
 
-              {/* <p className='text-sm md:font-semibold'>Support</p> */}
-              <p className='text-sm md:font-semibold text-white'>Support</p>
-            </div>
-          </ModalTrigger>
+<p className='text-sm md:font-semibold'>Support</p>
+       </div>
+       </ModalTrigger>
 
-          <ModalBody>
-            <ModalContent>
-              <TipModal />
-            </ModalContent>
-          </ModalBody>
+   <ModalBody>
+     <ModalContent>
+         <TipModal videoId={videoId} contributorAddress={wallet?.accounts[0].address} />
+     </ModalContent>
+   </ModalBody>
 
-        </ModalProvider>
-
-        <div className='flex items-center gap-2 hover:text-text-primary cursor-pointer hidden' >
-          <FaFire className='text-yellow-600 animate-bounce' />
-
-
-          <p className='text-sm md:font-semibold'>Buy / Sell</p>
-        </div>
+       </ModalProvider>
+): (
+  <button className='bg-white text-black py-1.5 px-4 rounded-lg' onClick={connectWallet}>Connect wallet to contribute</button>
+)}
 
 
-
-
-        <p className='text-sm font-semibold hidden'>Minted 2</p>
 
         <Dialog>
           <DialogTrigger>
@@ -162,7 +156,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
             <DialogHeader>
               <DialogTitle className='mb-4 '>Share</DialogTitle>
               <DialogDescription>
-                <ShareButtons url={`${WEBSITE_URL}/watch/$${videId}`} />
+                <ShareButtons url={`${WEBSITE_URL}/watch/$${videoId}`} />
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
@@ -172,7 +166,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
 
 
       </div>
-
+  
     </div>
 
 

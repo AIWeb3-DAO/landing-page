@@ -7,6 +7,7 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "@/graphql/client";
 import Footer from "@/components/Footer";
 import { UserContextProvider } from "@/components/UserContext";
+import NextTopLoader from 'nextjs-toploader';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -47,7 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body  className={`${inter.className}  w-full bg-black text-gray-200`}>
-   
+      <NextTopLoader />
       <ThemeProvider
         attribute="class"
         defaultTheme="dark"

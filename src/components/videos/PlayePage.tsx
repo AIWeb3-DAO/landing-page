@@ -60,18 +60,11 @@ export default function PlayePage() {
     }
 
 
-      const readbaleTimeStamp = formatTimestamp(videoData?.timestamp?.seconds)
-
-        console.log("the readable time ", readbaleTimeStamp)
+  
 
 
-    if (loading) {
-      return(
-        <div   className='w-full h-screen flex items-center justify-center'>
-        <p  className='uppercase text-xl'>Loading ....</p>
-        </div>
-      )
-    }
+
+  
   return (
     <>
     <HeaderNav  />
@@ -93,7 +86,7 @@ export default function PlayePage() {
 
          <p>For the testnet, you can use the point on AIWeb3 discord to support the creators while earning the AIWEB token!</p>
          <p>Visit AIWeb3 official discord, #bot-channel, and enter the following if you want to contribute 10 points (keep in mind the ratio, you will earn more AIWEB token from the latest video)): <b>!tipCreator {id} 10</b></p>
-         <FullVideoStats  stats={videoData?.contributors} tokenstats={videoData?.tokens} createdAt={videoData?.timestamp?.seconds}  /> 
+         <FullVideoStats  stats={videoData?.contributors} tokenstats={videoData?.tokens} createdAt={videoData?.timestamp?.seconds} videoId={id}  /> 
        
     
          </div>

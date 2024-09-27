@@ -122,6 +122,7 @@ export const investors = [
 
 
 export const tipTier = [
+    { amount: 1, name: "Rekt", emoji: "🍀" },
     { amount: 5, name: "High Five", emoji: "🖐️" },
     { amount: 10, name: "Perfect Ten", emoji: "🔟" },
     { amount: 15, name: "Sweet Spot", emoji: "🎯"

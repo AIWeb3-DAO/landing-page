@@ -1,15 +1,15 @@
 "use client"
-
+import dynamic from 'next/dynamic'
 import React, {useState, useEffect} from 'react'
 import ReactPlayer from 'react-player'
 import { Modal, ModalBody, ModalContent,ModalTrigger,useModal } from '../ui/animated-modal'
 import TipModal from '../TipModal'
 import HeaderNav from '../Header/HeaderNav'
 import { testVideos } from '@/constants'
-import VideoCard from './VideoCard'
-import { fireBaseConfig } from '@/lib/fbClient'
-import  {getFirestore, getDoc, collection, doc, getDocs}  from 'firebase/firestore'
-import {initializeApp}  from "firebase/app"
+import { doc, getDoc,DocumentData, getDocs , collection} from 'firebase/firestore';
+
+const VideoCard = dynamic(() => import('./VideoCard'), { ssr: false });
+import { fireBaseConfig,FB_DB } from '@/lib/fbClient'
 
 
 interface Video {
@@ -30,21 +30,18 @@ export default function Watach() {
   const [isLoading, setisLoading] = useState(true)
 
 
-  const app =  initializeApp(fireBaseConfig)
-  const db = getFirestore(app)
-
 
 
 
   const fetchVideos = async () => {
     try {
     
-      if (db) {
+      if (FB_DB) {
         // Fetch the current timestamp from keyINFO/time
-        const timeDoc = await getDoc(doc(db, 'keyINFO', 'time'));
+        const timeDoc = await getDoc(doc(FB_DB, 'keyINFO', 'time'));
         const currentTime = timeDoc.exists() ? timeDoc.data().timestamp.toMillis() : Date.now();
 
-        const querySnapshot = await getDocs(collection(db, 'youtube'));
+        const querySnapshot = await getDocs(collection(FB_DB, 'youtube'));
         
         let videosList: Video[] = []; // Explicitly typed array for videos
         

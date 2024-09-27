@@ -7,6 +7,7 @@ import { truncateText, truncateText2 } from '@/utils/truncateTxt';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import Image from 'next/image';
+import LoginPage from '../LoginPage';
 
 interface UserData {
   address: string;
@@ -53,15 +54,17 @@ const [testTruth, settestTruth] = useState(true)
 
      
   return (
-    <div  className=' border-b border-zinc-900 h-[60px] max-w-7xl mx-auto w-full sticky top-0 z-30 flex justify-between items-center px-4 bg-black'>
-        
+    <div  className=' border-b border-zinc-900 h-[60px]  w-full sticky top-0 z-30 flex justify-between items-center px-4 bg-black'>
+      <div className='max-w-7xl mx-auto w-full flex justify-between items-center'>
    <Link href={`/`}>
    <Image  src={`/img/logo.png`}  width={40} height={40} alt='logo'   className='object-cover rounded-full' /></Link>
 
    <div className='flex items-center space-x-2'>
  
      <p className='font-semibold'>{userData &&  truncateText(userData?.address, 30)}</p>
-      {! userProfile &&  <Link href={'/login'}  className='py-3 px-5 rounded-2xl border border-green-400'>Connect wallet</Link>}
+      {! userProfile &&  <Link href={'/login'}  className='py-3 px-5 rounded-2xl border hidden border-green-400'>Connect wallet</Link>}
+      <LoginPage   />
+   </div>
    </div>
         
         
