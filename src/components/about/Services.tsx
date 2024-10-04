@@ -368,7 +368,7 @@ export default function Services() {
     { discordHandle: "phalaworld", polkadotAddress: "5G3vMz4makCsSusXgVoxtE7HmwSGsyfvLKgxppJWgnsXWKmY", xp: 1970, rewardDot: 3, rewardAIWeb: 200 },
     { discordHandle: "zbj1935", polkadotAddress: "5GZTmjxreMFix11yQDv9oEkSTxbKkkt4dhRr3Bj98vibPQyJ", xp: 1960, rewardDot: 3, rewardAIWeb: 200 },
     { discordHandle: "solver1", polkadotAddress: "5H9ekPqcL9mvAtqzNeLMoQmJREp4MeGNEf2P1u75SqihbHow", xp: 1850, rewardDot: 3, rewardAIWeb: 200 },
-    { discordHandle: "mentor67367", polkadotAddress: "", xp: 1850, rewardDot: 3, rewardAIWeb: 200 },
+    { discordHandle: "mentor67367", polkadotAddress: "5HC7ai1XFmmkRomxQVik3pZmsQX9Z6TLFpPamzMZFtaQkTHw", xp: 1850, rewardDot: 3, rewardAIWeb: 200 },
     { discordHandle: "blessedutu", polkadotAddress: "5HXTaxbpied1zZ14UQQMQioZX72fqeqQrrcKN4ycWpH1V5ER", xp: 1830, rewardDot: 3, rewardAIWeb: 200 },
     { discordHandle: "holp447", polkadotAddress: "5DAgtFVPDVQVDbqRxZpEJvcduF6sYjw4Jft7kBDR62L7BTSt", xp: 1800, rewardDot: 2, rewardAIWeb: 100 },
     { discordHandle: "boizz0421", polkadotAddress: "", xp: 1800, rewardDot: 2, rewardAIWeb: 100 },
