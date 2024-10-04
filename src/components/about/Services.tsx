@@ -364,6 +364,60 @@ export default function Services() {
     // Add the rest of the entries here following the same structure
   ];
 
+  const stats2 = [
+    { discordHandle: "phalaworld", polkadotAddress: "5G3vMz4makCsSusXgVoxtE7HmwSGsyfvLKgxppJWgnsXWKmY", xp: 1970, rewardDot: 3, rewardAIWeb: 200 },
+    { discordHandle: "zbj1935", polkadotAddress: "5GZTmjxreMFix11yQDv9oEkSTxbKkkt4dhRr3Bj98vibPQyJ", xp: 1960, rewardDot: 3, rewardAIWeb: 200 },
+    { discordHandle: "solver1", polkadotAddress: "5H9ekPqcL9mvAtqzNeLMoQmJREp4MeGNEf2P1u75SqihbHow", xp: 1850, rewardDot: 3, rewardAIWeb: 200 },
+    { discordHandle: "mentor67367", polkadotAddress: "", xp: 1850, rewardDot: 3, rewardAIWeb: 200 },
+    { discordHandle: "blessedutu", polkadotAddress: "5HXTaxbpied1zZ14UQQMQioZX72fqeqQrrcKN4ycWpH1V5ER", xp: 1830, rewardDot: 3, rewardAIWeb: 200 },
+    { discordHandle: "holp447", polkadotAddress: "5DAgtFVPDVQVDbqRxZpEJvcduF6sYjw4Jft7kBDR62L7BTSt", xp: 1800, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "boizz0421", polkadotAddress: "", xp: 1800, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "jennykingz", polkadotAddress: "5G7CoyRJQT21rFq8FAyRssc3ghsRZe17zZDjgXMu5gMaJBxi", xp: 1750, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "ebele5", polkadotAddress: "5HA7Drt3byyGfFAZUwjtGW17S28cjybxp9ufJKHiNV6WhCqt", xp: 1740, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "cynthia_n_", polkadotAddress: "5CZ9CFAunKg2x5dHPW1c7Y3xJSdNgbJ4yisQeb6TaZiWVu5p", xp: 1740, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "gipoo_", polkadotAddress: "5CUFNRbsjvisQuVnhRB9WY8rPd6yFkKxYaM5Ngu8prNaPAxQ", xp: 1740, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "ugooo0130", polkadotAddress: "5HBHbxRJ9nFaMJpFdGgjJe7u5dbj7KysxuNfEvBBiy6y6SGX", xp: 1710, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "favour900192", polkadotAddress: "5FAkQGZwwb4XYjxG26GmDxt9Vee6YCLpjNsfijmuiuT8iDob", xp: 1680, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "gollo77.", polkadotAddress: "5H5v6E3PxPSC2t3ZEK7JKeEXUgywtMZJN2cbbZ1jAFwphRcB", xp: 1680, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "dftyyy", polkadotAddress: "5CZzA3U8BrcZEyqvXxPPakrERZDb1FTxV4YWL4kpCJNzDEGg", xp: 1680, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "hasaki66", polkadotAddress: "5HYf9x9RyzQWwpwyq4PL9m4VFtSunecksKtDtfPSuz1NDifA", xp: 1680, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "jeffli0716", polkadotAddress: "5H1EU89jjTbUEshBSts5URnuR5GWdMeA4fBQ3Fv6J3jp1fFU", xp: 1650, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "youre0264", polkadotAddress: "5CJdnWFU84BLDvYVrYqGBZiGdPwpCkHmCSgxKKrdJgGQcdet", xp: 1640, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "hoou556", polkadotAddress: "5DL1Cgcf7FNYcghwbCM3L17LzZ5w3YKiPPxyRV6dSTL9LPm8", xp: 1640, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "jackyh1211", polkadotAddress: "5Dbxq2qXFoi2W8bdoEtDtSebqvXJq7uFZRNcrfBx2tmFd4aT", xp: 1500, rewardDot: 2, rewardAIWeb: 100 },
+    { discordHandle: "cisels", polkadotAddress: "5CG4GbmgY4zEcdNwJGCyu1syunwAkq47niAqBKjCgf3VXEh1", xp: 1460, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "zj2945978", polkadotAddress: "5EgvLaGZDwNPyebuLdvHLcpNxXn6uuN35s1SDfDmLHRuhgsQ", xp: 1430, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "dragonchris", polkadotAddress: "5GN5cniJ1GMG1wW9CGshnkdCb2JdXU5xHxNG7EemsAzDk3D5", xp: 1410, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "peaches5483", polkadotAddress: "5GTgJWA4qWWoYAWX9Nmmdb6hxnVPrGeV6kQMnLaFMo67gfnB", xp: 1280, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "anjing9545", polkadotAddress: "5GKi6Fx2niH9tX8daL4qHpxqsyQTNJhEK5ZECtXr2QMmrc27", xp: 1170, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "kyrie_aiweb3", polkadotAddress: "5HQnYq6SMhSa3pHonMvcVrH4QeS2GcECS65nfqjdcrD9Jtg7", xp: 1160, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "ugmo0286", polkadotAddress: "5DCmo1nzJ6jRWrm5qyvgKj5p7LuJh3tCtUUGRbVgnjF979Bt", xp: 1140, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "faithia0943", polkadotAddress: "5EvNqhd2a12tmJ54V9pzTbLzyhkrFN3mYFt3mhkbQ5B2Mcxn", xp: 1100, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "amo198", polkadotAddress: "", xp: 1100, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "stevensu0829", polkadotAddress: "5HjbSKuHubHz6NZotPbUMecMxQDYhBxKMMKJbYVEMCGaR4ME", xp: 1050, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "songito1", polkadotAddress: "5EyTchtRJrAARuuCnezCdQ4ESXQYczkg8zU6i3SAsW86uLZM", xp: 960, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "harydom", polkadotAddress: "", xp: 960, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "harymary114", polkadotAddress: "", xp: 950, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "soomin114", polkadotAddress: "", xp: 950, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "harykos", polkadotAddress: "", xp: 950, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "futo2023#6811", polkadotAddress: "5DfDotEmm32Kg9BFEehi4WRrNXzukBsLsXVK5VQLFxDfmSaL", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "ngozii2023", polkadotAddress: "5CDrEKVL3st6rBWBowDEj8ED7Gfuyu1WJCWnxocfuVfGx67z", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "yamito_2023", polkadotAddress: "5G9EaTFM7Z2S4QhYXBfqRxT54PbpN75137iDnXhoDn9hK8by", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "nebu_2023", polkadotAddress: "5Do9MSmLoCRTznnuuqJXzwCBxvyCjCrH8NqKWUSN4EpzAtTE", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "benita_2023", polkadotAddress: "5D7XxDjuT1BSEz9f6qeUutdK3oy8Q3BroKvs5v1x8gGDzpa8", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "arinze_2023", polkadotAddress: "5GC291auwNa4wD8E5q4Yw26KTTaHQAxb8ZW9aLM17n2hCg1d", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "elvisoge2023", polkadotAddress: "5FjjAu7GTzBc7eH8fmq1xVHAAifpjXim2JXVAYCd1mdTGvqe", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "abor2023", polkadotAddress: "5FNZZWHX9Zzj1P4FGz1bFDkq54aNZ8HuAc4VaHzTZzNHRRRv", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "succs2023", polkadotAddress: "5FW2dozyP26snhi6ssivnudVeEvJ4nqbX7S3AqsBZ6WYNQtz", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "tyito.", polkadotAddress: "5CeZpA8vSaKpNYwzn74W6jPz9HMnnCZKMdPK91guhrtBtd9a", xp: 850, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "srrrrr0937", polkadotAddress: "5DCKZEj79RXJhYqH7KbMTWGGGxW9da5RvR3sdbmgd2bLsVEn", xp: 820, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "golila0692_41896", polkadotAddress: "5FenGNCSvet8h1GPUrBDH8yke4Q45jvZDfjLK4NiWcYZ8M4D", xp: 820, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "hvvio", polkadotAddress: "5FaZ9BWyK3KcLmne6K2M3ykPmWaYkYtNgSVp2QtQGyKZU6XJ", xp: 820, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "queen_201", polkadotAddress: "5Gv1a7kMcu7Zfoufk7eD3PnHdY5P7Kbpq2yjz6gAuaaFcTBM", xp: 810, rewardDot: 1, rewardAIWeb: 50 },
+    { discordHandle: "aapppo", polkadotAddress: "5FYxxgUic8xwzW95V7r4bo1crMK9XrbKPp4Pc428jgX7QdyG", xp: 800, rewardDot: 1, rewardAIWeb: 50 },
+ 
+  ]
+
   return (
     <div className='w-full h-full flex items-center justify-center'>
         <h2>Aug. open ambassador reward</h2>
@@ -397,6 +451,52 @@ export default function Services() {
                             <td className='px-4 py-2'>{item.polkadotAddress}</td>
                             <td className='px-4 py-2'>{item.xp}</td>
                             <td className='px-4 py-2'>{item.rewardDOT}</td>
+                            <td className='px-4 py-2'>{item.rewardAIWeb}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
+        <div style={{ height: '20px' }}></div>
+        <br />
+
+        <h2>Sep. open ambassador reward</h2>
+        <Dialog>
+          <DialogTrigger>
+            <div className='items-center gap-2 hover:text-text-primary cursor-pointer flex'>
+              <LuHelpingHand className='w-6 h-6' />
+              <p className='text-sm font-semibold'>Click here to check</p>
+            </div>
+          </DialogTrigger>
+          <DialogContent className='bg-gray-900'>
+            <DialogHeader>
+              <DialogTitle className='mb-4'>Contributors</DialogTitle>
+              <DialogDescription>
+                <div className=''>
+                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                    <table className='min-w-full bg-gray-800 text-white'>
+                      <thead>
+                        <tr>
+                          <th className='px-4 py-2'>Discord Handle</th>
+                          <th className='px-4 py-2'>Polkadot Address</th>
+                          <th className='px-4 py-2'>XP</th>
+                          <th className='px-4 py-2'>Reward DOT</th>
+                          <th className='px-4 py-2'>Reward AIWeb</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {stats2.map((item, i) => (
+                          <tr key={i} className='border-t border-gray-700'>
+                            <td className='px-4 py-2'>{item.discordHandle}</td>
+                            <td className='px-4 py-2'>{item.polkadotAddress}</td>
+                            <td className='px-4 py-2'>{item.xp}</td>
+                            <td className='px-4 py-2'>{item.rewardDot}</td>
                             <td className='px-4 py-2'>{item.rewardAIWeb}</td>
                           </tr>
                         ))}
