@@ -13,5 +13,8 @@ import {getFirestore}  from 'firebase/firestore'
     measurementId: fireBaseConfigInfo.MEASUREMENT_ID
  }
 
+
+
   export  const FB_APP = initializeApp(fireBaseConfig);
+
   export const FB_DB = getFirestore(FB_APP);
