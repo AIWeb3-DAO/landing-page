@@ -8,6 +8,7 @@ import { client } from "@/graphql/client";
 import Footer from "@/components/Footer";
 import { UserContextProvider } from "@/components/UserContext";
 import NextTopLoader from 'nextjs-toploader';
+import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -47,6 +48,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-82GVB5MQTV"></Script>
+<Script id="google-analytics">
+  {`
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3E4NE24J02');
+`}
+</Script>
+      </head>
       <body  className={`${inter.className}  w-full bg-black text-gray-200`}>
       <NextTopLoader />
       <ThemeProvider
