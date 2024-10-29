@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "@/graphql/client";
 import Footer from "@/components/Footer";
+import NextTopLoader from 'nextjs-toploader';
 import { UserContextProvider } from "@/components/UserContext";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,7 +56,7 @@ export default function RootLayout({
         disableTransitionOnChange
       >
    
-      
+   <NextTopLoader />
       {children}
       <Footer  />
      

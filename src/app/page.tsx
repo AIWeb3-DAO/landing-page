@@ -13,10 +13,8 @@ export default function Home() {
   
          <NavbarDemo    />
         
-        
-
-     <Hero2   />
-     <TrustedBy  />
+   <Hero2  />
+   <TrustedBy  />
      <Supporters  />
      <JoinMail  />
     </main>

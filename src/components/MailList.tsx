@@ -1,4 +1,4 @@
-"use client";
+
 import React from "react";
 import { BackgroundBeams } from "../components/ui/background-beams";
 
@@ -26,8 +26,8 @@ export function JoinMail() {
           className="rounded-lg border p-2 border-neutral-800 focus:ring-2 focus:ring-teal-500  w-full relative z-10 mt-4  bg-neutral-950 placeholder:text-neutral-700"
         />
       
-         <div className=" bg-white text-black w-full flex items-center justify-center max-w-72 mx-auto rounded-xl cursor-pointer  " onClick={() => alert("hello world")}>
-          <button className="w-full bg-white py-3 text-black rounded-xl cursor-pointer " onClick={() => alert("hello world")}>Join</button>
+         <div className=" bg-white text-black w-full flex items-center justify-center max-w-72 mx-auto rounded-xl cursor-pointer  " >
+          <button className="w-full bg-white py-3 text-black rounded-xl cursor-pointer " >Join</button>
          </div>
          </div>
       

@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-
+"use client"
 import React, { useState, useEffect } from 'react'
 import ShareButtons from './ShareButtons';
 //import Modal from '../common/Modal';
