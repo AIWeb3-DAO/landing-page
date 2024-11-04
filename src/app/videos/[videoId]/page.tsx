@@ -9,6 +9,7 @@ import HeaderNav from '@/components/Header/HeaderNav';
 
 import FullVideoStats from '@/components/FullVideoStats';
 import Player from '@/components/videos/player';
+import { NavbarDemo } from '@/components/TopNavbar';
 export default async function page() {
   const headerList = headers();
   const pathname = headerList.get("x-current-path");
@@ -54,7 +55,7 @@ export default async function page() {
 console.log("readable time", readbaleTimeStamp)
   return (
     <div>
-   <HeaderNav  />
+  <NavbarDemo  />
     <div className='w-full  min-h-screen h-full flex space-x-3'>
         <div  className='w-full xl:w-[80%] min-h-screen px-2'>
         <Player   url={video?.youtubeURL}  />
