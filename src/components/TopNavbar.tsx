@@ -112,14 +112,14 @@ const subwalletPolkadotWalet = subwalletPolkadotModule()
             <ProductItemSocial
               title="Chinese Telegram"
               href="https://t.me/aiweb3dao"
-              src="/img/tg_logo.png"
+              src="/img/TG_logo.png"
               description="Join our Chinese Telegram community"
             />
 
             <ProductItemSocial
               title="Eng Telegram"
               href="https://t.me/aiweb3dao_eng"
-              src="/img/tg_logo.png"
+              src="/img/TG_logo.png"
               description="Join our English Telegram community."
             />            
            
