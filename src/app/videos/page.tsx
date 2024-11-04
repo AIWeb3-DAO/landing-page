@@ -14,10 +14,13 @@ interface Video {
   tokens: string[];
   description: string;
   currentRatio: string;
+  combinedScore?: number;
 }
 
- // Server-side fetching inside the component
- const fetchVideos = async (): Promise<Video[]> => {
+
+
+// Server-side fetching inside the component
+const fetchVideos = async (): Promise<Video[]> => {
   try {
     // Fetch the current timestamp from 'keyINFO/time'
     const timeDoc = await getDoc(doc(FB_DB, 'keyINFO', 'time'));
@@ -49,6 +52,19 @@ interface Video {
         }
         const slope = -20 / 400;
         const current_ratio = (30 - slope * hoursDIFF).toFixed(2);
+
+        // Calculate total tokens
+        const totalTokens = data.tokens?.reduce((sum: number, token: number) => sum + token, 0) || 0;
+
+        // Calculate recency score (higher score for first 48 hours)
+        let recencyScore = 0;
+        if (timeDifferenceInHours <= 48) {
+          recencyScore = 100 - (timeDifferenceInHours / 48) * 100; // Scale down to 0 after 48 hours
+        }
+
+        // Calculate combined score
+        const combinedScore = recencyScore + totalTokens * 0.5;
+
         videosList.push({
           id: doc.id,
           youtubeURL: videoId,
@@ -58,16 +74,20 @@ interface Video {
           tokens: data.tokens,
           description: `Posted ${timeDifferenceInHours} hours (${timeDifferenceInMins} mins) ago`,
           currentRatio: current_ratio,
+          combinedScore, // Store the combined score for sorting
         });
       }
     });
+
+    // Sort the videos based on their combinedScore in descending order
+    videosList.sort((a, b) => (b.combinedScore ?? 0) - (a.combinedScore ?? 0));
 
     return videosList;
   } catch (error) {
     console.error('Error fetching videos:', error);
     return [];
   }
-};
+}
 export default async function page() {
   const videos = await fetchVideos();
   return (
