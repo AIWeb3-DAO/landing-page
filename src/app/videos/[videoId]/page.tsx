@@ -13,7 +13,7 @@ import { NavbarDemo } from '@/components/TopNavbar';
 export default async function page() {
   const headerList = headers();
   const pathname = headerList.get("x-current-path");
-  const id = pathname.startsWith('/videos/') ? pathname.slice(8) : pathname;
+  const id = pathname && pathname.startsWith('/videos/') ? pathname.slice(8) : pathname;
   
 
   const fetchData = async () => {

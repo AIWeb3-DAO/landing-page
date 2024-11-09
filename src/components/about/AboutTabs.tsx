@@ -5,6 +5,7 @@ import { Tabs } from "../ui/tabs";
 import AboutDao from "./AboutDao";
 import Services from "./Services";
 import JoinUs from "./JoinUs";
+import Stats from "./Stats";
 import Team from "./Team";
 
 export function AboutTabs() {
@@ -36,6 +37,18 @@ export function AboutTabs() {
         <div className="w-full overflow-hidden relative h-full rounded-2xl p-10  border bg-black">
           <p className="text-xl md:text-4xl font-bold text-white text-center my-4">🥳 How to Join</p>
          <JoinUs  />
+        </div>
+      ),
+    },
+    {
+      title: "Stats",
+      value: "stats",
+      content: (
+        <div className="w-full overflow-hidden relative rounded-2xl p-10 border bg-black">
+          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">Stats of AIWeb3</p>
+          <div className="overflow-y-auto max-h-[90vh]"> {/* Adds scrollable area */}
+            <Stats />
+          </div>
         </div>
       ),
     },

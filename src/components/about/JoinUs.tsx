@@ -2,22 +2,124 @@ import React from 'react'
 
 export default function JoinUs() {
   return (
-    <div>
-        <div>
-        <ol>
+    <div className="join-us-container text-white bg-gray-800 p-6 rounded-lg shadow-lg h-[90vh] overflow-y-auto">
+      {/* Tutorial for Joining AIWeb3 */}
+      <div className="tutorial-section mb-6">
+        <h2 className="text-2xl font-semibold mb-4">Tutorial after joining AIWeb3</h2>
+
+        {/* Step-by-Step Text Guide */}
+        <div className="text-tutorial mb-6">
+          <h3 className="text-xl font-semibold mb-2">Step-by-Step Guide</h3>
+          <ol className="list-decimal ml-6 space-y-4">
             <li>
-                <p>1.First you must enter the discord through this handy link</p>
+              If you haven't joined the AIWeb3 Discord, join{" "}
+              <a
+                href="https://discord.com/invite/pQtZG8UQfk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                AIWeb3 Discord server
+              </a>.
             </li>
+
             <li>
-               <div>
-              <p>2. Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages to allow The Concierge to reach out and register your reward addresses. </p>
-               </div>
+              After joining Discord, go to the #bot-channel here:{" "}
+              <a
+                href="https://discord.com/channels/1069016441854099489/1070795846712578068"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                AIWeb3 Discord bot channel
+              </a>{" "}
+              and copy and paste the following command to submit your substrate address:
+              <div className="bg-gray-700 p-2 rounded mt-2 text-sm font-mono">
+                <code>!添加地址 substrate 5xxxxxx</code>
+              </div>
+              <span className="text-sm">
+                Replace <code>5xxxxxx</code> with your substrate address, which must start with "5" and is valid within the Polkadot ecosystem.
+              </span>
+
+              <li>
+              If everything went well, you should obtain the 紫粉L0 role (your name should appear in purple). This is essential to ensure future reward distribution.
             </li>
-        </ol>
+
+            <li>
+              If you have any questions, feel free to ask in the English channel for help:{" "}
+              <a
+                href="https://discord.com/channels/1069016441854099489/1168217790910574622"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                AIWeb3 Discord English channel
+              </a>{" "}
+            </li>
+            <br></br>
+            <p><b>Reference video tutorial for finding out the substrate address</b></p>            
+
+            {/* Video Tutorials */}
+            
+              <h3 className="text-xl font-semibold mb-2">
+                Video: How to Create a JS Wallet and Find Your Substrate Address
+              </h3>
+              <iframe
+                className="w-full h-[400px] rounded-lg mb-4"
+                src="https://www.youtube.com/embed/q7JNpbZCFU8"
+                title="How to create a JS wallet and find the substrate address"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            
+
+              <h3 className="text-xl font-semibold mb-2">
+                Video: How to Get a Substrate Address Using SubWallet
+              </h3>
+              <iframe
+                className="w-full h-[400px] rounded-lg mb-4"
+                src="https://www.youtube.com/embed/xpSwD8Q_RDs"
+                title="How to get substrate address using SubWallet"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+
+              <h3 className="text-xl font-semibold mb-2">
+                中文教程如何使用subwallet找到substrate地址
+              </h3>
+              <iframe
+                className="w-full h-[400px] rounded-lg mb-4"
+                src="https://www.youtube.com/embed/xpSwD8Q_RDs"
+                title="How to get substrate address using SubWallet"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>      
+
+              <h3 className="text-xl font-semibold mb-2">
+                中文教程如何通过js找到substrate地址
+              </h3>
+              <iframe
+                className="w-full h-[400px] rounded-lg mb-4"
+                src="https://www.youtube.com/embed/8YuLYBMaQMs"
+                title="How to get substrate address using "
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>                 
+
+            </li>
+          
+
+          </ol>
         </div>
-        <div>
-            <h2>hello world</h2>
-        </div>
+      </div>
     </div>
-  )
+  );
 }
+
+
+
+

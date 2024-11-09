@@ -1,7 +1,5 @@
 "use client"
 
-
-
 import React, { useState,useEffect} from 'react'
 import ReactPlayer from 'react-player'
 import VideoPlayer3 from './VidPlayer';
@@ -89,12 +87,11 @@ export default function PlayePage() {
          </div>
          <div  className='my-4 px-3 '>
          <h1 className='text-lg sm:text-xl md:text-2xl text-text '>{videoData?.youtubeTitle}</h1>
-         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>AIWeb3 is full of love, if you like this video, tip and support the content creator! </h1>
+         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>AIWeb3 is full of love, if you like this video, tip and support the content creator! (爱Web3中文社区充满了友爱，如果你喜欢这个内容，请一定要用你的积分，代币支持这个创作者！) </h1>
 
          <p>For the testnet, you can use the point on AIWeb3 discord to support the creators while earning the AIWEB token!</p>
-         <p>Visit AIWeb3 official discord, #bot-channel, and enter the following if you want to contribute 10 points (keep in mind the ratio, you will earn more AIWEB token from the latest video)): <b>!tipCreator {id} 10</b></p>
+         <p>Visit AIWeb3 official discord, #bot-channel, and enter the following if you want to contribute 10 points (keep in mind the ratio, you will earn more AIWEB token from the latest video)):</p><p className="p-2 text-blue-500"><b>!tipCreator {id} 10</b></p>
          <FullVideoStats  stats={videoData?.contributors} tokenstats={videoData?.tokens} createdAt={videoData?.timestamp?.seconds}  /> 
-       
     
          </div>
       
