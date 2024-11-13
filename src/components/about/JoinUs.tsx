@@ -56,6 +56,17 @@ export default function JoinUs() {
                 AIWeb3 Discord English channel
               </a>{" "}
             </li>
+
+            {/* Instructions */}
+            <p>------------------------------------------------</p>
+            <div className="instructions">
+              <h2 className="text-2xl font-semibold mb-4">How to find your LOVA reward</h2>
+              <p>Step 1: Go to Hydration, use the refer code AIWeb3 if you have not join it yet: <a href="https://hydradx.io/AIWEB3" className="text-blue-500 underline">https://hydradx.io/AIWEB3</a>
+              <p>Step 2: Make sure you enable to Degen mode (on the top bar, click MEMEPAD to enable it)</p>
+              <p>Step 3: Click the WALLET on the top bar if you already have it, and you can swap here: <a href="https://app.hydration.net/trade/swap" className="text-blue-500 underline">https://app.hydration.net/trade/swap</a></p>
+              </p>
+            </div>  
+            <p>------------------------------------------------</p>    
             <br></br>
             <p><b>Reference video tutorial for finding out the substrate address</b></p>            
 

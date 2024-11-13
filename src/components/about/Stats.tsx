@@ -96,39 +96,7 @@ export default function Stats() {
         </table>
       </div>
 
-      {/* Instructions */}
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
-      <div className="instructions">
-        <h2 className="text-2xl font-semibold mb-4">How to Claim Rewards</h2>
-        <p>Our server uses a bot to verify your addresses and hand out rewards. Be sure to allow private messages so The Concierge bot can reach out and register your reward addresses.</p>
-      </div>
+      
 
     </div>
   );
