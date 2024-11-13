@@ -424,7 +424,7 @@ export default function Services() {
     { discordHandle: "muna065", polkadotAddress: "5FnUZEqhjWjMoQ5YpNgCiZLkXBsgihDBYNtKtqcFSzjTX2Hs", xp: 2630, rewardDot: 4, rewardAIWeb: 30000 },
     { discordHandle: "ayo547", polkadotAddress: "5CaV1qByHY3rVDYqxoHte7ZxLdRk61oisrJ2jSRjhe4u3Pi6", xp: 2630, rewardDot: 3, rewardAIWeb: 22500 },
     { discordHandle: "billing667", polkadotAddress: "5EaAY362gUGEAQ8TqXTDQnfhjFkCeHronBsyzGbNBsogG3sR", xp: 2610, rewardDot: 2, rewardAIWeb: 15000 },
-    { discordHandle: "infernaldraco", polkadotAddress: "Wrong address format", xp: 2510, rewardDot: 2, rewardAIWeb: 15000 },
+    { discordHandle: "infernaldraco", polkadotAddress: "5EjtebwLM4pdjqGiUMoaDH1YgKCRhV8REgQCkwkpMkVMEk74", xp: 2510, rewardDot: 2, rewardAIWeb: 15000 },
     { discordHandle: "prevailer0735", polkadotAddress: "Wrong address format", xp: 2400, rewardDot: 2, rewardAIWeb: 15000 },
     { discordHandle: "dababy_123456", polkadotAddress: "5FLT9A6f7Tu4E5mYTubpofNL87Xm9qQ2yAuVPZHLcDPweUaC", xp: 2120, rewardDot: 2, rewardAIWeb: 15000 },
     { discordHandle: "cynthia22333", polkadotAddress: "5H9C5ho25XDDT6nbXXfSBaHae1kGwg8QXB1hLNcjHTVN3HxX", xp: 2040, rewardDot: 2, rewardAIWeb: 15000 },

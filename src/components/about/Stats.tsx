@@ -62,6 +62,27 @@ export default function Stats() {
             </tr>
           </thead>
           <tbody>
+
+          <tr className="bg-gray-900">
+              <td className="p-2 break-words whitespace-normal max-w-xs">
+                Substrate address: 5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT
+              </td>
+              <td className="p-2 break-words whitespace-normal max-w-xs"> 100 DOT + 888888 LOVA </td>
+              <td className="p-2 break-words whitespace-normal max-w-xs">
+               For Zealy Reward Oct 2024: <a href="https://hydration.subscan.io/extrinsic/6389531-2" className="text-blue-500 underline">View transaction</a>
+              </td>
+            </tr>
+
+          <tr className="bg-gray-900">
+              <td className="p-2 break-words whitespace-normal max-w-xs">
+                Substrate address: 5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT
+              </td>
+              <td className="p-2 break-words whitespace-normal max-w-xs"> + 487.8 BNC</td>
+              <td className="p-2 break-words whitespace-normal max-w-xs">
+                From Bifrost on 11/11 for Zealy event: <a href="https://bifrost.subscan.io/extrinsic/5904225-2" className="text-blue-500 underline">View transaction</a>
+              </td>
+            </tr>
+
             <tr className="bg-gray-900">
               <td className="p-2 break-words whitespace-normal max-w-xs">
                 Substrate address: 5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT
