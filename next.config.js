@@ -1,4 +1,5 @@
 module.exports = {
+    output: "standalone", // Ensures standalone mode for deployments
     images: {
       remotePatterns: [
         {
