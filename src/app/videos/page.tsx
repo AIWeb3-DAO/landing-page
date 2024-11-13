@@ -98,6 +98,7 @@ export default async function page() {
      <div  className=' p-2  max-w-xl  mx-auto  '>
       <h1  className='text-center text-2xl'>Check Polkadot eco videos, support the best content creators while also earn the reward!</h1>
 
+      <br></br>
       <h2  className='text-center text-2xl'>Special Event with Metahub, Bifrost and Vara network, Neemo Finance</h2>
 
      </div>
