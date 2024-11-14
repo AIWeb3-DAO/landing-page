@@ -9,14 +9,19 @@ export default async function handler(req, res) {
     if (!walletAddress || !videoId) {
       return res.status(400).json({ error: 'Missing walletAddress or videoId' });
     }
-    
+
+    // Default questId and taskId
+    const questId = "67301b5e585e2fc35f88aa66";
+    const taskId = "01932103-634c-7ff1-9c61-8ecc6064d8f5";
 
     try {
-      console.log(`Executing: node ./server/addAddressMetahubEvent.mjs ${walletAddress} ${videoId}`);
+      console.log(
+        `Executing: node ./server/addAddressMetahubEvent.mjs ${walletAddress} ${videoId} ${questId} ${taskId}`
+      );
 
       //console.log("node ./server/addAddressMetahubEvent.mjs \"${walletAddress}\" \"${videoId}\"")
       exec(
-        `node ./server/addAddressMetahubEvent.mjs \"${walletAddress}\" \"${videoId}\"`,
+        `node ./server/addAddressMetahubEvent.mjs "${walletAddress}" "${videoId}" "${questId}" "${taskId}"`,
         { timeout: 1000 }, // Set a timeout to prevent hanging
         (error, stdout, stderr) => {
           if (error) {

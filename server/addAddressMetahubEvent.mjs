@@ -37,10 +37,12 @@ const db = getFirestore(app);
  * Add wallet address and video ID to the "metahubEvents" collection in Firestore
  * @param {string} walletAddress - The user's wallet address
  * @param {string} videoId - The ID of the video associated with the event
+ * @param {string} questId - The ID of the quest
+ * @param {string} taskId - The ID of the task
  */
-const addAddressMetahubEvent = async (walletAddress, videoId) => {
-  if (!walletAddress || !videoId) {
-    console.error("Wallet address and video ID are required.");
+const addAddressMetahubEvent = async (walletAddress, videoId, questId, taskId) => {
+  if (!walletAddress || !videoId || !questId || !taskId) {
+    console.error("Wallet address and video ID, quest ID, and task ID are required.");
     return;
   }
 
@@ -49,6 +51,8 @@ const addAddressMetahubEvent = async (walletAddress, videoId) => {
     const docRef = await addDoc(collection(db, "metahubEvents"), {
       walletAddress,
       videoId,
+      questId,
+      taskId,
       createdAt: serverTimestamp(),
     });
 
@@ -61,12 +65,15 @@ const addAddressMetahubEvent = async (walletAddress, videoId) => {
 // Example usage
 const walletAddress = process.argv[2];
 const videoId = process.argv[3];
+const questId = process.argv[4];
+const taskId = process.argv[5];
 
-if (!walletAddress || !videoId) {
-  console.error("Usage: node addAddressMetahubEvent.mjs <walletAddress> <videoId>");
+if (!walletAddress || !videoId || !questId || !taskId) {
+  console.error("Usage: node addAddressMetahubEvent.mjs <walletAddress> <videoId> <questId> <taskId>");
   process.exit(1);
 }
 
-await addAddressMetahubEvent(walletAddress, videoId);
+// Call the function
+await addAddressMetahubEvent(walletAddress, videoId, questId, taskId);
 
 process.exit();
