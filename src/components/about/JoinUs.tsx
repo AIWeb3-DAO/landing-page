@@ -63,10 +63,11 @@ export default function JoinUs() {
             <p>------------------------------------------------</p>
             <div className="instructions">
               <h2 className="text-2xl font-semibold mb-4">How to find your LOVA reward</h2>
-              <p>Step 1: Go to Hydration, use the refer code AIWeb3 if you have not join it yet: <a href="https://hydradx.io/AIWEB3" className="text-blue-500 underline">https://hydradx.io/AIWEB3</a>
+              <p>Step 1: Go to Hydration, use the refer code AIWeb3 if you have not join it yet: <a href="https://hydradx.io/AIWEB3" className="text-blue-500 underline">https://hydradx.io/AIWEB3</a></p>
               <p>Step 2: Make sure you enable to Degen mode (on the top bar, click MEMEPAD to enable it)</p>
-              <p>Step 3: Click the WALLET on the top bar if you already have it, and you can swap here: <a href="https://app.hydration.net/trade/swap" className="text-blue-500 underline">https://app.hydration.net/trade/swap</a></p>
-              </p>
+              <p>Step 3: Go to Crosschain on Hydration : <a href="https://app.hydration.net/cross-chain?referral=AIWEB3" className="text-blue-500 underline">https://app.hydration.net/cross-chain?referral=AIWEB3</a>, select LOVA on assethub as sourcechain and transfer it to Hydration</p>
+              <p>Step 4: Click the WALLET on the top bar if you already have it, and you can swap here: <a href="https://app.hydration.net/trade/swap" className="text-blue-500 underline">https://app.hydration.net/trade/swap</a></p>
+              
               <p className="text-yellow-500">Only minted by adding the same amount of DOT tokens to the pool, so in the hydration pool, if 1 DOT can swap 7500 LOVA token, we would send 7500 LOVA token only when we put 1 DOT into the pool.</p>
             </div>  
             <p>------------------------------------------------</p>    
