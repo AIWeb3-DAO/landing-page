@@ -31,11 +31,11 @@ export function AboutTabs() {
       ),
     },
     {
-      title: "Join Us",
+      title: "FAQ",
       value: "joinus",
       content: (
         <div className="w-full overflow-hidden relative h-full rounded-2xl p-10  border bg-black">
-          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">🥳 How to Join</p>
+          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">🥳 FAQ </p>
          <JoinUs  />
         </div>
       ),
@@ -57,7 +57,7 @@ export function AboutTabs() {
       value: "team",
       content: (
         <div className="w-full overflow-hidden relative h-full rounded-2xl p-10  border bg-black">
-          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">⛱ Ai web3 Team</p>
+          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">⛱ AIWeb3 Team</p>
          <Team  />
         </div>
       ),

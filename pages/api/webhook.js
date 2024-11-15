@@ -34,11 +34,57 @@ export default async function handler(req, res) {
       exec(command, async (error, stdout, stderr) => {
         if (error) {
           console.error(`Error: ${error.message}`);
+          const apiResponse = await fetch(
+            `https://dac-api.metahub.finance/partners/missionCompleted/${questId}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'api-key': 'DY1u23zHFK9/ULpnDby68C3HwSTdxCZINMnH9yLQxF9r/uxnuSSq++UrA2WZ8hQ5', // Replace with your actual API key
+              },
+              body: JSON.stringify({
+                taskId: taskId,
+                identity: address,
+                status: false,
+                reason: "User did not complete the task",
+              }),
+            }
+          );
+
+          const apiResponseBody = await apiResponse.json();
+
+          if (!apiResponse.ok) {
+            console.error("some Errors from the external API:", apiResponseBody);
+            //return res.status(500).json({ error: 'Failed to notify external API', details: apiResponseBody });
+          }
           return res.status(400).json({ error: 'Address did not finish the task', details: stderr });
         }
 
         if (stderr) {
           console.error(`Stderr: ${stderr}`);
+          const apiResponse = await fetch(
+            `https://dac-api.metahub.finance/partners/missionCompleted/${questId}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'api-key': 'DY1u23zHFK9/ULpnDby68C3HwSTdxCZINMnH9yLQxF9r/uxnuSSq++UrA2WZ8hQ5', // Replace with your actual API key
+              },
+              body: JSON.stringify({
+                taskId: taskId,
+                identity: address,
+                status: false,
+                reason: "User did not complete the task",
+              }),
+            }
+          );
+
+          const apiResponseBody = await apiResponse.json();
+
+          if (!apiResponse.ok) {
+            console.error("some Errors from the external API:", apiResponseBody);
+            //return res.status(500).json({ error: 'Failed to notify external API', details: apiResponseBody });
+          }
           return res.status(400).json({ error: 'Address did not finish the task', details: stderr });
         }
 

@@ -65,6 +65,20 @@ export default function JoinUs() {
               <p>Step 2: Make sure you enable to Degen mode (on the top bar, click MEMEPAD to enable it)</p>
               <p>Step 3: Click the WALLET on the top bar if you already have it, and you can swap here: <a href="https://app.hydration.net/trade/swap" className="text-blue-500 underline">https://app.hydration.net/trade/swap</a></p>
               </p>
+              <p className="text-yellow-500">Only minted by adding the same amount of DOT tokens to the pool, so in the hydration pool, if 1 DOT can swap 7500 LOVA token, we would send 7500 LOVA token only when we put 1 DOT into the pool.</p>
+            </div>  
+            <p>------------------------------------------------</p>    
+            <br></br>
+            {/* Instructions */}
+            <p>------------------------------------------------</p>
+            <div className="instructions">
+              <h2 className="text-2xl font-semibold mb-4">How to find your LOVE token on Tanssi network</h2>
+              <p>Option 1: Go to js: <a href="https://polkadot.js.org/apps/?rpc=wss://dancebox-3135.tanssi-api.network#/accounts" className="text-blue-500 underline">https://polkadot.js.org/apps/?rpc=wss://dancebox-3135.tanssi-api.network#/accounts</a>
+            
+              <p>Option 2: Use subwallet: <a href="https://www.subwallet.app/" className="text-blue-500 underline">https://www.subwallet.app/</a>. In settings, manage network and import network, provide the following URL: wss://dancebox-3135.tanssi-api.network</p>
+              </p>
+
+              <p className="text-yellow-500">In total, 1M LOVE tokens, 100% for community! You can only get it from airdrop (Tanssi event or AIWeb3 event) or support content creators (use !tipCreator on AIWeb3 discord to support content creators using your points)</p>
             </div>  
             <p>------------------------------------------------</p>    
             <br></br>
