@@ -55,6 +55,8 @@ export default function JoinUs() {
             </li>
           </ol>
 
+          <p>-----------------------------------------------------------------------------</p>
+
           {/* Instructions for LOVA */}
           <hr className="my-4" />
           <div className="instructions">
@@ -88,6 +90,8 @@ export default function JoinUs() {
             </p>
           </div>
 
+          <p>-----------------------------------------------------------------------------</p>
+
           {/* Instructions for LOVE on Tanssi */}
           <hr className="my-4" />
           <div className="instructions">
@@ -114,6 +118,10 @@ export default function JoinUs() {
               LOVE tokens are capped at 1M, 100% reserved for the community! You can only receive them via airdrops (Tanssi or AIWeb3 events) or by supporting content creators (use <code>!tipCreator</code> on AIWeb3 Discord).
             </p>
           </div>
+          <p>-----------------------------------------------------------------------------</p>
+
+          <br></br>
+          <WalletSubmission2 videoId="pdKXDUW8eqsi9nbJSfFL" /> 
 
           {/* Video Tutorials */}
           <hr className="my-4" />
