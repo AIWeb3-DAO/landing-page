@@ -1,10 +1,12 @@
 import React from 'react'
+import WalletSubmission2 from '@/components/videos/WalletSubmission2';
 
 export default function JoinUs() {
   return (
     <div className="join-us-container text-white bg-gray-800 p-6 rounded-lg shadow-lg h-[90vh] overflow-y-auto">
       {/* Tutorial for Joining AIWeb3 */}
       <div className="tutorial-section mb-6">
+
         <h2 className="text-2xl font-semibold mb-4">Tutorial after joining AIWeb3</h2>
 
         {/* Step-by-Step Text Guide */}
@@ -80,7 +82,8 @@ export default function JoinUs() {
 
               <p className="text-yellow-500">In total, 1M LOVE tokens, 100% for community! You can only get it from airdrop (Tanssi event or AIWeb3 event) or support content creators (use !tipCreator on AIWeb3 discord to support content creators using your points)</p>
             </div>  
-            <p>------------------------------------------------</p>    
+            <p>------------------------------------------------</p>  
+            <WalletSubmission2 videoId="pdKXDUW8eqsi9nbJSfFL" />  
             <br></br>
             <p><b>Reference video tutorial for finding out the substrate address</b></p>            
 
