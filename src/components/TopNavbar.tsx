@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { HoveredLink, Menu, MenuItem, ProductItem } from "../components/ui/Navbar-menu";
+import { HoveredLink, Menu, MenuItem, ProductItem,ProductItemSocial } from "../components/ui/Navbar-menu";
 import { cn } from "@/utils/cn";
 import Onboard from '@subwallet-connect/core';
 import injectedModule from '@subwallet-connect/injected-wallets';
@@ -103,25 +103,32 @@ const subwalletPolkadotWalet = subwalletPolkadotModule()
         </MenuItem>
         <MenuItem setActive={setActive} active={active} item="Social">
           <div className="  text-sm grid grid-cols-2 gap-10 p-4">
-            <ProductItem
+            <ProductItemSocial
               title="Discord"
               href="https://discord.com/invite/pQtZG8UQfk"
-              src="https://pbs.twimg.com/profile_images/1719768085815803905/Qt-WhTGg_400x400.jpg"
+              src="/img/discord_logo.png"
               description="Join our Chinese Discord community."
             />
-            <ProductItem
+            <ProductItemSocial
               title="Chinese Telegram"
               href="https://t.me/aiweb3dao"
-              src="https://pbs.twimg.com/profile_images/1183117696730390529/LRDASku7_400x400.jpg"
+              src="/img/TG_logo.png"
               description="Join our Chinese Telegram community"
             />
 
-            <ProductItem
+            <ProductItemSocial
               title="Eng Telegram"
               href="https://t.me/aiweb3dao_eng"
-              src="https://pbs.twimg.com/profile_images/1183117696730390529/LRDASku7_400x400.jpg"
+              src="/img/TG_logo.png"
               description="Join our English Telegram community."
             />            
+           
+            <ProductItemSocial
+              title="X"
+              href="https://x.com/aiweb3dao"
+              src="/img/X_logo.png"
+              description="Join our Twitter X community."
+            />
          
           </div>
         </MenuItem>

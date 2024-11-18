@@ -107,7 +107,7 @@ const logout = () => {
   localStorage.removeItem('AI3_SIGNER_ADDRESS');
 };
 
-useEffect(() => {
+/*useEffect(() => {
   const stored_wallet = localStorage.getItem("AI3_SIGNER_ADDRESS")
   if(stored_wallet !== undefined)  {
    //console.log("the stored  wallet ",JSON.parse(stored_wallet))
@@ -116,7 +116,7 @@ useEffect(() => {
   }
  }, [])
 
- console.log("wallet", wallet)
+ console.log("wallet", wallet)*/
 
 
  function toSmallestUnit(amount, decimals) {

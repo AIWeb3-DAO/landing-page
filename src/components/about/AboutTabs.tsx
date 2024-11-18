@@ -5,6 +5,7 @@ import { Tabs } from "../ui/tabs";
 import AboutDao from "./AboutDao";
 import Services from "./Services";
 import JoinUs from "./JoinUs";
+import Stats from "./Stats";
 import Team from "./Team";
 
 export function AboutTabs() {
@@ -30,12 +31,24 @@ export function AboutTabs() {
       ),
     },
     {
-      title: "Join Us",
+      title: "FAQ",
       value: "joinus",
       content: (
         <div className="w-full overflow-hidden relative h-full rounded-2xl p-10  border bg-black">
-          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">🥳 How to Join</p>
+          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">🥳 FAQ </p>
          <JoinUs  />
+        </div>
+      ),
+    },
+    {
+      title: "Stats",
+      value: "stats",
+      content: (
+        <div className="w-full overflow-hidden relative rounded-2xl p-10 border bg-black">
+          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">Stats of AIWeb3</p>
+          <div className="overflow-y-auto max-h-[90vh]"> {/* Adds scrollable area */}
+            <Stats />
+          </div>
         </div>
       ),
     },
@@ -44,7 +57,7 @@ export function AboutTabs() {
       value: "team",
       content: (
         <div className="w-full overflow-hidden relative h-full rounded-2xl p-10  border bg-black">
-          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">⛱ Ai web3 Team</p>
+          <p className="text-xl md:text-4xl font-bold text-white text-center my-4">⛱ AIWeb3 Team</p>
          <Team  />
         </div>
       ),

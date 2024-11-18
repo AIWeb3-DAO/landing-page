@@ -14,8 +14,8 @@ import Head from "next/head";
 import { Header } from "@/components/auth/header";
 
 export const metadata = {
-  title: "AI  Web3 Dao",
-   description : "Ai web3 is a decentralized media initiative that offers the platform for creators to earn tokens for their content. ",
+  title: "AIWeb3 Dao",
+   description : "AIWeb3 is a decentralized media initiative that offers the platform for creators to earn tokens for their content. ",
    canonical : "https://www.canonical.ie/",
    openGraph: {
     title: 'Discover Polkadot | Parachains',
