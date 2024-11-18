@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",
+    "@clerk/nextjs": "^6.3.4",
     "@polkadot/extension-inject": "^0.48.2",
     "@polkadot/util": "^13.0.2",
     "@radix-ui/react-dialog": "^1.1.1",

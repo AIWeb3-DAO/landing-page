@@ -4,7 +4,7 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { FB_DB } from '@/lib/fbClient';
 import VideoCard from '@/components/videos/VideoCard';
 import { NavbarDemo } from '@/components/TopNavbar';
-
+import { auth, currentUser } from '@clerk/nextjs/server'
 
 interface Video {
   id: string;
@@ -91,9 +91,11 @@ const fetchVideos = async (): Promise<Video[]> => {
 }
 export default async function page() {
   const videos = await fetchVideos();
+
+  
   return (
     <div className='min-h-screen  w-full '>
-      <NavbarDemo  />
+     <NavbarDemo  />
        <div  className='h-[30vh] flex items-center justify-center'>
      <div  className=' p-2  max-w-xl  mx-auto  '>
       <h1  className='text-center text-2xl'>Check Polkadot eco videos, support the best content creators while also earn the reward!</h1>
