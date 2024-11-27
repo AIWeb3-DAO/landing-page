@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     // Validate required fields
     if (!address || !questId || !taskId) {
-      return res.status(400).json({ error: 'Missing address, questId, or taskId' });
+      return res.status(200).json({ error: 'Missing address, questId, or taskId' });
     }
 
     try {
@@ -55,9 +55,9 @@ export default async function handler(req, res) {
 
           if (!apiResponse.ok) {
             console.error("some Errors from the external API:", apiResponseBody);
-            //return res.status(500).json({ error: 'Failed to notify external API', details: apiResponseBody });
+            //return res.status(200).json({ error: 'Failed to notify external API', details: apiResponseBody });
           }
-          return res.status(400).json({ error: 'Address did not finish the task', details: stderr });
+          return res.status(200).json({ error: 'Address did not finish the task', details: stderr });
         }
 
         if (stderr) {
@@ -85,7 +85,7 @@ export default async function handler(req, res) {
             console.error("some Errors from the external API:", apiResponseBody);
             //return res.status(500).json({ error: 'Failed to notify external API', details: apiResponseBody });
           }
-          return res.status(400).json({ error: 'Address did not finish the task', details: stderr });
+          return res.status(200).json({ error: 'Address did not finish the task', details: stderr });
         }
 
         console.log(`Stdout from queryMetahubTask: ${stdout}`);
@@ -122,15 +122,15 @@ export default async function handler(req, res) {
           return res.status(200).json({ message: 'Data stored successfully and API notified', output: stdout.trim() });
         } catch (apiError) {
           console.error('Error calling the external API:', apiError.message);
-          return res.status(500).json({ error: 'Error calling the external API', details: apiError.message });
+          return res.status(200).json({ error: 'Error calling the external API', details: apiError.message });
         }
       });
     } catch (error) {
       console.error('Unexpected error:', error);
-      return res.status(500).json({ error: 'Unexpected server error', details: error.message });
+      return res.status(200).json({ error: 'Unexpected server error', details: error.message });
     }
   } else {
     res.setHeader('Allow', ['POST']);
-    return res.status(405).json({ error: `Method ${req.method} not allowed` });
+    return res.status(200).json({ error: `Method ${req.method} not allowed` });
   }
 }

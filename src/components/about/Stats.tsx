@@ -65,6 +65,19 @@ export default function Stats() {
 
           <tr className="bg-gray-900">
               <td className="p-2 break-words whitespace-normal max-w-xs">
+                Substrate address (LOVA bot hot wallet address): 5H64sM2q44C39JuzGw5BPAfD7zuexE3X1gdW8ebQbNAQ4ygr
+                Substrate address: 5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT
+              </td>
+              <td className="p-2 break-words whitespace-normal max-w-xs"> minted 2904500 LOVA for airdrop and 314 vDOT for all rewards </td>
+              <td className="p-2 break-words whitespace-normal max-w-xs">
+               For top 6 TG active users in Oct and Content creators in Oct: <a href="https://assethub-polkadot.subscan.io/extrinsic/7593922-2" className="text-blue-500 underline">View transaction</a> <br></br>
+               The vDOT minted: <a href="https://hydration.subscan.io/extrinsic/6425096-2" className="text-blue-500 underline">View transaction</a>
+              </td>
+            </tr>          
+
+
+          <tr className="bg-gray-900">
+              <td className="p-2 break-words whitespace-normal max-w-xs">
                 Substrate address: 5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT
               </td>
               <td className="p-2 break-words whitespace-normal max-w-xs"> 100 DOT + 888888 LOVA </td>
