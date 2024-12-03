@@ -47,9 +47,11 @@ const addAddressMetahubEvent = async (walletAddress, videoId, questId, taskId) =
   }
 
   try {
+    // Convert the walletAddress to lowercase for a case-insensitive comparison
+    const lowerCaseWalletAddress = walletAddress.toLowerCase();
     // Reference the "metahubEvents" collection
     const docRef = await addDoc(collection(db, "metahubEvents"), {
-      walletAddress,
+      lowerCaseWalletAddress,
       videoId,
       questId,
       taskId,

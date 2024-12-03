@@ -41,11 +41,13 @@ const storeMetahub = async (address, email, telegramId, gmail, questId, taskId) 
     console.error("Missing required fields: address, questId, or taskId");
     process.exit(1);
   }
+  // Convert the wallet address to lowercase before storing
+  const normalizedAddress = address.toLowerCase();
 
   try {
     // Add data to the "metahubQueryData" collection
     const docRef = await addDoc(collection(db, "metahubQueryData"), {
-      address,
+      address:normalizedAddress,
       email,
       telegramId,
       gmail,

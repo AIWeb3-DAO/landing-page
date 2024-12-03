@@ -41,9 +41,11 @@ const checkAddressMetahubEvent = async (walletAddress) => {
 
   try {
     // Query the "metahubEvents" collection for the wallet address
+    // Convert the walletAddress to lowercase for a case-insensitive comparison
+    const lowerCaseWalletAddress = walletAddress.toLowerCase();
     const q = query(
       collection(db, "metahubEvents"),
-      where("walletAddress", "==", walletAddress)
+      where("walletAddress", "==", lowerCaseWalletAddress)
     );
     const querySnapshot = await getDocs(q);
 
