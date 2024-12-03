@@ -47,11 +47,10 @@ const addAddressMetahubEvent = async (walletAddress, videoId, questId, taskId) =
   }
 
   try {
-    // Convert the walletAddress to lowercase for a case-insensitive comparison
-    const lowerCaseWalletAddress = walletAddress.toLowerCase();
+
     // Reference the "metahubEvents" collection
     const docRef = await addDoc(collection(db, "metahubEvents"), {
-      lowerCaseWalletAddress,
+      walletAddress,
       videoId,
       questId,
       taskId,
@@ -65,7 +64,7 @@ const addAddressMetahubEvent = async (walletAddress, videoId, questId, taskId) =
 };
 
 // Example usage
-const walletAddress = process.argv[2];
+const walletAddress = process.argv[2].toLowerCase();  // convert it to lower case
 const videoId = process.argv[3];
 const questId = process.argv[4];
 const taskId = process.argv[5];
