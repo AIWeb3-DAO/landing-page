@@ -3,6 +3,7 @@ import { cn } from "@/utils/cn";
 import { Spotlight } from "../components/ui/SpotLight";
 import Image from 'next/image'
 
+
 export function Hero2() {
   return (
     <div className="   h-[40rem] w-full  items-center justify-center  rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">

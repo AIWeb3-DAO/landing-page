@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import CommentCard from './CommentCard';
-import { useUserContext } from '../UserContext';
+
 
 type commentsProps = {
   comments?: Comment[]; // Define comments as an array of Comment type
@@ -21,7 +21,7 @@ interface Comment {
 export default function Comments({ videoId, profileId, comments = [] }: commentsProps) {
   const [commentTxt, setcommentTxt] = useState('');
   const [isLoading, setisLoading] = useState(false);
-  const { userProfile } = useUserContext();
+
 
   const handleComment = async () => {
     let postEndPoint = 'https://sapo-rdii.onrender.com/api/comments/create';

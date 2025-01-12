@@ -6,13 +6,6 @@ import { FB_DB } from '@/lib/fbClient'
 import { doc, getDoc,DocumentData, updateDoc,increment  } from 'firebase/firestore';
 import HeaderNav from '@/components/Header/HeaderNav';
 import { NavbarDemo } from '@/components/TopNavbar';
-/*=======
-import React from 'react';
-import { headers } from 'next/headers';
-import { FB_DB } from '@/lib/fbClient';
-import { doc, getDoc } from 'firebase/firestore';
-
->>>>>>> origin/main*/
 
 import FullVideoStats from '@/components/FullVideoStats';
 import Player from '@/components/videos/player';
@@ -28,7 +21,7 @@ export default async function Page() {
   const fetchData = async () => {
     if(FB_DB && id){
     try {
-      const docRef = doc(FB_DB, 'youtube', id);  // Adjust 'videos' to your collection name
+      const docRef = doc(FB_DB, 'youtube', id); 
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -49,7 +42,7 @@ export default async function Page() {
   const video =  await fetchData()
 
    console.log("video information", video)
-
+ 
    
    function formatTimestamp(seconds: number) {
     // Convert seconds to milliseconds
@@ -83,27 +76,7 @@ console.log("readable time", readbaleTimeStamp)
 
   return (
     <div>
-{/*<<<<<<< HEAD
-  <NavbarDemo  />
-    <div className='w-full  min-h-screen h-full flex space-x-3'>
-        <div  className='w-full xl:w-[80%] min-h-screen px-2'>
-        <Player   url={video?.youtubeURL}  />
-         <div  className='my-4 px-3 '>
-         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>{video?.youtubeTitle}</h1>
-         <h1 className='text-lg sm:text-xl md:text-2xl text-text '>AIWeb3 is full of love, if you like this video, tip and support the content creator! </h1>
 
-         <p>For the testnet, you can use the point on AIWeb3 discord to support the creators while earning the AIWEB token!</p>
-         <p>Visit AIWeb3 official discord, #bot-channel, and enter the following if you want to contribute 10 points (keep in mind the ratio, you will earn more AIWEB token from the latest video)): <b>!tipCreator {id} 10</b></p>
-         <FullVideoStats  stats={video?.contributors} tokenstats={video?.tokens} createdAt={video?.timestamp?.seconds} viewCounts={video?.views}  /> 
-       
-    
-         </div>
-      
-         </div>
-
-      <h2 className='hidden xl:block'>Related videos</h2>
-=======
-*/}
       <NavbarDemo />
       <div className="w-full min-h-screen h-full flex space-x-3">
         <div className="w-full xl:w-[80%] min-h-screen px-2">
@@ -134,12 +107,14 @@ console.log("readable time", readbaleTimeStamp)
               stats={video?.contributors}
               tokenstats={video?.tokens}
               createdAt={video?.timestamp?.seconds}
+              viewCounts={video?.views}
             />
           </div>
         </div>
         <h2 className="hidden xl:block">Related videos</h2>
       </div>
       <WalletSubmission videoId={id} />
+
 
     </div>
   );

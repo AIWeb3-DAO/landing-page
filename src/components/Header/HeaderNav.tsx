@@ -2,7 +2,6 @@
 
 
 import React, {useState, useEffect} from 'react'
-import { useUserContext } from '../UserContext'
 import { truncateText, truncateText2 } from '@/utils/truncateTxt';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
