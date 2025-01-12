@@ -26,9 +26,9 @@ export default async function Page() {
 
       if (docSnap.exists()) {
         const data = (docSnap.data());
-        await updateDoc(docRef, {
+        /*await updateDoc(docRef, {
           views: increment(1),
-        });
+        });*/
         return data
       } else {
         console.log('No such document!');
