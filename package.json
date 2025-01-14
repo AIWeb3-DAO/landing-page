@@ -17,6 +17,7 @@
     "@polkadot-onboard/react": "^1.1.0",
     "@polkadot-onboard/wallet-connect": "^1.1.0",
     "@polkadot/extension-inject": "^0.48.2",
+    "@polkadot/react-identicon": "^3.12.1",
     "@polkadot/util": "^13.0.2",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-toast": "^1.2.1",

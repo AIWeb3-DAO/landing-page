@@ -13,10 +13,8 @@ export default function Footer() {
   return (
     <div className='border-t border-gray-800 p-10'>
      
-  <ConnectWallet  />
-       <div>
-        <button onClick={() => setIsShowConnectModal(true)}>connect wallet</button>
-       </div>
+  
+    
   <div className='w-full max-w-7xl mx-auto flex-col md:flex-row flex justify-between'>
    <div className='flex gap-5'>
     <Image  src={logo}  width={200} height={200} alt='logo' className='rounded-full w-36 h-36 hidden md:block'  />

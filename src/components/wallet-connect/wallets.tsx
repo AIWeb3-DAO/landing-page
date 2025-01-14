@@ -18,7 +18,7 @@ const Wallets = () => {
         <Wallet key={wallet.metadata.title} wallet={wallet} />
       ))}
 
-       <button onClick={() => setIsShowConnectModal(! isShowConnectModal)}>close modal</button>
+   
     </div>
   );
 };

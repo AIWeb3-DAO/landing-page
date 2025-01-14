@@ -2,16 +2,35 @@
 import React, { useState, useEffect } from "react";
 import { HoveredLink, Menu, MenuItem, ProductItem,ProductItemSocial } from "../components/ui/Navbar-menu";
 import { cn } from "@/utils/cn";
-
-
+import { useWalletContext } from "./wallet-context";
+import { truncateText, truncateText2 } from "@/utils/truncateTxt";
+import Identicon from '@polkadot/react-identicon';
+import ConnectWallet from "./wallet-connect/connectWallet";
 export function NavbarDemo() {
+
+   const {accounts, isShowConnectModal, setIsShowConnectModal} = useWalletContext()
 
   return (
 
-    <div className="relative  flex items-center justify-center w-full">
+    <div className="relative  flex items-center justify-center w-full ">
       <Navbar className="top-2" />
-      
-    
+      <ConnectWallet />
+      <div className="  border sticky top-1 border-gray-800 w-[300px] mr-4 px-3 py-2 rounded-full flex items-center cursor-pointer  " onClick={() => setIsShowConnectModal(true)}>
+
+          { accounts.length > 0  ? (
+             <div className="flex items-center space-x-1"> 
+               <Identicon
+      value={accounts[0]?.address}
+      size={28}
+      theme={"polkadot"}
+    />
+            <p>{ accounts[0]?.address && truncateText(accounts[0]?.address, 10) }</p>
+               </div>
+          ) : (
+             <button className="bg-white text-black p-4 rounded-full w-full">Connect wallet</button>
+          )}
+     
+</div>
 
     </div>
   );
@@ -23,7 +42,7 @@ function Navbar({ className }: { className?: string }) {
 
 
   return (
-    <div className="flex justify-between w-full  h-24 sticky top-0 z-40 items-center px-3">
+    <div className="flex justify-between w-full  h-24 sticky top-0 z-40 items-center px-3 ">
        
     <div
       className={cn("fixed top-10 inset-x-0 border rounded-3xl border-gray-700    max-w-2xl mx-auto z-50", className)}
@@ -84,7 +103,7 @@ function Navbar({ className }: { className?: string }) {
 
       
       </div>
-   
+
     </div>
   );
 }

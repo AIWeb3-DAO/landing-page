@@ -1,52 +1,4 @@
-// WalletContext.tsx
-//"use client"
 
-/*import React, { createContext, useContext, useState } from 'react';
-import { BaseWallet, Account } from '@polkadot-onboard/core';
-
-interface WalletContextType {
-  selectedWallet: BaseWallet | null;
-  selectedAccount: Account | null;
-  signer: any | null;
-  setSelectedWallet: (wallet: BaseWallet | null) => void;
-  setSelectedAccount: (account: Account | null, signer: any | null) => void;
-}
-
-const WalletContext = createContext<WalletContextType>({
-  selectedWallet: null,
-  selectedAccount: null,
-  signer: null,
-  setSelectedWallet: () => {},
-  setSelectedAccount: () => {},
-});
-
-export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedWallet, setSelectedWallet] = useState<BaseWallet | null>(null);
-  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-  const [signer, setSigner] = useState<any | null>(null);
-
-    console.log("my beutiful signer", signer)
-  const handleSetSelectedAccount = (account: Account | null, walletSigner: any | null) => {
-    setSelectedAccount(account);
-    setSigner(walletSigner);
-  };
-
-  return (
-    <WalletContext.Provider
-      value={{
-        selectedWallet,
-        selectedAccount,
-        signer,
-        setSelectedWallet,
-        setSelectedAccount: handleSetSelectedAccount,
-      }}
-    >
-      {children}
-    </WalletContext.Provider>
-  );
-};
-
-export const useWalletContext = () => useContext(WalletContext);*/
 
 "use client";
 
@@ -77,6 +29,7 @@ interface WalletContextType {
   isTippingLoading : boolean
   isShowConnectModal : boolean
   setIsShowConnectModal : any
+  disconnectWallet : any
   //setSelectedWallet: (wallet: BaseWallet | null) => void;
   //setSelectedAccount: (account: Account | null, signer: any | null) => void;
   //selectedAccount: null,
@@ -137,20 +90,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const connectWallet = async (wallet: BaseWallet) => {
-   /* try {
-      await wallet.connect();
-      const accounts = await wallet.getAccounts();
-      setAccounts(accounts);
-      setSigner(wallet.signer);
-      setSelectedWallet(wallet);
-
-      // Save selected wallet ID to localStorage
-      localStorage.setItem("ai3Wallet", wallet.metadata.id);
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-    }*/
-
-      console.log(`wallet clicked!`);
+  
       if (!isBusy) {
         try {
           setIsBusy(true);
@@ -169,6 +109,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       }
   };
+
+   const disconnectWallet = async () => {
+     localStorage.removeItem("ai3Wallet")
+     setIsShowConnectModal(false)
+   }
 
 
   function toSmallestUnit(amount : number, decimals: number) {
@@ -333,7 +278,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         isShowConnectModal,
         setIsShowConnectModal,
         isTippingLoading,
-        isTippingSuccess
+        isTippingSuccess,
+        disconnectWallet
         
       }}
     >

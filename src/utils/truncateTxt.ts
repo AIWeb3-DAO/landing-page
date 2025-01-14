@@ -8,10 +8,10 @@ export function truncateText2(text: any, maxLength: any) {
   }
 
   export function truncateText(text: any, maxLength: any) {
-    if (text.length <= maxLength) {
+    if (text && text.length <= maxLength) {
       return text;
     } else {
-      const truncatedText = text.substring(0, 7) + ' ... ' + text.substring(text.length - 7);
+      const truncatedText = text?.substring(0, 7) + ' ... ' + text?.substring(text?.length - 7);
       return truncatedText;
     }
   }

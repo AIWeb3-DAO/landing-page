@@ -71,7 +71,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, 
           const updatedDoc = await getDoc(docRef);
           if (updatedDoc.exists()) {
             const data = updatedDoc.data();
-            setViewCount(data.views || 0); // Update state with the new views count
+            setViewCount(data.views || 0); 
           } else {
             console.error('Document does not exist');
           }
