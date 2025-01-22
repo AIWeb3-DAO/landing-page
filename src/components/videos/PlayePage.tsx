@@ -2,13 +2,10 @@
 
 import React, { useState,useEffect} from 'react'
 import ReactPlayer from 'react-player'
-import VideoPlayer3 from './VidPlayer';
 import FullVideoStats from '../FullVideoStats';
-import ChannelInfo from '../ChannelInfo';
-import Comments from './Comments';
 import HeaderNav from '../Header/HeaderNav';
-import { useRouter, usePathname } from 'next/navigation';
-import { FB_APP, FB_DB } from '@/lib/fbClient';
+import {  usePathname } from 'next/navigation';
+import {  FB_DB } from '@/lib/fbClient';
 import { doc, getDoc,DocumentData } from 'firebase/firestore';
 export default function PlayePage() {
   //const [videoData, setVideoData] = useState(null);
@@ -18,13 +15,13 @@ export default function PlayePage() {
 
   const id = pathname.startsWith('/videos/') ? pathname.slice(8) : pathname;
 
-
+  console.log("video id from main page", id)
 
   useEffect(() => {
     const fetchData = async () => {
       if(FB_DB && id){
       try {
-        const docRef = doc(FB_DB, 'youtube', id);  // Adjust 'videos' to your collection name
+        const docRef = doc(FB_DB, 'youtube', id);  
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -91,7 +88,7 @@ export default function PlayePage() {
 
          <p>For the testnet, you can use the point on AIWeb3 discord to support the creators while earning the AIWEB token!</p>
          <p>Visit AIWeb3 official discord, #bot-channel, and enter the following if you want to contribute 10 points (keep in mind the ratio, you will earn more AIWEB token from the latest video)):</p><p className="p-2 text-blue-500"><b>!tipCreator {id} 10</b></p>
-         <FullVideoStats  stats={videoData?.contributors} tokenstats={videoData?.tokens} createdAt={videoData?.timestamp?.seconds}  /> 
+         <FullVideoStats  stats={videoData?.contributors} tokenstats={videoData?.tokens} createdAt={videoData?.timestamp?.seconds} videoId={id}  /> 
     
          </div>
       

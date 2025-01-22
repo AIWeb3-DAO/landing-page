@@ -1,7 +1,10 @@
-import React from 'react';
-import { headers } from 'next/headers';
-import { FB_DB } from '@/lib/fbClient';
-import { doc, getDoc } from 'firebase/firestore';
+
+import PlayePage from '@/components/videos/PlayePage'
+import React from 'react'
+import { headers } from 'next/headers'
+import { FB_DB } from '@/lib/fbClient'
+import { doc, getDoc,DocumentData, updateDoc,increment  } from 'firebase/firestore';
+import HeaderNav from '@/components/Header/HeaderNav';
 import { NavbarDemo } from '@/components/TopNavbar';
 
 import FullVideoStats from '@/components/FullVideoStats';
@@ -10,47 +13,55 @@ import WalletSubmission from '@/components/videos/WalletSubmission';
 
 export default async function Page() {
   const headerList = headers();
+  const pathname = headerList.get("x-current-path");
+  const id = pathname?.startsWith('/videos/') ? pathname.slice(8) : pathname;
 
-  const currentPath = headerList.get('x-current-path');
 
-  let id = null;
-
-  if (currentPath) {
-    try {
-      if (currentPath.startsWith('/videos/')) {
-        id = currentPath.slice(8); // Extract the part after "/videos/"
-      }
-      console.log('Extracted ID:', id);
-    } catch (error) {
-      console.error('Invalid URL in referer:', error);
-    }
-  } else {
-    console.log('No referer header found');
-  }
-
-  if (!id) {
-    id = 'n6jf4l6wSxaxskzvjO05';
-  }
 
   const fetchData = async () => {
-    if (FB_DB && id) {
-      try {
-        const docRef = doc(FB_DB, 'youtube', id);
-        const docSnap = await getDoc(docRef);
+    if(FB_DB && id){
+    try {
+      const docRef = doc(FB_DB, 'youtube', id); 
+      const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          return docSnap.data();
-        } else {
-          console.log('No such document!');
-        }
-      } catch (error) {
-        console.error('Error fetching document:', error);
+      if (docSnap.exists()) {
+        const data = (docSnap.data());
+        /*await updateDoc(docRef, {
+          views: increment(1),
+        });*/
+        return data
+      } else {
+        console.log('No such document!');
       }
+    } catch (error) {
+      console.error('Error fetching document:', error);
+    } finally {
     }
-    return null;
-  };
+  }};
 
-  const video = await fetchData();
+  const video =  await fetchData()
+
+   console.log("video information", video)
+ 
+   
+   function formatTimestamp(seconds: number) {
+    // Convert seconds to milliseconds
+    const milliseconds = seconds * 1000;
+  
+    // Create a Date object
+    const dateObject = new Date(milliseconds);
+  
+    // Format the date into a human-readable string
+    const humanReadableDate = dateObject.toLocaleString(); // Adjust this as needed
+  
+    return humanReadableDate;
+  }
+
+  const readbaleTimeStamp = formatTimestamp(video?.timestamp?.seconds)
+console.log("readable time", readbaleTimeStamp)
+
+
+  const readableTimeStamp = formatTimestamp(video?.timestamp?.seconds);
 
   if (!video) {
     return (
@@ -63,16 +74,9 @@ export default async function Page() {
     );
   }
 
-  const formatTimestamp = (seconds) => {
-    const milliseconds = seconds * 1000;
-    const dateObject = new Date(milliseconds);
-    return dateObject.toLocaleString();
-  };
-
-  const readableTimeStamp = formatTimestamp(video?.timestamp?.seconds);
-
   return (
     <div>
+
       <NavbarDemo />
       <div className="w-full min-h-screen h-full flex space-x-3">
         <div className="w-full xl:w-[80%] min-h-screen px-2">
@@ -103,12 +107,15 @@ export default async function Page() {
               stats={video?.contributors}
               tokenstats={video?.tokens}
               createdAt={video?.timestamp?.seconds}
+              viewCounts={video?.views}
             />
           </div>
         </div>
         <h2 className="hidden xl:block">Related videos</h2>
       </div>
       <WalletSubmission videoId={id} />
+
+
     </div>
   );
 }

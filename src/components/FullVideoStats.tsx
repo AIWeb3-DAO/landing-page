@@ -1,4 +1,4 @@
-//@ts-nocheck
+
 
 "use client"
 import React, { useState, useEffect } from 'react'
@@ -6,6 +6,8 @@ import ShareButtons from './ShareButtons';
 //import Modal from '../common/Modal';
 import { LuHelpingHand } from "react-icons/lu";
 import { FaFire } from "react-icons/fa";
+import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
+import { FB_DB } from '@/lib/fbClient';
 import {
   Dialog,
   DialogContent,
@@ -18,23 +20,29 @@ import {
 //import moment from 'moment';
 //import { WEBSITE_URL } from '@/assets/constant';
 import TipModal from './TipModal';
+//import ConfettiExplosion from 'react-confetti-explosion';
 
-import { useUserContext } from './UserContext';
 import { ModalBody, ModalContent, ModalProvider, ModalTrigger } from './ui/animated-modal';
 import { timeAgo } from '@/lib/utils';
 import { truncateText } from '@/utils/truncateTxt';
+import { useWalletContext } from './wallet-context';
+import ConnectWallet from './wallet-connect/connectWallet';
+import { usePathname } from 'next/navigation';
 type statsProps = {
   stats?: any
   tokenstats?: any
   createdAt?: any
-  videId?: any
+  videoId?: any
   tips?: any
+  viewCounts ? : any
 
 }
-export default function FullVideoStats({ stats, tokenstats, createdAt, videId, tips }: statsProps) {
+export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, tips, viewCounts }: statsProps) {
+  const [isTokenSent, setisTokenSent] = useState(true)
+  const [viewCount, setViewCount] = useState<number | null>(null);
   const currentDate = new Date();
   const videoCreatedAt = new Date(createdAt);
-  const { userProfile } = useUserContext()
+  const {accounts} = useWalletContext()
   //@ts-ignore
   const diffInMilliseconds = currentDate - videoCreatedAt;
   const diffInHours = diffInMilliseconds / (60 * 60 * 1000);
@@ -44,8 +52,39 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
   const [isShowTipModal, setisShowTipModal] = useState(false)
 
   const [isShowTradeModal, setisShowTradeModal] = useState()
+  const pathname = usePathname()
 
+  const id = pathname.startsWith('/videos/') ? pathname.slice(8) : pathname;
 
+  useEffect(() => {
+    const incrementAndFetchViews = async () => {
+      if (FB_DB && videoId) {
+        try {
+          const docRef = doc(FB_DB, 'youtube', videoId);
+
+          // Increment the views count
+          await updateDoc(docRef, {
+            views: increment(1),
+          });
+
+          // Fetch the updated views count
+          const updatedDoc = await getDoc(docRef);
+          if (updatedDoc.exists()) {
+            const data = updatedDoc.data();
+            setViewCount(data.views || 0); 
+          } else {
+            console.error('Document does not exist');
+          }
+        } catch (error) {
+          console.error('Error incrementing and fetching views:', error);
+        }
+      }
+    };
+
+    incrementAndFetchViews();
+  }, [id]);
+
+   console.log("client view counts", viewCount)
   return (
     <div className={`flex flex-col md:flex-row justify-start md:justify-between md:items-center px-2 border-b border-b-gray-400/60  dark:border-gray-800 pb-2 my-3 `}>
       <div className='flex items-center gap-4'>
@@ -61,7 +100,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <p className='text-xs text-blue-500'>{stats?.viewCount || "0"} views</p>
+          <p className='text-xs text-blue-500'>{viewCounts || "0"} views</p>
         </div>
       </div>
 
@@ -75,38 +114,34 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
         </div>
 
 
-        <ModalProvider>
-          <ModalTrigger>
-            <div className='flex items-center gap-2 hover:text-text-primary cursor-pointer' >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+        {accounts  ?  (
+ <ModalProvider>
+ <ModalTrigger>
+       <div className='flex items-center gap-2 hover:text-text-primary cursor-pointer' >
+       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>
 
 
-              {/* <p className='text-sm md:font-semibold'>Support</p> */}
-              <p className='text-sm md:font-semibold text-white'>Support</p>
-            </div>
-          </ModalTrigger>
+<p className='text-sm md:font-semibold'>Support</p>
+       </div>
+       </ModalTrigger>
 
-          <ModalBody>
-            <ModalContent>
-              <TipModal />
-            </ModalContent>
-          </ModalBody>
+   <ModalBody>
+     <ModalContent>
+         <TipModal videoId={id} contributorAddress={accounts[0]?.address} />
+     </ModalContent>
+   </ModalBody>
 
-        </ModalProvider>
-
-        <div className='flex items-center gap-2 hover:text-text-primary cursor-pointer hidden' >
-          <FaFire className='text-yellow-600 animate-bounce' />
-
-
-          <p className='text-sm md:font-semibold'>Buy / Sell</p>
-        </div>
+       </ModalProvider>
+): (
+  <>
+  <ConnectWallet  />
+  <button className='py-2 px-4 rounded-xl bg-white text-black'>Connect wallet</button>
+  </>
+)}
 
 
-
-
-        <p className='text-sm font-semibold hidden'>Minted 2</p>
 
         <Dialog>
           <DialogTrigger>
@@ -162,7 +197,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
             <DialogHeader>
               <DialogTitle className='mb-4 '>Share</DialogTitle>
               <DialogDescription>
-                <ShareButtons url={`${WEBSITE_URL}/watch/$${videId}`} />
+                <ShareButtons url={`${WEBSITE_URL}/watch/$${videoId}`} />
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
@@ -172,9 +207,10 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videId, t
 
 
       </div>
-
+  
     </div>
 
 
   )
 }
+

@@ -2,23 +2,35 @@
 import React, { useState, useEffect } from "react";
 import { HoveredLink, Menu, MenuItem, ProductItem,ProductItemSocial } from "../components/ui/Navbar-menu";
 import { cn } from "@/utils/cn";
-import Onboard from '@subwallet-connect/core';
-import injectedModule from '@subwallet-connect/injected-wallets';
-import subwalletModule from '@subwallet-connect/subwallet';
-import subwalletPolkadotModule from '@subwallet-connect/subwallet-polkadot';
-import type {EIP1193Provider, SubstrateProvider} from "@subwallet-connect/common";
-import {ethers} from 'ethers';
-import {ApiPromise, WsProvider} from '@polkadot/api';
-import { stringToHex } from "@polkadot/util";
-
+import { useWalletContext } from "./wallet-context";
+import { truncateText, truncateText2 } from "@/utils/truncateTxt";
+import Identicon from '@polkadot/react-identicon';
+import ConnectWallet from "./wallet-connect/connectWallet";
 export function NavbarDemo() {
+
+   const {accounts, isShowConnectModal, setIsShowConnectModal} = useWalletContext()
 
   return (
 
-    <div className="relative  flex items-center justify-center w-full">
+    <div className="relative  flex items-center justify-center w-full ">
       <Navbar className="top-2" />
-      
-    
+      <ConnectWallet />
+      <div className="  border sticky top-1 border-gray-800 w-[300px] mr-4 px-3 py-2 rounded-full flex items-center cursor-pointer  " onClick={() => setIsShowConnectModal(true)}>
+
+          { accounts.length > 0  ? (
+             <div className="flex items-center space-x-1"> 
+               <Identicon
+      value={accounts[0]?.address}
+      size={28}
+      theme={"polkadot"}
+    />
+            <p>{ accounts[0]?.address && truncateText(accounts[0]?.address, 10) }</p>
+               </div>
+          ) : (
+             <button className="bg-white text-black p-4 rounded-full w-full">Connect wallet</button>
+          )}
+     
+</div>
 
     </div>
   );
@@ -28,64 +40,9 @@ function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
 
 
-  const [wallet1, setwallet] = useState()
-
-  const MAINNET_RPC_URL = 'https://mainnet.infura.io/v3/<INFURA_KEY>'
-const ws = 'wss://rpc.polkadot.io'
-
-const ws2 = 'wss://rpc.polkadot.io'
-
-const injected = injectedModule()
-const subwalletWallet = subwalletModule()
-const subwalletPolkadotWalet = subwalletPolkadotModule()
-
-
-
-
-
-/*const onboard = Onboard({
-
-  wallets: [ subwalletPolkadotWalet],
-  chains: [
-    {
-      id: '0x1',
-      token: 'ETH',
-      label: 'Ethereum Mainnet',
-      rpcUrl: MAINNET_RPC_URL
-    }
-  ],
-  chainsPolkadot: [
-    {
-      id: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
-      namespace: 'substrate',
-      token: 'DOT',
-      label: 'Polkadot',
-      rpcUrl: `polkadot.api.subscan.io`,
-      decimal: 10
-    },
-    {
-      id: 'lashbox_simple_container_4274',
-      namespace: 'substrate',
-      token: 'AIWEB',
-      label: 'aiweb3',
-      rpcUrl: `wss://fraa-flashbox-4274-rpc.a.stagenet.tanssi.network`,
-      decimal: 12
-    }
-  ]
-  })*/
-
-
-
-
-
-
-
-
-
-
 
   return (
-    <div className="flex justify-between w-full  h-24 sticky top-0 z-40 items-center px-3">
+    <div className="flex justify-between w-full  h-24 sticky top-0 z-40 items-center px-3 ">
        
     <div
       className={cn("fixed top-10 inset-x-0 border rounded-3xl border-gray-700    max-w-2xl mx-auto z-50", className)}
@@ -146,7 +103,7 @@ const subwalletPolkadotWalet = subwalletPolkadotModule()
 
       
       </div>
-   
+
     </div>
   );
 }

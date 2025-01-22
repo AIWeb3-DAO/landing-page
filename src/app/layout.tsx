@@ -9,6 +9,9 @@ import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { UserContextProvider } from "@/components/UserContext";
 const inter = Inter({ subsets: ["latin"] });
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import Head from "next/head";
+import { Header } from "@/components/auth/header";
 
 export const metadata = {
   title: "AIWeb3 Dao",
@@ -46,8 +49,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+ 
+   
     <html lang="en">
       <body  className={`${inter.className}  w-full bg-black text-gray-200`}>
+
    
       <ThemeProvider
         attribute="class"
@@ -61,8 +67,10 @@ export default function RootLayout({
       <Footer  />
      
       </ThemeProvider>
+     
       </body>
      
     </html>
+  
   );
 }
