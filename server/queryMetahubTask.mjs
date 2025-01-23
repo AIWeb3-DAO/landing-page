@@ -40,9 +40,11 @@ const queryMetahubTask = async (address, questId, taskId) => {
 
   try {
     // Query the Firestore collection
+    // Convert the walletAddress to lowercase for a case-insensitive comparison
+    const lowerCaseWalletAddress = address.toLowerCase();
     const q = query(
       collection(db, 'metahubEvents'),
-      where('walletAddress', '==', address),
+      where('walletAddress', '==', lowerCaseWalletAddress),
       where('questId', '==', questId),
       where('taskId', '==', taskId)
     );

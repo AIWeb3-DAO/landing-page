@@ -47,6 +47,7 @@ const addAddressMetahubEvent = async (walletAddress, videoId, questId, taskId) =
   }
 
   try {
+
     // Reference the "metahubEvents" collection
     const docRef = await addDoc(collection(db, "metahubEvents"), {
       walletAddress,
@@ -63,7 +64,7 @@ const addAddressMetahubEvent = async (walletAddress, videoId, questId, taskId) =
 };
 
 // Example usage
-const walletAddress = process.argv[2];
+const walletAddress = process.argv[2].toLowerCase();  // convert it to lower case
 const videoId = process.argv[3];
 const questId = process.argv[4];
 const taskId = process.argv[5];
