@@ -52,7 +52,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   useEffect(() => {
     const setupApi = async () => {
-      const provider = new WsProvider("wss://dancebox-3135.tanssi-api.network");
+      const provider = new WsProvider("wss://fraa-flashbox-4642-rpc.a.stagenet.tanssi.network");
       const api = await ApiPromise.create({ provider });
       setApi(api);
     };
