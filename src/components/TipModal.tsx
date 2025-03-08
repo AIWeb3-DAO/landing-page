@@ -20,7 +20,12 @@ type Props = {
 };
 
 export default function TipModal({ videoId, contributorAddress, supportType }: Props) {
-  const { tokenBalance, handleTransferTokens, isTippingLoading, isTippingSuccess } = useWalletContext();
+  const { balances, handleTransferTokens, tippingStates } = useWalletContext();
+  const tokenType = supportType === "LOVA in ACALA" ? "LOVA" : "LOVE";
+  const tokenBalance = balances[tokenType];
+  const isTippingLoading = tippingStates[tokenType].isLoading;
+  const isTippingSuccess = tippingStates[tokenType].isSuccess;
+
   const recipientAddress = "5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT";
   const parseTokenBalance = (balance: string | undefined) => {
     if (!balance || typeof balance !== "string") return 0;
@@ -41,8 +46,17 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
   const getTokenName = () => (supportType === "LOVA in ACALA" ? "$LOVA" : "$LOVE");
 
   const handleCustomTransfer = () => {
+    console.log("handleCustomTransfer called", { customAmount, safeTokenBalance, tokenType });
     if (customAmount > 0 && customAmount <= safeTokenBalance) {
-      handleTransferTokens({ amount: customAmount, recipientAddress, videoId, contributor: contributorAddress });
+      handleTransferTokens({
+        token: tokenType, // Add token parameter
+        amount: customAmount,
+        recipientAddress,
+        videoId,
+        contributor: contributorAddress,
+      });
+    } else {
+      console.log("Transfer blocked: invalid amount", { customAmount, safeTokenBalance });
     }
   };
 
@@ -63,7 +77,15 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
               <div
                 className="inline-flex flex-col space-y-2 border cursor-pointer border-gray-400 hover:border-text-primary h-20 w-24 py-2 px-2 rounded-lg items-center"
                 key={i}
-                onClick={() => handleTransferTokens({ amount: tip.amount, recipientAddress, videoId, contributor: contributorAddress })}
+                onClick={() =>
+                  handleTransferTokens({
+                    token: tokenType, // Add token parameter
+                    amount: tip.amount,
+                    recipientAddress,
+                    videoId,
+                    contributor: contributorAddress,
+                  })
+                }
               >
                 <h2 className="text-xl">{tip.emoji}</h2>
                 <h2 className="text-sm">{tip.amount} {getTokenName()}</h2>
@@ -133,7 +155,15 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
                 <div
                   className="inline-flex flex-col space-y-2 border cursor-pointer border-gray-600 hover:border-text-primary h-20 w-24 py-2 px-2 rounded-lg items-center bg-gray-800"
                   key={i}
-                  onClick={() => handleTransferTokens({ amount: tip.amount, recipientAddress, videoId, contributor: contributorAddress })}
+                  onClick={() =>
+                    handleTransferTokens({
+                      token: tokenType, // Add token parameter
+                      amount: tip.amount,
+                      recipientAddress,
+                      videoId,
+                      contributor: contributorAddress,
+                    })
+                  }
                 >
                   <h2 className="text-xl">{tip.emoji}</h2>
                   <h2 className="text-sm">{tip.amount} {getTokenName()}</h2>

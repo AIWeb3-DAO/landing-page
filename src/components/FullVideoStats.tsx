@@ -56,7 +56,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, 
   const videoCreatedAt = createdAt ? new Date(createdAt) : new Date();
   const diffInMilliseconds = currentDate.getTime() - videoCreatedAt.getTime();
   const diffInHours = diffInMilliseconds / (60 * 60 * 1000);
-  const WEBSITE_URL = "https://yourwebsite.com";
+  const WEBSITE_URL = "https://y.aiweb3.org/";
   const pathname = usePathname();
   const [selectedSupport, setSelectedSupport] = useState<string | null>(null);
 

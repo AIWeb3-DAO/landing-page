@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -9,32 +7,31 @@ import { useWallets } from "@polkadot-onboard/react";
 import { formatBalance } from "@polkadot/util";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { FB_DB } from "@/lib/fbClient";
-import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore"; 
+import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+
+type TokenType = "LOVE" | "LOVA";
+
 type TransferTokensParams = {
-    amount: number; // Amount in base units (e.g., DOT)
-    recipientAddress: string; // Recipient's address
-    selectedAccount? : string
-    videoId ? : string
-    contributor? : string
-  };
+  token: TokenType;
+  amount: number;
+  recipientAddress: string;
+  selectedAccount?: string;
+  videoId?: string;
+  contributor?: string;
+};
 
 interface WalletContextType {
   accounts: Account[];
   signer: any | null;
   selectedWallet: BaseWallet | null;
   connectWallet: (wallet: BaseWallet) => Promise<void>;
-  handleTransferTokens : ({amount, recipientAddress} : TransferTokensParams) => Promise<void>
-  tokenBalance : any | null
-  isTippingSuccess : boolean
-  isTippingLoading : boolean
-  isShowConnectModal : boolean
-  setIsShowConnectModal : any
-  disconnectWallet : any
-  //setSelectedWallet: (wallet: BaseWallet | null) => void;
-  //setSelectedAccount: (account: Account | null, signer: any | null) => void;
-  //selectedAccount: null,
+  handleTransferTokens: (params: TransferTokensParams) => Promise<void>;
+  balances: Record<TokenType, string | null>;
+  tippingStates: Record<TokenType, { isLoading: boolean; isSuccess: boolean }>;
+  isShowConnectModal: boolean;
+  setIsShowConnectModal: React.Dispatch<React.SetStateAction<boolean>>;
+  disconnectWallet: () => void;
 }
-
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
@@ -42,43 +39,57 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [signer, setSigner] = useState<any | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<BaseWallet | null>(null);
-  const [api, setApi] = useState<ApiPromise | null>(null);
+  const [api, setApi] = useState<ApiPromise | null>(null); // Tanssi API
+  const [apiAcala, setApiAcala] = useState<ApiPromise | null>(null); // Acala API
   const [isBusy, setIsBusy] = useState<boolean>(false);
-  const [tokenBalance, setTokenBalance] = useState<string | number | null>(null)
-  const [isTippingSuccess, setisTippingSuccess] = useState(false)
-  const [isTippingLoading, setisTippingLoading] = useState(false)
-  const [isShowConnectModal, setIsShowConnectModal] = useState(false)
-  const {wallets} = useWallets()
+  const [balances, setBalances] = useState<Record<TokenType, string | null>>({
+    LOVE: null,
+    LOVA: null,
+  });
+  const [tippingStates, setTippingStates] = useState<
+    Record<TokenType, { isLoading: boolean; isSuccess: boolean }>
+  >({
+    LOVE: { isLoading: false, isSuccess: false },
+    LOVA: { isLoading: false, isSuccess: false },
+  });
+  const [isShowConnectModal, setIsShowConnectModal] = useState(false);
+  const { wallets } = useWallets();
 
+  // Setup APIs for Tanssi and Acala
   useEffect(() => {
-    const setupApi = async () => {
-      const provider = new WsProvider("wss://fraa-flashbox-4642-rpc.a.stagenet.tanssi.network");
-      const api = await ApiPromise.create({ provider });
-      setApi(api);
+    const setupApis = async () => {
+      // Tanssi API
+      const tanssiProvider = new WsProvider("wss://fraa-flashbox-4642-rpc.a.stagenet.tanssi.network");
+      const tanssiApi = await ApiPromise.create({ provider: tanssiProvider });
+      await tanssiApi.isReady;
+      setApi(tanssiApi);
+
+      // Acala API
+      const acalaProvider = new WsProvider("wss://acala-polkadot.api.onfinality.io/public-ws");
+      const acalaApi = await ApiPromise.create({ provider: acalaProvider });
+      await acalaApi.isReady;
+      setApiAcala(acalaApi);
     };
 
-    setupApi();
-
+    setupApis();
   }, []);
 
+  // Reconnect wallet from localStorage
   useEffect(() => {
-     // Check for saved wallet in localStorage
-     const savedWalletId = localStorage.getItem("ai3Wallet");
-
-     console.log("saved wallet", savedWalletId)
+    const savedWalletId = localStorage.getItem("ai3Wallet");
+    console.log("saved wallet", savedWalletId);
     if (wallets && wallets.length > 0 && savedWalletId) {
       reconnectWallet(savedWalletId);
     }
-  }, [wallets])
-  
+  }, [wallets]);
 
-   console.log("saved accounts", accounts)
+  console.log("saved accounts", accounts);
+
   const reconnectWallet = async (walletId: string) => {
     try {
-      // Assume `wallets` is an array of available wallets
       const wallet = wallets?.find((w) => w.metadata.id === walletId);
-      console.log("the required wallet", wallet)
-      if (!wallet) throw new Error("Wallet not found"); 
+      console.log("the required wallet", wallet);
+      if (!wallet) throw new Error("Wallet not found");
       await wallet.connect();
       const accounts = await wallet.getAccounts();
       setAccounts(accounts);
@@ -90,181 +101,193 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const connectWallet = async (wallet: BaseWallet) => {
-  
-      if (!isBusy) {
-        try {
-          setIsBusy(true);
-          await wallet.connect();
-          let accounts = await wallet.getAccounts();
-          setAccounts(accounts);
-          setSelectedWallet(wallet);
-          setAccounts(accounts)
-           // Save selected wallet ID to localStorage
+    if (!isBusy) {
+      try {
+        setIsBusy(true);
+        await wallet.connect();
+        const accounts = await wallet.getAccounts();
+        setAccounts(accounts);
+        setSelectedWallet(wallet);
+        setSigner(wallet.signer);
         localStorage.setItem("ai3Wallet", wallet.metadata.id);
-         setIsShowConnectModal(!isShowConnectModal)
-        } catch (error) {
-          // handle error
-        } finally {
-          setIsBusy(false);
-        }
+        setIsShowConnectModal(!isShowConnectModal);
+      } catch (error) {
+        console.error("Failed to connect wallet:", error);
+      } finally {
+        setIsBusy(false);
       }
+    }
   };
 
-   const disconnectWallet = async () => {
-     localStorage.removeItem("ai3Wallet")
-     setIsShowConnectModal(false)
-   }
+  const disconnectWallet = async () => {
+    localStorage.removeItem("ai3Wallet");
+    setSelectedWallet(null);
+    setAccounts([]);
+    setSigner(null);
+    setBalances({ LOVE: null, LOVA: null });
+    setTippingStates({
+      LOVE: { isLoading: false, isSuccess: false },
+      LOVA: { isLoading: false, isSuccess: false },
+    });
+    setIsShowConnectModal(false);
+  };
 
-
-  function toSmallestUnit(amount : number, decimals: number) {
-    return amount * Math.pow(10, decimals);
+  function toSmallestUnit(amount: number, decimals: number) {
+    return BigInt(Math.round(amount * Math.pow(10, decimals)));
   }
 
-
-    // update  db
-
-    // Function to update contributors and tokens in Firestore
-    const updateContributorsAndTokens = async (videoId : string, newContributor : string, newToken : number) => {
-      console.log("the added video id", videoId)
-      try {
-        if(FB_DB){
+  // Update contributors and tokens in Firestore
+  const updateContributorsAndTokens = async (videoId: string, newContributor: string, newToken: number) => {
+    console.log("the added video id", videoId);
+    try {
+      if (FB_DB) {
         const videoDocRef = doc(FB_DB, "youtube", videoId);
         const videoDoc = await getDoc(videoDocRef);
-    
+
         if (!videoDoc.exists()) {
           console.error("Video document does not exist");
           return;
         }
-    
+
         const data = videoDoc.data();
         const existingContributors = data.contributors || [];
         const existingTokens = data.tokens || [];
-    
-        // Calculate the total current tokens
-        const totalExistingTokens = existingTokens.reduce((sum : any, token : any) => sum + token, 0);
-    
-        // Calculate the distribution of 30% of new tokens to existing contributors
+
+        const totalExistingTokens = existingTokens.reduce((sum: number, token: number) => sum + token, 0);
         const newTokenDistribution = newToken * 0.3;
-        const newTokensForExisting = existingTokens.map(token  => token + (token / totalExistingTokens) * newTokenDistribution);
-    
-        // Calculate 70% of new tokens for the new contributor
+        const newTokensForExisting = existingTokens.map((token: number) =>
+          totalExistingTokens > 0 ? token + (token / totalExistingTokens) * newTokenDistribution : token
+        );
         const newTokenForNewContributor = newToken * 0.7;
-    
-        // Update the contributors and tokens arrays
+
         const updatedContributors = [...existingContributors, newContributor];
         const updatedTokens = [...newTokensForExisting, newTokenForNewContributor];
-    
-        // Update the Firestore document
+
         await updateDoc(videoDocRef, {
           contributors: updatedContributors,
-          tokens: updatedTokens
+          tokens: updatedTokens,
         });
-    
-        console.log("Contributors and tokens updated");
-      }} catch (error) {
-        console.error("Error updating contributors and tokens:", error);
-      }
-    };
 
+        console.log("Contributors and tokens updated");
+      }
+    } catch (error) {
+      console.error("Error updating contributors and tokens:", error);
+    }
+  };
 
   const handleTransferTokens = async ({
+    token,
     amount,
     recipientAddress,
     selectedAccount,
     videoId,
-    contributor
+    contributor,
   }: TransferTokensParams): Promise<void> => {
+    setTippingStates((prev) => ({ ...prev, [token]: { ...prev[token], isLoading: true } }));
     try {
-      // Convert the amount to the smallest unit
-      const smallestUnit = toSmallestUnit(amount, 12);
-  
-    setisTippingLoading(true)
-      // Create the transfer extrinsic
-      if(api?.isReady){
-      const transferExtrinsic: SubmittableExtrinsic<'promise'> =
-        api.tx.balances.transferKeepAlive(recipientAddress, smallestUnit);
-  
-      console.log("Signing and sending transaction...");
-  
-      // Sign and send the transaction
-      await transferExtrinsic.signAndSend(
-        accounts[0].address,
-        { signer: signer },
-        ({ status, txHash, dispatchError }) => {
+      const accountAddress = selectedAccount || accounts[0]?.address;
+      if (!accountAddress || !signer) throw new Error("No account or signer available");
+
+      if (token === "LOVE" && api?.isReady) {
+        // Tanssi ($LOVE) transfer
+        const smallestUnit = toSmallestUnit(amount, 12);
+        const transferExtrinsic: SubmittableExtrinsic<"promise"> = api.tx.balances.transferKeepAlive(
+          recipientAddress,
+          smallestUnit
+        );
+
+        await transferExtrinsic.signAndSend(accountAddress, { signer }, ({ status, txHash, dispatchError }) => {
           if (dispatchError) {
             if (dispatchError.isModule) {
               const decoded = api.registry.findMetaError(dispatchError.asModule);
-              const { section, name, docs } = decoded;
-              console.error(`Transaction failed: ${section}.${name} - ${docs.join(' ')}`);
-              setisTippingLoading(false)
+              console.error(`Transaction failed: ${decoded.section}.${decoded.name} - ${decoded.docs.join(" ")}`);
             } else {
               console.error(`Transaction failed: ${dispatchError.toString()}`);
-              setisTippingLoading(false)
             }
+            setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
           } else if (status.isInBlock) {
             console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
             console.log(`Transaction hash: ${txHash.toString()}`);
-
-              // Update contribution
-              const handleUpdate = async () => {
-                try {
-                  await updateContributorsAndTokens(videoId, contributor,amount)
-                  setisTippingLoading(false)
-                  setisTippingSuccess(true)
-                } catch (error) {
-                  console.log("something went wrong at contribution", error)
-                  setisTippingLoading(false)
-                }
-                  }
-              handleUpdate()
+            if (videoId && contributor) {
+              updateContributorsAndTokens(videoId, contributor, amount).then(() => {
+                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+              });
+            } else {
+              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+            }
           } else {
             console.log(`Transaction status: ${status.type}`);
           }
-        }
-      );
-    }} catch (error) {
-      console.error("An error occurred during the transfer:", error);
-      setisTippingLoading(false)
-    }
-  };
-
-
-
-
-
-
-
-
-
-
-  const getBalance = async () => {
-    if (api?.isReady && accounts?.[0]?.address) {
-      try {
-        const { data: balance } = await api.query.system.account(accounts[0].address);
-        console.log("Raw balance object:", balance?.free.toString());
-  
-        // Convert balance to human-readable format
-        const formattedBalance = formatBalance(balance?.free, {
-          decimals: 12, // Replace with your chain's decimals
-          withUnit: 'LOVE' // Replace with your chain's unit
         });
-  
-        console.log("Formatted balance:", formattedBalance);
-        setTokenBalance(formattedBalance);
-      } catch (error) {
-        console.error("Error fetching balance:", error);
+      } else if (token === "LOVA" && apiAcala?.isReady) {
+        // Acala ($LOVA) transfer
+        const assetId = 18; // LOVA asset ID
+        const tokenAmount = toSmallestUnit(amount, 12); // Assuming 12 decimals for LOVA
+        const assetTransfer = apiAcala.tx.currencies.transfer(recipientAddress, { ForeignAsset: assetId }, tokenAmount);
+
+        await assetTransfer.signAndSend(accountAddress, { signer, nonce: -1 }, ({ status, txHash, dispatchError }) => {
+          if (dispatchError) {
+            if (dispatchError.isModule) {
+              const decoded = apiAcala.registry.findMetaError(dispatchError.asModule);
+              console.error(`Transaction failed: ${decoded.section}.${decoded.name} - ${decoded.docs.join(" ")}`);
+            } else {
+              console.error(`Transaction failed: ${dispatchError.toString()}`);
+            }
+            setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
+          } else if (status.isInBlock) {
+            console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
+            console.log(`Transaction hash: ${txHash.toString()}`);
+            if (videoId && contributor) {
+              updateContributorsAndTokens(videoId, contributor, amount).then(() => {
+                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+              });
+            } else {
+              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+            }
+          } else {
+            console.log(`Transaction status: ${status.type}`);
+          }
+        });
+      } else {
+        throw new Error("API not ready or invalid token type");
       }
+    } catch (error) {
+      console.error(`An error occurred during the ${token} transfer:`, error);
+      setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
     }
   };
-  
-  useEffect(() => {
-    getBalance();
-  }, [api, accounts]);
-    
 
-    console.log("user balances", tokenBalance)
-   console.log("Is contrubted loading", isTippingLoading)
-   console.log("is Tipping success", isTippingSuccess)
+  const getBalances = async () => {
+    if (!accounts[0]?.address || !api?.isReady || !apiAcala?.isReady) return;
+
+    try {
+      // Tanssi ($LOVE) balance
+      const { data: loveBalance } = await api.query.system.account(accounts[0].address);
+      const formattedLoveBalance = formatBalance(loveBalance?.free, {
+        decimals: 12,
+        withUnit: "LOVE",
+      });
+      setBalances((prev) => ({ ...prev, LOVE: formattedLoveBalance }));
+
+      // Acala ($LOVA) balance
+      const assetId = 18;
+      const lovaBalance = await apiAcala.query.tokens.accounts(accounts[0].address, { ForeignAsset: assetId });
+      const formattedLovaBalance = formatBalance((lovaBalance as any).free, {
+        decimals: 12,
+        withUnit: "LOVA",
+      });
+      setBalances((prev) => ({ ...prev, LOVA: formattedLovaBalance }));
+    } catch (error) {
+      console.error("Error fetching balances:", error);
+    }
+  };
+
+  useEffect(() => {
+    getBalances();
+  }, [api, apiAcala, accounts]);
+
+  console.log("user balances", balances);
+  console.log("tipping states", tippingStates);
 
   return (
     <WalletContext.Provider
@@ -273,14 +296,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         signer,
         selectedWallet,
         connectWallet,
-        tokenBalance,
         handleTransferTokens,
+        balances,
+        tippingStates,
         isShowConnectModal,
         setIsShowConnectModal,
-        isTippingLoading,
-        isTippingSuccess,
-        disconnectWallet
-        
+        disconnectWallet,
       }}
     >
       {children}
@@ -291,9 +312,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 export const useWalletContext = (): WalletContextType => {
   const context = useContext(WalletContext);
   if (!context) {
-    throw new Error("useWallet must be used within a WalletProvider");
+    throw new Error("useWalletContext must be used within a WalletProvider");
   }
   return context;
 };
-
-
