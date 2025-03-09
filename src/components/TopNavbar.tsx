@@ -55,6 +55,7 @@ function Navbar({ className }: { className?: string }) {
           <HoveredLink href="/news">Polkadot news</HoveredLink>
           <HoveredLink href="/blog">Our blog and articles content</HoveredLink>
           <HoveredLink href="/videos">Videos content</HoveredLink>
+          <HoveredLink href="/lova">LOVA</HoveredLink>
           
           </div>
         </MenuItem>

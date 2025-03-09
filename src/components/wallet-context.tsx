@@ -237,8 +237,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           } else if (status.isInBlock) {
             console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
             console.log(`Transaction hash: ${txHash.toString()}`);
+            // here we use the ratio 15:1 for the point in the pool, so 2 DOT is around 12000 LOVA, 10u, would be 800 points in the pool
             if (videoId && contributor) {
-              updateContributorsAndTokens(videoId, contributor, amount).then(() => {
+              updateContributorsAndTokens(videoId, contributor, amount/15).then(() => {
                 setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
               });
             } else {

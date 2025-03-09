@@ -110,7 +110,7 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
       if (supportType === "LOVA in ACALA") {
         return (
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg text-white">
-            <h1 className="font-sans mb-7 text-2xl text-center">Support The Creator</h1>
+            <h1 className="font-sans mb-7 text-2xl text-center">Support this content using LOVA in Acala chain (15 LOVA = 1 point in the pool)</h1>
             <p className="my-4 text-sm text-center">
               💡 Your <span className="text-text-primary font-semibold">Balance is </span>
               <span className="text-blue-400">{safeTokenBalance.toFixed(2)} {getTokenName()}</span>
@@ -145,7 +145,7 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
       } else {
         return (
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg text-white">
-            <h1 className="font-sans mb-7 text-2xl text-center">Support The Creator</h1>
+            <h1 className="font-sans mb-7 text-2xl text-center">Support this content</h1>
             <p className="my-4 text-sm text-center">
               💡 Your <span className="text-text-primary font-semibold">Balance is </span>
               <span className="text-blue-400">{safeTokenBalance.toFixed(2)} {getTokenName()}</span>
