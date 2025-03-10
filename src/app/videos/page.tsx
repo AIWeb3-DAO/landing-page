@@ -1,10 +1,10 @@
-import Watach from '@/components/videos/Watch'
-import React from 'react'
+import Watch from '@/components/videos/Watch';
+import React from 'react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { FB_DB } from '@/lib/fbClient';
 import VideoCard from '@/components/videos/VideoCard';
 import { NavbarDemo } from '@/components/TopNavbar';
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 interface Video {
   id: string;
@@ -16,9 +16,8 @@ interface Video {
   description: string;
   currentRatio: string;
   combinedScore?: number;
+  level?: number; // Added for upgrade level
 }
-
-
 
 // Server-side fetching inside the component
 const fetchVideos = async (): Promise<Video[]> => {
@@ -66,6 +65,19 @@ const fetchVideos = async (): Promise<Video[]> => {
         // Calculate combined score
         const combinedScore = recencyScore + totalTokens * 0.5;
 
+        // Check upgrade level from tag
+        let level = 0;
+        if (data.tag) {
+          try {
+            const tagData = JSON.parse(data.tag);
+            if (tagData.upgrades && typeof tagData.upgrades === 'object') {
+              level = Object.keys(tagData.upgrades).length; // Number of upgrades
+            }
+          } catch (e) {
+            // If tag isn’t JSON or doesn’t have upgrades, level remains 0
+          }
+        }
+
         videosList.push({
           id: doc.id,
           youtubeURL: videoId,
@@ -75,7 +87,8 @@ const fetchVideos = async (): Promise<Video[]> => {
           tokens: data.tokens,
           description: `Posted ${timeDifferenceInHours} hours (${timeDifferenceInMins} mins) ago`,
           currentRatio: current_ratio,
-          combinedScore, // Store the combined score for sorting
+          combinedScore,
+          level: level > 0 ? level : undefined, // Only set if upgraded
         });
       }
     });
@@ -88,30 +101,31 @@ const fetchVideos = async (): Promise<Video[]> => {
     console.error('Error fetching videos:', error);
     return [];
   }
-}
+};
+
 export default async function page() {
   const videos = await fetchVideos();
 
-  
   return (
-    <div className='min-h-screen  w-full '>
-     <NavbarDemo  />
-       <div  className='h-[30vh] flex items-center justify-center'>
-     <div  className=' p-2  max-w-xl  mx-auto  '>
-      <h1  className='text-center text-2xl'>Check Polkadot eco videos, support the best content creators while also earn the reward!</h1>
+    <div className="min-h-screen w-full">
+      <NavbarDemo />
+      <div className="h-[30vh] flex items-center justify-center">
+        <div className="p-2 max-w-xl mx-auto">
+          <h1 className="text-center text-2xl">
+            Check Polkadot eco videos, support the best content creators while also earn the reward!
+          </h1>
+          <br />
+          <h2 className="text-center text-2xl">
+            Special Event with Metahub, Bifrost and Vara network, Neemo Finance
+          </h2>
+        </div>
+      </div>
 
-      <br></br>
-      <h2  className='text-center text-2xl'>Special Event with Metahub, Bifrost and Vara network, Neemo Finance</h2>
-
-     </div>
-     </div>
-
-     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 my-3  max-w-[90%]  gap-3  mx-auto '>
-      {videos?.map((item, i)  =>  (
-   <VideoCard key={i} video={item}  />
-))}
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 my-3 max-w-[90%] gap-3 mx-auto">
+        {videos?.map((item, i) => (
+          <VideoCard key={i} video={item} />
+        ))}
       </div>
     </div>
-  )
+  );
 }

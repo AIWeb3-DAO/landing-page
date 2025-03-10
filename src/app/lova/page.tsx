@@ -6,9 +6,9 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { FB_DB } from "@/lib/fbClient";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion"; // For animations
+import { motion } from "framer-motion";
 
-const LOVAlogo = "/img/LOVA_logo.png"; // Ensure this exists in `public/img/`
+const LOVAlogo = "/img/LOVA_logo.png";
 
 interface Video {
   id: string;
@@ -22,10 +22,42 @@ interface Video {
   totalTokens: number;
 }
 
+interface Balances {
+  acalaBalancePUMPBOT: number;
+  lovaBalancePUMPBOT: number;
+  acalaBalanceTreasury: number;
+  lovaBalanceTreasury: number;
+}
+
 export default function LOVA() {
   const [videos, setVideos] = useState<Video[]>([]);
+  const [balances, setBalances] = useState<Balances>({
+    acalaBalancePUMPBOT: 0,
+    lovaBalancePUMPBOT: 0,
+    acalaBalanceTreasury: 0,
+    lovaBalanceTreasury: 0,
+  });
 
   useEffect(() => {
+    const parseFormattedBalance = (formattedString: string): number => {
+      if (!formattedString || typeof formattedString !== "string") return 0;
+    
+      // Split into numeric part and unit (e.g., "19.9999 kACA" -> ["19.9999", "kACA"])
+      const [numericPart, unit] = formattedString.split(" ");
+      if (!numericPart) return 0;
+    
+      // Check for 'k' multiplier in the numeric part or unit
+      let value = parseFloat(numericPart); // e.g., "19.9999" -> 19.9999
+      if (isNaN(value)) return 0;
+    
+      // Handle multiplier based on unit or numeric part
+      if (numericPart.toLowerCase().endsWith("k") || (unit && unit.toLowerCase().startsWith("k"))) {
+        value *= 1000; // e.g., 19.9999 * 1000 = 19999.9
+      }
+    
+      return value;
+    };
+
     const fetchVideos = async () => {
       try {
         const timeDoc = await getDoc(doc(FB_DB, "keyINFO", "time"));
@@ -55,8 +87,8 @@ export default function LOVA() {
             const contributors =
               data.contributors && data.tokens
                 ? data.contributors.map((address: string, index: number) => ({
-                    address, // Address from contributors array
-                    amount: data.tokens[index] || 0, // Corresponding token amount, default to 0 if missing
+                    address,
+                    amount: data.tokens[index] || 0,
                   }))
                 : [];
 
@@ -80,11 +112,40 @@ export default function LOVA() {
       }
     };
 
+    const fetchBalances = async () => {
+      try {
+        const balanceDoc = await getDoc(doc(FB_DB, "keyINFO", "balance"));
+        if (balanceDoc.exists()) {
+          const balanceData = balanceDoc.data();
+          console.log("Raw balance data:", balanceData); // Debug raw data
+
+          const formattedBalances: Balances = {
+            acalaBalancePUMPBOT: parseFormattedBalance(balanceData.acalaBalancePUMPBOT),
+            lovaBalancePUMPBOT: parseFormattedBalance(balanceData.lovaBalancePUMPBOT),
+            acalaBalanceTreasury: parseFormattedBalance(balanceData.acalaBalanceTreasury),
+            lovaBalanceTreasury: parseFormattedBalance(balanceData.lovaBalanceTreasury),
+          };
+
+          console.log("Parsed balances:", formattedBalances); // Debug parsed values
+          setBalances(formattedBalances);
+        } else {
+          console.warn("Balance data not found in Firestore.");
+        }
+      } catch (error) {
+        console.error("Error fetching balances:", error);
+      }
+    };
+
     fetchVideos();
+    fetchBalances();
   }, []);
 
-  // Define reward array for top 5 videos (in LOVA)
-  const rewardTiers = [120000, 110000, 100000, 90000, 80000]; // Adjust these values as needed
+  // Format numbers with thousand separators and 2 decimal places
+  const formatNumber = (num: number): string => {
+    return num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const rewardTiers = [120000, 110000, 100000, 90000, 80000];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white overflow-hidden">
@@ -120,7 +181,6 @@ export default function LOVA() {
             </Link>
           </div>
         </motion.div>
-        {/* Background Animation */}
         <div className="absolute inset-0 -z-10 opacity-20">
           <div className="w-full h-full bg-[radial-gradient(circle_at_center,#1e40af_0%,transparent_70%)] animate-pulse"></div>
         </div>
@@ -199,7 +259,38 @@ export default function LOVA() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg mb-8"
           >
-            Powered by <span className="text-blue-400">real-time sentiment analysis</span>, the AI agent boosts LOVA based on community engagement.
+            <section className="text-center text-lg text-gray-300">
+              <p>
+                <span className="text-blue-400 font-semibold">LOVA Pump AI</span> is an intelligent,
+                community-driven agent that automatically buys LOVA based on{" "}
+                <strong>real-time sentiment analysis</strong> and <strong>social engagement</strong>. The more active the
+                community, the stronger the support for LOVA! 🚀
+              </p>
+              
+
+              <p className="mt-4">
+                <span className="text-blue-400 font-semibold"> 💰 LOVA Pump Bot:</span>{" "}
+                {formatNumber(balances.acalaBalancePUMPBOT)} ACA | {formatNumber(balances.lovaBalancePUMPBOT)} LOVA
+              </p>
+
+              <p className="text-gray-300">
+                <span className="text-blue-400 font-semibold">🏦 Treasury Reserve:</span>{" "}
+                {formatNumber(balances.acalaBalanceTreasury)} ACA | {formatNumber(balances.lovaBalanceTreasury)} LOVA
+              </p>
+
+              <p className="mt-6 text-gray-300">
+                Stay updated with <strong>LOVA Pump AI’s</strong> latest activity and insights—{" "}
+                <a
+                  href="https://x.com/LovaPump"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 font-semibold hover:underline"
+                >
+                  follow us on Twitter!
+                </a>{" "}
+                💙
+              </p>
+            </section>
           </motion.p>
           <div className="flex flex-col md:flex-row justify-center gap-6 text-left">
             <motion.div
@@ -253,14 +344,14 @@ export default function LOVA() {
           ) : (
             <div className="space-y-12">
               {videos.map((video, i) => {
-                const totalReward = rewardTiers[i] || 100000; // Default to 100,000 if index exceeds array
-                const creatorReward = totalReward * 0.5; // 50%
-                const protocolReward = totalReward * 0.1; // 10%
-                const contributorPoolReward = totalReward * 0.4; // 40%
+                const totalReward = rewardTiers[i] || 100000;
+                const creatorReward = totalReward * 0.5;
+                const protocolReward = totalReward * 0.1;
+                const contributorPoolReward = totalReward * 0.4;
 
-                const totalPoints = video.totalTokens; // e.g., 653.75
-                const lovaPool = totalPoints * 15; // e.g., 653.75 * 15 = 9806.25
-                const profitPerLova = lovaPool > 0 ? (contributorPoolReward / lovaPool).toFixed(2) : "0.00"; // e.g., 40000 / 9806.25 ≈ 4.08
+                const totalPoints = video.totalTokens;
+                const lovaPool = totalPoints * 15;
+                const profitPerLova = lovaPool > 0 ? (contributorPoolReward / lovaPool).toFixed(2) : "0.00";
 
                 return (
                   <motion.div
@@ -270,7 +361,6 @@ export default function LOVA() {
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                     className="flex flex-col md:flex-row items-center bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden"
                   >
-                    {/* Video Thumbnail */}
                     <div className="md:w-1/3 w-full">
                       <Link href={`/videos/${video.id}`}>
                         <Image
@@ -283,7 +373,6 @@ export default function LOVA() {
                       </Link>
                     </div>
 
-                    {/* Stats and Info */}
                     <div className="md:w-2/3 w-full p-6 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between mb-4">
@@ -304,17 +393,18 @@ export default function LOVA() {
                         </p>
                       </div>
 
-                      {/* Reward Breakdown */}
                       <div className="mt-4 bg-gray-700 p-4 rounded-lg">
-                        <h4 className="text-md font-semibold text-blue-400 mb-2">Reward Breakdown (Total: {totalReward.toLocaleString()} LOVA)</h4>
+                        <h4 className="text-md font-semibold text-blue-400 mb-2">
+                          Reward Breakdown (Total: {formatNumber(totalReward)} LOVA)
+                        </h4>
                         <ul className="text-sm text-gray-300 space-y-1">
-                          <li>🎥 <strong>Content Creator:</strong> {creatorReward.toLocaleString()} LOVA (50%)</li>
-                          <li>⚙️ <strong>Protocol:</strong> {protocolReward.toLocaleString()} LOVA (10%)</li>
-                          <li>💧 <strong>Contributor Pool:</strong> {contributorPoolReward.toLocaleString()} LOVA (40%)</li>
+                          <li>🎥 <strong>Content Creator:</strong> {formatNumber(creatorReward)} LOVA (50%)</li>
+                          <li>⚙️ <strong>Protocol:</strong> {formatNumber(protocolReward)} LOVA (10%)</li>
+                          <li>💧 <strong>Contributor Pool:</strong> {formatNumber(contributorPoolReward)} LOVA (40%)</li>
                         </ul>
                         <div className="mt-3 bg-blue-900/50 p-3 rounded-md">
                           <p className="text-sm font-semibold text-blue-300">
-                            🌟 <strong>Total worth of LOVA in Pool:</strong> {lovaPool.toLocaleString()} LOVA
+                            🌟 <strong>Total worth of LOVA in Pool:</strong> {formatNumber(lovaPool)} LOVA
                           </p>
                           <p className="text-sm font-semibold text-green-400">
                             💰 <strong>Profit per LOVA Contributed:</strong> {profitPerLova} LOVA
@@ -322,7 +412,6 @@ export default function LOVA() {
                         </div>
                       </div>
 
-                      {/* Contributors */}
                       <div className="mt-4">
                         <h4 className="text-md font-semibold text-gray-200">Top Contributors:</h4>
                         <ul className="text-sm text-gray-400">
@@ -331,14 +420,14 @@ export default function LOVA() {
                               video.contributors.reduce((acc, contributor) => {
                                 acc[contributor.address] = (acc[contributor.address] || 0) + contributor.amount;
                                 return acc;
-                              }, {} as Record<string, number>) // Aggregate contributions per address
+                              }, {} as Record<string, number>)
                             )
                               .map(([address, totalAmount]) => ({
                                 address: `${address.slice(0, 4)}...${address.slice(-4)}`,
                                 amount: totalAmount,
-                              })) // Convert back to array with truncated address
-                              .sort((a, b) => b.amount - a.amount) // Sort by highest amount
-                              .slice(0, 4) // Take the top 4 contributors
+                              }))
+                              .sort((a, b) => b.amount - a.amount)
+                              .slice(0, 4)
                               .map((contributor, index) => (
                                 <li key={index}>
                                   💎 {contributor.address} - {contributor.amount} points
@@ -350,11 +439,10 @@ export default function LOVA() {
                         </ul>
                       </div>
 
-                      {/* Support Button */}
                       <div className="mt-6 text-center">
                         <Link href={`/videos/${video.id}`}>
                           <button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-2 rounded-full font-semibold transition-all">
-                            Support & Earn {profitPerLova} per LOVA 
+                            Support & Earn {profitPerLova} per LOVA
                           </button>
                         </Link>
                       </div>
