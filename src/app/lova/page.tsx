@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { NavbarDemo } from "@/components/TopNavbar";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { FB_DB } from "@/lib/fbClient";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,24 +37,33 @@ export default function LOVA() {
     acalaBalanceTreasury: 0,
     lovaBalanceTreasury: 0,
   });
+  const [timeLeft, setTimeLeft] = useState<string | null>(null);
+
+  // Function to calculate time left until rewardTime
+  const calculateTimeLeft = (rewardTime: number, currentTime: number) => {
+    const difference = rewardTime - currentTime;
+
+    if (difference <= 0) {
+      return "Reward Available Now!";
+    }
+
+    const hours = Math.floor(difference / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
   useEffect(() => {
     const parseFormattedBalance = (formattedString: string): number => {
       if (!formattedString || typeof formattedString !== "string") return 0;
-    
-      // Split into numeric part and unit (e.g., "19.9999 kACA" -> ["19.9999", "kACA"])
       const [numericPart, unit] = formattedString.split(" ");
       if (!numericPart) return 0;
-    
-      // Check for 'k' multiplier in the numeric part or unit
-      let value = parseFloat(numericPart); // e.g., "19.9999" -> 19.9999
+      let value = parseFloat(numericPart);
       if (isNaN(value)) return 0;
-    
-      // Handle multiplier based on unit or numeric part
       if (numericPart.toLowerCase().endsWith("k") || (unit && unit.toLowerCase().startsWith("k"))) {
-        value *= 1000; // e.g., 19.9999 * 1000 = 19999.9
+        value *= 1000;
       }
-    
       return value;
     };
 
@@ -117,30 +126,58 @@ export default function LOVA() {
         const balanceDoc = await getDoc(doc(FB_DB, "keyINFO", "balance"));
         if (balanceDoc.exists()) {
           const balanceData = balanceDoc.data();
-          console.log("Raw balance data:", balanceData); // Debug raw data
-
           const formattedBalances: Balances = {
             acalaBalancePUMPBOT: parseFormattedBalance(balanceData.acalaBalancePUMPBOT),
             lovaBalancePUMPBOT: parseFormattedBalance(balanceData.lovaBalancePUMPBOT),
             acalaBalanceTreasury: parseFormattedBalance(balanceData.acalaBalanceTreasury),
             lovaBalanceTreasury: parseFormattedBalance(balanceData.lovaBalanceTreasury),
           };
-
-          console.log("Parsed balances:", formattedBalances); // Debug parsed values
           setBalances(formattedBalances);
-        } else {
-          console.warn("Balance data not found in Firestore.");
         }
       } catch (error) {
         console.error("Error fetching balances:", error);
       }
     };
 
+    // Real-time listener for timestamp and rewardTime
+    const timeDocRef = doc(FB_DB, "keyINFO", "time");
+    const unsubscribe = onSnapshot(timeDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const timestamp = data.timestamp?.toMillis?.() || Date.now();
+        const rewardTime = data.rewardTime; // Assuming stored as milliseconds
+
+        if (rewardTime) {
+          setTimeLeft(calculateTimeLeft(rewardTime, Date.now()));
+        } else {
+          setTimeLeft("Reward time not set");
+        }
+      } else {
+        setTimeLeft("Time data not found");
+      }
+    }, (error) => {
+      console.error("Error listening to time data:", error);
+      setTimeLeft("Error loading timer");
+    });
+
     fetchVideos();
     fetchBalances();
+
+    // Update time left every second
+    const interval = setInterval(() => {
+      const timeDocData = timeDocRef ? timeDocRef._document?.data?.value.mapValue.fields : null;
+      const rewardTime = timeDocData?.rewardTime?.integerValue || timeDocData?.rewardTime?.doubleValue;
+      if (rewardTime) {
+        setTimeLeft(calculateTimeLeft(rewardTime, Date.now()));
+      }
+    }, 1000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(interval);
+    };
   }, []);
 
-  // Format numbers with thousand separators and 2 decimal places
   const formatNumber = (num: number): string => {
     return num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
@@ -266,7 +303,6 @@ export default function LOVA() {
                 <strong>real-time sentiment analysis</strong> and <strong>social engagement</strong>. The more active the
                 community, the stronger the support for LOVA! 🚀
               </p>
-              
 
               <p className="mt-4">
                 <span className="text-blue-400 font-semibold"> 💰 LOVA Pump Bot:</span>{" "}
@@ -276,6 +312,11 @@ export default function LOVA() {
               <p className="text-gray-300">
                 <span className="text-blue-400 font-semibold">🏦 Treasury Reserve:</span>{" "}
                 {formatNumber(balances.acalaBalanceTreasury)} ACA | {formatNumber(balances.lovaBalanceTreasury)} LOVA
+              </p>
+
+              <p className="text-gray-300">
+                <span className="text-yellow-400 font-semibold"> ✅ LOVA value by AI Agent:</span>{" "}
+                75 LOVA = 1 ACA 
               </p>
 
               <p className="mt-6 text-gray-300">
@@ -352,6 +393,9 @@ export default function LOVA() {
                 const totalPoints = video.totalTokens;
                 const lovaPool = totalPoints * 15;
                 const profitPerLova = lovaPool > 0 ? (contributorPoolReward / lovaPool).toFixed(2) : "0.00";
+                const weeklyProfit = parseFloat(profitPerLova); // Convert to number
+                const apy = lovaPool > 0 ? ((1 + weeklyProfit) ** 52 - 1) * 100 : 0; // APY as percentage
+                const formattedApy = apy.toFixed(2); // Round to 2 decimal places
 
                 return (
                   <motion.div
@@ -442,9 +486,19 @@ export default function LOVA() {
                       <div className="mt-6 text-center">
                         <Link href={`/videos/${video.id}`}>
                           <button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-2 rounded-full font-semibold transition-all">
-                            Support & Earn {profitPerLova} per LOVA
+                            Support & Earn {formattedApy}% APY
                           </button>
                         </Link>
+                        <div className="mt-2 text-sm text-gray-400">
+                             Weekly Profit: {profitPerLova} LOVA per LOVA
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          {timeLeft !== null ? (
+                            <span>Time until reward: {timeLeft}</span>
+                          ) : (
+                            <span>Loading timer...</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </motion.div>
