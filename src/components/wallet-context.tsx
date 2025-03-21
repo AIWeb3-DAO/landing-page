@@ -234,6 +234,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               console.error(`Transaction failed: ${dispatchError.toString()}`);
             }
             setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
+            getBalances(); // Refresh balances after transfer
           } else if (status.isInBlock) {
             console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
             console.log(`Transaction hash: ${txHash.toString()}`);
@@ -245,8 +246,10 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             } else {
               setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
             }
+            getBalances(); // Refresh balances after transfer
           } else {
             console.log(`Transaction status: ${status.type}`);
+            getBalances(); // Refresh balances after transfer
           }
         });
       } else {
@@ -273,11 +276,35 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       // Acala ($LOVA) balance
       const assetId = 18;
       const lovaBalance = await apiAcala.query.tokens.accounts(accounts[0].address, { ForeignAsset: assetId });
-      const formattedLovaBalance = formatBalance((lovaBalance as any).free, {
+      //console.log("this is the lova balance, same? ",lovaBalance);
+
+      //const adjustedLOVABalance = lovaBalance.free.muln(1000);
+      const formattedLovaBalance = formatBalance(lovaBalance?.free, {
         decimals: 12,
         withUnit: "LOVA",
       });
-      setBalances((prev) => ({ ...prev, LOVA: formattedLovaBalance }));
+      const SpecialparseTokenBalance = (balance: string | undefined) => {
+        if (!balance || typeof balance !== "string") return 0;
+        const [numericPart, unit] = balance.split(" ");
+        const value = Number(numericPart) || 0;
+    
+        if (!unit) return value;
+        if (unit.toLowerCase().includes("k")) {
+          return value * 1000; // Convert "kLOVA" to full LOVA
+        } else if (unit.toLowerCase().includes("m")) {
+          return value * 1000000; // Handle "MLOVA" if needed
+        } else if (unit.toLowerCase().includes("lova")) {
+          return value; // Plain "LOVA"
+        }
+        return value;
+      };
+
+      const formattedLovaBalance2 = SpecialparseTokenBalance(formattedLovaBalance);
+
+      console.log("formated LOVA balance (free):",formattedLovaBalance);
+      console.log("formated2 LOVA balance (free):",formattedLovaBalance2);
+
+      setBalances((prev) => ({ ...prev, LOVA: formattedLovaBalance}));
     } catch (error) {
       console.error("Error fetching balances:", error);
     }
@@ -287,8 +314,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     getBalances();
   }, [api, apiAcala, accounts]);
 
-  console.log("user balances", balances);
-  console.log("tipping states", tippingStates);
+  console.log("nn user balances", balances);
+  console.log("nn tipping states", tippingStates);
 
   return (
     <WalletContext.Provider

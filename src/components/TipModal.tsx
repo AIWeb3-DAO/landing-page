@@ -27,11 +27,29 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
   const isTippingSuccess = tippingStates[tokenType].isSuccess;
 
   const recipientAddress = "5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT";
+  // const parseTokenBalance = (balance: string | undefined) => {
+  //   if (!balance || typeof balance !== "string") return 0;
+  //   const numericPart = balance.split(" ")[0];
+  //   return Number(numericPart) || 0;
+  // };
   const parseTokenBalance = (balance: string | undefined) => {
     if (!balance || typeof balance !== "string") return 0;
-    const numericPart = balance.split(" ")[0];
-    return Number(numericPart) || 0;
+    const [numericPart, unit] = balance.split(" ");
+    const value = Number(numericPart) || 0;
+
+    if (!unit) return value;
+    if (unit.toLowerCase().includes("k")) {
+      return value * 1000; // Convert "kLOVA" to full LOVA
+    } else if (unit.toLowerCase().includes("m")) {
+      return value * 1000000; // Handle "MLOVA" if needed
+    } else if (unit.toLowerCase().includes("lova")) {
+      return value; // Plain "LOVA"
+    }
+    return value;
   };
+
+  //console.log("the token balance: ", tokenBalance);
+
   const safeTokenBalance = parseTokenBalance(tokenBalance);
   const [customAmount, setCustomAmount] = useState(() => {
     const halfBalance = safeTokenBalance / 2;
