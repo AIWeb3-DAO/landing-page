@@ -77,18 +77,18 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // Reconnect wallet from localStorage
   useEffect(() => {
     const savedWalletId = localStorage.getItem("ai3Wallet");
-    console.log("saved wallet", savedWalletId);
+    //console.log("saved wallet", savedWalletId);
     if (wallets && wallets.length > 0 && savedWalletId) {
       reconnectWallet(savedWalletId);
     }
   }, [wallets]);
 
-  console.log("saved accounts", accounts);
+  //console.log("saved accounts", accounts);
 
   const reconnectWallet = async (walletId: string) => {
     try {
       const wallet = wallets?.find((w) => w.metadata.id === walletId);
-      console.log("the required wallet", wallet);
+      //console.log("the required wallet", wallet);
       if (!wallet) throw new Error("Wallet not found");
       await wallet.connect();
       const accounts = await wallet.getAccounts();
@@ -138,7 +138,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Update contributors and tokens in Firestore
   const updateContributorsAndTokens = async (videoId: string, newContributor: string, newToken: number) => {
-    console.log("the added video id", videoId);
+    //console.log("the added video id", videoId);
     try {
       if (FB_DB) {
         const videoDocRef = doc(FB_DB, "youtube", videoId);
@@ -168,7 +168,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           tokens: updatedTokens,
         });
 
-        console.log("Contributors and tokens updated");
+        //console.log("Contributors and tokens updated");
       }
     } catch (error) {
       console.error("Error updating contributors and tokens:", error);
@@ -206,8 +206,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             }
             setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
           } else if (status.isInBlock) {
-            console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
-            console.log(`Transaction hash: ${txHash.toString()}`);
+            //console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
+           // console.log(`Transaction hash: ${txHash.toString()}`);
             if (videoId && contributor) {
               updateContributorsAndTokens(videoId, contributor, amount).then(() => {
                 setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
@@ -236,8 +236,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
             getBalances(); // Refresh balances after transfer
           } else if (status.isInBlock) {
-            console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
-            console.log(`Transaction hash: ${txHash.toString()}`);
+            //console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
+            //console.log(`Transaction hash: ${txHash.toString()}`);
             // here we use the ratio 15:1 for the point in the pool, so 2 DOT is around 12000 LOVA, 10u, would be 800 points in the pool
             if (videoId && contributor) {
               updateContributorsAndTokens(videoId, contributor, amount/15).then(() => {
@@ -301,8 +301,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
       const formattedLovaBalance2 = SpecialparseTokenBalance(formattedLovaBalance);
 
-      console.log("formated LOVA balance (free):",formattedLovaBalance);
-      console.log("formated2 LOVA balance (free):",formattedLovaBalance2);
+      //console.log("formated LOVA balance (free):",formattedLovaBalance);
+      //console.log("formated2 LOVA balance (free):",formattedLovaBalance2);
 
       setBalances((prev) => ({ ...prev, LOVA: formattedLovaBalance}));
     } catch (error) {
@@ -314,8 +314,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     getBalances();
   }, [api, apiAcala, accounts]);
 
-  console.log("nn user balances", balances);
-  console.log("nn tipping states", tippingStates);
+  //console.log("nn user balances", balances);
+  //console.log("nn tipping states", tippingStates);
 
   return (
     <WalletContext.Provider

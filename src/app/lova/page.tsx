@@ -7,6 +7,9 @@ import { FB_DB } from "@/lib/fbClient";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import {useWalletContext} from "@/components/wallet-context";
+
+//const {accounts, isShowConnectModal, setIsShowConnectModal} = useWalletContext()
 
 const LOVAlogo = "/img/LOVA_logo.png";
 
@@ -30,6 +33,10 @@ interface Balances {
 }
 
 export default function LOVA() {
+  const { accounts, isShowConnectModal, setIsShowConnectModal } = useWalletContext();
+
+  const [isEligible, setIsEligible] = useState(null);
+
   const [videos, setVideos] = useState<Video[]>([]);
   const [balances, setBalances] = useState<Balances>({
     acalaBalancePUMPBOT: 0,
@@ -55,6 +62,29 @@ export default function LOVA() {
   };
 
   useEffect(() => {
+
+    const checkEligibility = async () => {
+      if (accounts.length === 0 || !accounts[0]?.address) {
+        //console.log("⛔ No wallet address detected, skipping eligibility check.");
+        setIsEligible(null);
+        return;
+      }
+  
+      const address = accounts[0].address;
+      //console.log("✅ Checking eligibility for:", address);
+  
+      try {
+        const snapshot = await getDocs(collection(FB_DB, "keyINFO", "airdrop", "addresses"));
+        const matched = snapshot.docs.find(doc => doc.id === address);
+        setIsEligible(!!matched);
+        //console.log("🎯 Airdrop status:", matched ? "Eligible ✅" : "Not eligible ❌");
+      } catch (err) {
+        console.error("❌ Firestore error checking eligibility:", err);
+        setIsEligible(null);
+      }
+    };
+
+
     const parseFormattedBalance = (formattedString: string): number => {
       if (!formattedString || typeof formattedString !== "string") return 0;
       const [numericPart, unit] = formattedString.split(" ");
@@ -160,6 +190,9 @@ export default function LOVA() {
       setTimeLeft("Error loading timer");
     });
 
+
+    checkEligibility();
+  
     fetchVideos();
     fetchBalances();
 
@@ -176,7 +209,7 @@ export default function LOVA() {
       unsubscribe();
       clearInterval(interval);
     };
-  }, []);
+  }, [accounts]);
 
   const formatNumber = (num: number): string => {
     return num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -213,9 +246,14 @@ export default function LOVA() {
             </Link>
             <Link href="#videos">
               <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full font-semibold transition-all">
-                Support and Earn LOVA
+                Support contents and Earn
               </button>
             </Link>
+            <Link href="#voting">
+              <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full font-semibold transition-all">
+                Vote and Earn
+              </button>
+            </Link>            
           </div>
         </motion.div>
         <div className="absolute inset-0 -z-10 opacity-20">
@@ -362,6 +400,97 @@ export default function LOVA() {
           </div>
         </div>
       </section>
+
+
+{/* ❤️ Earn & Share LOVA by Voting Section */}
+<section id="voting" className="py-16 px-4 text-center bg-gradient-to-r from-pink-900/50 to-red-900/50">
+  <div className="max-w-4xl mx-auto">
+    <motion.h2
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="text-4xl font-bold mb-6 text-white"
+    >
+      ❤️ Earn & Share LOVA by Voting!
+    </motion.h2>
+    <motion.p
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="text-lg mb-8 text-gray-300"
+    >
+      <section className="text-center text-lg text-gray-300">
+        <p>
+          🎉 The <span className="text-pink-400 font-semibold">Acala Meme & dApp Competition</span> is ON! 
+        </p>
+        <p className="mt-4">
+          ❤️ Voting for <strong>LOVA</strong> or any dApp shows your support — and earns you <span className="text-yellow-400 font-semibold">LOVA airdrops</span>!
+        </p>
+        <p className="mt-4">
+          💸 Use LOVA to tip creators, power up content, and grow your impact. Every vote fuels the love economy. The more you give, the more you earn!
+        </p>
+        <p className="mt-6 text-gray-300">
+          <a
+            href="https://voting.opensquare.io/space/acala/proposal/Qme3jkfQh7crdiS96mFdiXrPBd3bNPwNPZtnZXDhrMqogi?page=1&discussion_page=1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-red-400 font-semibold hover:underline"
+          >
+            👉 Vote Now & Spread the LOVA 💖
+          </a>
+        </p>
+        {isEligible === true && (
+        <p className="text-green-400 mt-2 font-semibold">
+          🎉 You are qualified for the airdrop, thank you for voting and sharing love!
+        </p>
+        )}
+
+        {isEligible === false && (
+        <p className="text-yellow-300 mt-2">
+          🔔 Please vote for the airdrop (if you already did, updates are coming soon).
+        </p>
+        )}
+
+        {isEligible === null && (
+        <p className="text-yellow-300 mt-2">
+          🔔 Connect your wallet to check if you qualify for the airdrop!
+        </p>
+        )}
+
+      </section>
+
+    </motion.p>
+    <div className="flex flex-col md:flex-row justify-center gap-6 text-left">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gray-800 p-6 rounded-lg shadow-lg flex-1"
+      >
+        <h3 className="text-xl font-semibold mb-2 text-white">Why Voting Matters</h3>
+        <ul className="space-y-2 text-gray-300">
+          <li>✅ Help the best dApps shine in the Acala ecosystem.</li>
+          <li>✅ Spread positivity and love through your votes.</li>
+          <li>✅ Every vote supports real builders and community creators.</li>
+        </ul>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="bg-gray-800 p-6 rounded-lg shadow-lg flex-1"
+      >
+        <h3 className="text-xl font-semibold mb-2 text-white">How You Benefit</h3>
+        <p className="text-gray-300">
+          ✨ Get rewarded with <span className="text-pink-400 font-semibold">LOVA</span> just for participating.
+          Then, use it to tip creators or support future dApps. It’s a win-win for everyone in the ecosystem!
+        </p>
+      </motion.div>
+    </div>
+  </div>
+</section>
+
+
 
       {/* Top Videos Section */}
       <section id="videos" className="py-16 px-4 bg-gray-900">
