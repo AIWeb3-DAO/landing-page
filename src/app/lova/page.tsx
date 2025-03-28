@@ -567,11 +567,12 @@ export default function LOVA() {
 
                 const totalPoints = video.totalTokens;
                 const lovaPool = totalPoints * 15;
-                const profitPerLova = lovaPool > 0 ? (contributorPoolReward / lovaPool).toFixed(2) : "0.00";
-                const weeklyProfit = parseFloat(profitPerLova); // Convert to number
-                const apy = lovaPool > 0 ? ((1 + weeklyProfit) ** 52 - 1) * 100 : 0; // APY as percentage
-                const formattedApy = apy.toFixed(2); // Round to 2 decimal places
-
+                const rawProfit = lovaPool > 0 ? contributorPoolReward / lovaPool : 0;
+                const profitPerLova = (rawProfit - 1).toFixed(2); // 实际利润（去掉本金）
+                const weeklyProfit = parseFloat(profitPerLova);
+                const apy = weeklyProfit > 0 ? ((1 + weeklyProfit) ** 52 - 1) * 100 : 0;
+                const formattedApy = apy.toFixed(2);
+                
                 return (
                   <motion.div
                     key={i}
