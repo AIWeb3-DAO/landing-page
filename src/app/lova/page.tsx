@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { NavbarDemo } from "@/components/TopNavbar";
-import { collection, getDocs, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { FB_DB } from "@/lib/fbClient";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,6 +37,8 @@ export default function LOVA() {
 
   const [isEligible, setIsEligible] = useState(null);
 
+  const [hasClaimed, setHasClaimed] = useState(false);
+
   const [videos, setVideos] = useState<Video[]>([]);
   const [balances, setBalances] = useState<Balances>({
     acalaBalancePUMPBOT: 0,
@@ -65,22 +67,34 @@ export default function LOVA() {
 
     const checkEligibility = async () => {
       if (accounts.length === 0 || !accounts[0]?.address) {
-        //console.log("⛔ No wallet address detected, skipping eligibility check.");
         setIsEligible(null);
+        setHasClaimed(false); // Reset state if no wallet
         return;
       }
-  
+    
       const address = accounts[0].address;
-      //console.log("✅ Checking eligibility for:", address);
-  
+    
       try {
         const snapshot = await getDocs(collection(FB_DB, "keyINFO", "airdrop", "addresses"));
         const matched = snapshot.docs.find(doc => doc.id === address);
-        setIsEligible(!!matched);
-        //console.log("🎯 Airdrop status:", matched ? "Eligible ✅" : "Not eligible ❌");
+    
+        if (matched) {
+          setIsEligible(true);
+    
+          const data = matched.data();
+          if (data.claim === true) {
+            setHasClaimed(true);
+          } else {
+            setHasClaimed(false);
+          }
+        } else {
+          setIsEligible(false);
+          setHasClaimed(false);
+        }
       } catch (err) {
         console.error("❌ Firestore error checking eligibility:", err);
         setIsEligible(null);
+        setHasClaimed(false);
       }
     };
 
@@ -440,10 +454,42 @@ export default function LOVA() {
           </a>
         </p>
         {isEligible === true && (
-        <p className="text-green-400 mt-2 font-semibold">
-          🎉 You are qualified for the airdrop, thank you for voting and sharing love!
-        </p>
-        )}
+  <>
+    <p className="text-green-400 mt-2 font-semibold">
+      🎉 You are qualified for the airdrop, thank you for voting and sharing love!
+    </p>
+
+    {hasClaimed ? (
+      <p className="text-blue-300 mt-2 font-semibold">
+        ✅ You've claimed the airdrop. Please wait for the voting period to end!
+      </p>
+    ) : (
+      <button
+        onClick={async () => {
+          try {
+            const address = accounts[0]?.address;
+            if (!address) return;
+
+            const docRef = doc(FB_DB, "keyINFO", "airdrop", "addresses", address);
+            await updateDoc(docRef, {
+              claim: true,
+              claimedAt: new Date(),
+            });
+
+            setHasClaimed(true);
+            console.log("✅ Airdrop claimed!");
+          } catch (err) {
+            console.error("❌ Error claiming airdrop:", err);
+            alert("Something went wrong. Please try again.");
+          }
+        }}
+        className="mt-3 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full"
+      >
+        ✨ Claim Your Airdrop
+      </button>
+    )}
+  </>
+)}
 
         {isEligible === false && (
         <p className="text-yellow-300 mt-2">
