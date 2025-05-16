@@ -48,6 +48,8 @@ export default function LOVA() {
   });
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
 
+  const [leaderboard, setLeaderboard] = useState([]);
+
   // Function to calculate time left until rewardTime
   const calculateTimeLeft = (rewardTime: number, currentTime: number) => {
     const difference = rewardTime - currentTime;
@@ -204,6 +206,26 @@ export default function LOVA() {
       setTimeLeft("Error loading timer");
     });
 
+        // Assuming FB_DB is your Firestore database instance (imported elsewhere)
+        const fetchLeaderboardData = async () => {
+          try {
+            const recordsRef = collection(FB_DB, 'keyINFO', 'KusamaElastic', 'addresses');
+            const snapshot = await getDocs(recordsRef);
+            const records = snapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            const sorted = records
+              .sort((a, b) => (b.totalKSM || 0) - (a.totalKSM || 0))
+              .slice(0, 100);
+            setLeaderboard(sorted);
+          } catch (err) {
+            console.error('❌ Error fetching leaderboard data:', err);
+          }
+        };
+
+    fetchLeaderboardData();
+    
 
     checkEligibility();
   
@@ -267,7 +289,13 @@ export default function LOVA() {
               <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full font-semibold transition-all">
                 Vote and Earn
               </button>
-            </Link>            
+            </Link>   
+            <Link href="#ksm">
+              <button className="px-6 py-3 bg-purple-300 hover:bg-purple-700 rounded-full font-semibold transition-all">
+                Kusama elastic scaling test and Earn
+              </button>
+            </Link>  
+
           </div>
         </motion.div>
         <div className="absolute inset-0 -z-10 opacity-20">
@@ -416,8 +444,8 @@ export default function LOVA() {
       </section>
 
 
-{/* ❤️ Earn & Share LOVA by Voting Section */}
-<section id="voting" className="py-16 px-4 text-center bg-gradient-to-r from-pink-900/50 to-red-900/50">
+      /* 🎉 Celebrate Elastic Scaling on Kusama */
+<section id="ksm" className="py-16 px-4 text-center bg-gradient-to-r from-blue-900/50 to-teal-900/50">
   <div className="max-w-4xl mx-auto">
     <motion.h2
       initial={{ opacity: 0 }}
@@ -425,114 +453,109 @@ export default function LOVA() {
       transition={{ duration: 0.6 }}
       className="text-4xl font-bold mb-6 text-white"
     >
-      ❤️ Earn & Share LOVA by Voting!
+      🎉 Celebrate Elastic Scaling on Kusama!
     </motion.h2>
-    <motion.p
+
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
       className="text-lg mb-8 text-gray-300"
     >
-      <section className="text-center text-lg text-gray-300">
-        <p>
-          🎉 The <span className="text-pink-400 font-semibold">Acala Meme & dApp Competition</span> is ON! 
-        </p>
-        <p className="mt-4">
-          ❤️ Voting for <strong>LOVA</strong> or any dApp shows your support — and earns you <span className="text-yellow-400 font-semibold">LOVA airdrops</span>!
-        </p>
-        <p className="mt-4">
-          💸 Use LOVA to tip creators, power up content, and grow your impact. Every vote fuels the love economy. The more you give, the more you earn!
-        </p>
-        <p className="mt-6 text-gray-300">
-          <a
-            href="https://voting.opensquare.io/space/acala/proposal/Qme3jkfQh7crdiS96mFdiXrPBd3bNPwNPZtnZXDhrMqogi?page=1&discussion_page=1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-red-400 font-semibold hover:underline"
-          >
-            👉 Vote Now & Spread the LOVA 💖
-          </a>
-        </p>
-        {isEligible === true && (
-  <>
-    <p className="text-green-400 mt-2 font-semibold">
-      🎉 You are qualified for the airdrop, thank you for voting and sharing love!
-    </p>
-
-    {hasClaimed ? (
-      <p className="text-blue-300 mt-2 font-semibold">
-        ✅ You've claimed the airdrop. Please wait for the voting period to end!
+      <p>
+        🚀 <span className="text-teal-400 font-semibold">Kusama</span> now powers elastic scaling, enhancing blockchain performance like never before!
       </p>
-    ) : (
-      <button
-        onClick={async () => {
-          try {
-            const address = accounts[0]?.address;
-            if (!address) return;
+      <p className="mt-4">
+        💪 Enjoy the benefits: Trade <strong>KSM</strong> on <span className="text-blue-400 font-semibold">Hydration</span>, mint <span className="text-yellow-400 font-semibold">vKSM</span> on Bifrost, or send KSM to your friends and spread the Web3 spirit!
+      </p>
+      <p className="mt-4">
+        🏆 The <span className="text-teal-400 font-semibold">KSM Transaction Challenge</span> is live. Check out our top users and view the complete leaderboard!
+      </p>
+      <p className="mt-6 text-gray-300">
+        📋 Ready to compete? Submit your address via this{" "}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdEqXDBl-wZC9tpTwa6I3nGYCD7hxMU44dWuJpO_MLahmQTGw/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 font-semibold hover:underline"
+        >
+          Google Form
+        </a>{" "}
+        and begin transacting with KSM today! 🚀
+      </p>
 
-            const docRef = doc(FB_DB, "keyINFO", "airdrop", "addresses", address);
-            await updateDoc(docRef, {
-              claim: true,
-              claimedAt: new Date(),
-            });
+      {/* Leaderboard Section */}
+      <div className="mt-8">
+        {/* Top 3 Users Highlight */}
+        <h3 className="text-2xl font-semibold text-white mb-4">🏆 Top 3 most active KSM Champions</h3>
+        <div className="mb-6">
+          {leaderboard.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {leaderboard.slice(0, 3).map((record, index) => (
+                <div
+                  key={record.id}
+                  className={`p-4 rounded-lg shadow-lg ${
+                    index === 0 ? "bg-yellow-600" : index === 1 ? "bg-gray-500" : "bg-orange-600"
+                  } text-white`}
+                >
+                  <p className="text-lg font-bold">#{index + 1}</p>
+                  <p>address: {record.address.slice(0,10) || "N/A"} ...</p>
+                  <p className="text-xl font-semibold mt-2">total KSM transaction: {record.totalKSM || "N/A"}</p>
+                  <p>
+                    KSM transaction # on Hydration: {record.totalKSMHydration || "N/A"}
+                  </p>
+                  <p>
+                  KSM transaction # on Kusama: {record.totalKSMKusama || "N/A"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">Loading top champions...</p>
+          )}
+        </div>
 
-            setHasClaimed(true);
-            console.log("✅ Airdrop claimed!");
-          } catch (err) {
-            console.error("❌ Error claiming airdrop:", err);
-            alert("Something went wrong. Please try again.");
-          }
-        }}
-        className="mt-3 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full"
-      >
-        ✨ Claim Your Airdrop
-      </button>
-    )}
-  </>
-)}
-
-        {isEligible === false && (
-        <p className="text-yellow-300 mt-2">
-          🔔 Please vote for the airdrop (if you already did, updates are coming soon).
+        {/* Full Leaderboard Table */}
+        <h3 className="text-2xl font-semibold text-white mb-4">📊 Full Leaderboard (Top 100)</h3>
+        <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg">
+          <div className="max-h-96 overflow-y-auto">
+            <table className="w-full text-left text-gray-300">
+              <thead className="bg-teal-700 text-white sticky top-0">
+                <tr>
+                  <th className="px-4 py-2">Rank</th>
+                  <th className="px-4 py-2">Address</th>
+                  <th className="px-4 py-2">total amount of KSM transaction</th>
+                  <th className="px-4 py-2">KSM transaction # on Hydration chain</th>
+                  <th className="px-4 py-2">KSM transaction # on Kusama chain</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {leaderboard.length > 0 ? (
+                  leaderboard.map((record, index) => (
+                    <tr key={record.id} className="hover:bg-gray-700">
+                      <td className="px-4 py-2">{index + 1}</td>
+                      <td className="px-4 py-2">{record.address || "N/A"}</td>
+                      <td className="px-4 py-2">{record.totalKSM || "N/A"}</td>
+                      <td className="px-4 py-2 truncate max-w-xs">{record.totalKSMHydration || "N/A"}</td>
+                      <td className="px-4 py-2">{record.totalKSMKusama || "0"} KSM</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="px-4 py-2 text-center">
+                      Loading leaderboard data...
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p className="mt-4 text-gray-400 text-sm">
+          📜 Scroll to see the top 100 participants. The leaderboard updates dynamically based on KSM activity.
         </p>
-        )}
-
-        {isEligible === null && (
-        <p className="text-yellow-300 mt-2">
-          🔔 Connect your wallet to check if you qualify for the airdrop!
-        </p>
-        )}
-
-      </section>
-
-    </motion.p>
-    <div className="flex flex-col md:flex-row justify-center gap-6 text-left">
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gray-800 p-6 rounded-lg shadow-lg flex-1"
-      >
-        <h3 className="text-xl font-semibold mb-2 text-white">Why Voting Matters</h3>
-        <ul className="space-y-2 text-gray-300">
-          <li>✅ Help the best dApps shine in the Acala ecosystem.</li>
-          <li>✅ Spread positivity and love through your votes.</li>
-          <li>✅ Every vote supports real builders and community creators.</li>
-        </ul>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-gray-800 p-6 rounded-lg shadow-lg flex-1"
-      >
-        <h3 className="text-xl font-semibold mb-2 text-white">How You Benefit</h3>
-        <p className="text-gray-300">
-          ✨ Get rewarded with <span className="text-pink-400 font-semibold">LOVA</span> just for participating.
-          Then, use it to tip creators or support future dApps. It’s a win-win for everyone in the ecosystem!
-        </p>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   </div>
 </section>
 
