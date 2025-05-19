@@ -41,6 +41,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [selectedWallet, setSelectedWallet] = useState<BaseWallet | null>(null);
   const [api, setApi] = useState<ApiPromise | null>(null); // Tanssi API
   const [apiAcala, setApiAcala] = useState<ApiPromise | null>(null); // Acala API
+  const [isTanssiApiLoading, setIsTanssiApiLoading] = useState<boolean>(true);
+  const [isAcalaApiLoading, setIsAcalaApiLoading] = useState<boolean>(true);
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [balances, setBalances] = useState<Record<TokenType, string | null>>({
     LOVE: null,
@@ -56,23 +58,54 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { wallets } = useWallets();
 
   // Setup APIs for Tanssi and Acala
-  useEffect(() => {
-    const setupApis = async () => {
-      // Tanssi API
+useEffect(() => {
+  const setupApis = async () => {
+    // Tanssi API setup
+    let tanssiApi: ApiPromise | null = null;
+    setIsTanssiApiLoading(true); // Set Tanssi loading state
+    try {
       const tanssiProvider = new WsProvider("wss://fraa-flashbox-4642-rpc.a.stagenet.tanssi.network");
-      const tanssiApi = await ApiPromise.create({ provider: tanssiProvider });
-      await tanssiApi.isReady;
+      // Add a timeout to avoid hanging indefinitely
+      tanssiApi = await Promise.race([
+        ApiPromise.create({ provider: tanssiProvider }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Tanssi API connection timed out")), 10000) // 10-second timeout
+        ),
+      ]);
       setApi(tanssiApi);
+    } catch (error) {
+      console.error("Failed to initialize Tanssi API:", error);
+      setApi(null); // Ensure api is null if initialization fails
+      setIsTanssiApiLoading(false); // Always set loading state to false, even on failure
+    }
 
-      // Acala API
+    // Acala API setup (independent of Tanssi)
+    let acalaApi: ApiPromise | null = null;
+    setIsAcalaApiLoading(true); // Set Acala loading state
+    try {
       const acalaProvider = new WsProvider("wss://acala-polkadot.api.onfinality.io/public-ws");
-      const acalaApi = await ApiPromise.create({ provider: acalaProvider });
-      await acalaApi.isReady;
+      // Add a timeout for Acala API as well
+      acalaApi = await Promise.race([
+        ApiPromise.create({ provider: acalaProvider }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Acala API connection timed out")), 10000) // 10-second timeout
+        ),
+      ]);
       setApiAcala(acalaApi);
-    };
+    } catch (error) {
+      console.error("Failed to initialize Acala API:", error);
+      setApiAcala(null); // Ensure apiAcala is null if initialization fails
+      setIsAcalaApiLoading(false); // Always set loading state to false, even on failure
+    }
+  };
 
-    setupApis();
-  }, []);
+  setupApis().catch((error) => {
+    console.error("Unexpected error during API setup:", error);
+    // Ensure both loading states are set to false in case of an unexpected error
+    setIsTanssiApiLoading(false);
+    setIsAcalaApiLoading(false);
+  });
+}, []);
 
   // Reconnect wallet from localStorage
   useEffect(() => {
@@ -262,52 +295,77 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const getBalances = async () => {
-    if (!accounts[0]?.address || !api?.isReady || !apiAcala?.isReady) return;
-
-    try {
-      // Tanssi ($LOVE) balance
-      const { data: loveBalance } = await api.query.system.account(accounts[0].address);
-      const formattedLoveBalance = formatBalance(loveBalance?.free, {
-        decimals: 12,
-        withUnit: "LOVE",
-      });
-      setBalances((prev) => ({ ...prev, LOVE: formattedLoveBalance }));
-
-      // Acala ($LOVA) balance
-      const assetId = 18;
-      const lovaBalance = await apiAcala.query.tokens.accounts(accounts[0].address, { ForeignAsset: assetId });
-      //console.log("this is the lova balance, same? ",lovaBalance);
-
-      //const adjustedLOVABalance = lovaBalance.free.muln(1000);
-      const formattedLovaBalance = formatBalance(lovaBalance?.free, {
-        decimals: 12,
-        withUnit: "LOVA",
-      });
-      const SpecialparseTokenBalance = (balance: string | undefined) => {
-        if (!balance || typeof balance !== "string") return 0;
-        const [numericPart, unit] = balance.split(" ");
-        const value = Number(numericPart) || 0;
-    
-        if (!unit) return value;
-        if (unit.toLowerCase().includes("k")) {
-          return value * 1000; // Convert "kLOVA" to full LOVA
-        } else if (unit.toLowerCase().includes("m")) {
-          return value * 1000000; // Handle "MLOVA" if needed
-        } else if (unit.toLowerCase().includes("lova")) {
-          return value; // Plain "LOVA"
-        }
-        return value;
-      };
-
-      const formattedLovaBalance2 = SpecialparseTokenBalance(formattedLovaBalance);
-
-      //console.log("formated LOVA balance (free):",formattedLovaBalance);
-      //console.log("formated2 LOVA balance (free):",formattedLovaBalance2);
-
-      setBalances((prev) => ({ ...prev, LOVA: formattedLovaBalance}));
-    } catch (error) {
-      console.error("Error fetching balances:", error);
+    // Check if the address exists; if not, set both balances to 0
+    if (!accounts[0]?.address) {
+      setBalances({ LOVE: "0 LOVE", LOVA: "0 LOVA" });
+      return;
     }
+  
+    // Initialize balances with default values
+    let formattedLoveBalance = "0 LOVE";
+    let formattedLovaBalance = "0 LOVA";
+  
+    // Fetch Tanssi ($LOVE) balance if api is available and ready
+    if (api && isTanssiApiLoading) {
+      try {
+        const { data: loveBalance } = await api.query.system.account(accounts[0].address);
+        formattedLoveBalance = formatBalance(loveBalance?.free || 0, {
+          decimals: 12,
+          withUnit: "LOVE",
+        });
+      } catch (error) {
+        console.error("Error fetching LOVE balance:", error);
+        formattedLoveBalance = "0 LOVE"; // Fallback to 0 if the query fails
+      }
+    } else {
+      console.warn("api is not ready or unavailable. Setting LOVE balance to 0.");
+      formattedLoveBalance = "0 LOVE";
+    }
+  
+    // Update LOVE balance
+    setBalances((prev) => ({ ...prev, LOVE: formattedLoveBalance }));
+  
+    // Fetch Acala ($LOVA) balance if apiAcala is available and ready
+    if (apiAcala && isAcalaApiLoading) {
+      try {
+        
+        const assetId = 18;
+        const lovaBalance = await apiAcala.query.tokens.accounts(accounts[0].address, { ForeignAsset: assetId });
+  
+        formattedLovaBalance = formatBalance(lovaBalance?.free || 0, {
+          decimals: 12,
+          withUnit: "LOVA",
+        });
+  
+        const SpecialparseTokenBalance = (balance: string | undefined) => {
+          if (!balance || typeof balance !== "string") return 0;
+          const [numericPart, unit] = balance.split(" ");
+          const value = Number(numericPart) || 0;
+  
+          if (!unit) return value;
+          if (unit.toLowerCase().includes("k")) {
+            return value * 1000; // Convert "kLOVA" to full LOVA
+          } else if (unit.toLowerCase().includes("m")) {
+            return value * 1000000; // Handle "MLOVA" if needed
+          } else if (unit.toLowerCase().includes("lova")) {
+            return value; // Plain "LOVA"
+          }
+          return value;
+        };
+  
+        const formattedLovaBalance2 = SpecialparseTokenBalance(formattedLovaBalance);
+        formattedLovaBalance = `${formattedLovaBalance2} LOVA`;
+      } catch (error) {
+        console.error("Error fetching LOVA balance:", error);
+        formattedLovaBalance = "0 LOVA"; // Fallback to 0 if the query fails
+      }
+    } else {
+      console.warn("apiAcala is not ready or unavailable. Setting LOVA balance to 0.");
+      formattedLovaBalance = "0 LOVA";
+    }
+  
+    // Update LOVA balance
+    setBalances((prev) => ({ ...prev, LOVA: formattedLovaBalance }));
   };
 
   useEffect(() => {

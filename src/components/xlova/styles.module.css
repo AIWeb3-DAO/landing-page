@@ -1,0 +1,368 @@
+/* components/xlova/styles.module.css */
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.section {
+  position: relative;
+}
+
+/* Form Styles */
+.formContainer {
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background-color: #1f2937;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-image: radial-gradient(circle at center, #60a5fa 0%, #9333ea 70%);
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+}
+
+.formContainerHeading {
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-weight: bold;
+  color: #d1d5db;
+}
+
+.input,
+.textarea {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  background-color: #2d3748;
+  color: #ffffff;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #60a5fa;
+  outline: none;
+}
+
+.textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.charCounter {
+  align-self: flex-end;
+  font-size: 0.9rem;
+  color: #a1a1aa;
+}
+
+.formContainerButton {
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.formContainerButton:hover {
+  background-color: #1d4ed8;
+}
+
+.error {
+  color: #ef4444;
+  margin: 10px 0;
+  text-align: center;
+}
+
+/* Message List Styles */
+.messageList {
+  margin-top: 40px;
+}
+
+.messageListHeading {
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.sectionWrapper {
+  margin-bottom: 40px;
+}
+
+.sectionHeading {
+  margin-bottom: 15px;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.messageListUl {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+  max-height: 600px; /* Adjusted to show ~10 messages (assuming ~60px per message) */
+  overflow-y: auto; /* Enable vertical scrolling */
+  scrollbar-width: thin; /* Firefox scrollbar styling */
+  scrollbar-color: #60a5fa #1f2937; /* Firefox scrollbar colors */
+}
+
+/* Webkit scrollbar styling for Chrome/Safari */
+.messageListUl::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messageListUl::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.messageListUl::-webkit-scrollbar-thumb {
+  background-color: #60a5fa;
+  border-radius: 4px;
+}
+
+.messageCard {
+  padding: 20px;
+  background-color: #1f2937;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-image: radial-gradient(circle at center, #60a5fa 0%, #9333ea 70%);
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  transition: transform 0.3s ease;
+}
+
+.messageCard:hover {
+  transform: scale(1.02);
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.nameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tweetStatus {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.tweetPosted {
+  background-color: #34d399; /* Green for tweeted */
+  color: #1f2937;
+}
+
+.tweetNotPosted {
+  background-color: #6b7280; /* Gray for not tweeted */
+  color: #ffffff;
+}
+
+.messageText {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+/* Additional Styles for LovaBegin */
+.heroHeading {
+  color: #ffffff;
+}
+
+.aboutHeading {
+  color: #ffffff;
+}
+
+.featureHeading {
+  color: #ffffff;
+}
+
+.paragraph {
+  color: #d1d5db;
+}
+
+.button {
+  transition: background-color 0.3s ease;
+}
+
+.bgGray800_50 {
+  background-color: rgba(31, 41, 55, 0.5);
+}
+
+.bgGray700 {
+  background-color: #374151;
+}
+
+.animatePulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.bgGradientToR {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.fromBlue400 {
+  --tw-gradient-from: #60a5fa;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(96, 165, 250, 0));
+}
+
+.toPurple600 {
+  --tw-gradient-to: #9333ea;
+}
+
+.textTransparent {
+  color: transparent;
+}
+
+.bgClipText {
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.textPink400 {
+  color: #f472b6;
+}
+
+.textBlue400 {
+  color: #60a5fa;
+}
+
+.textPurple400 {
+  color: #c084fc;
+}
+
+.bgBlue600 {
+  background-color: #2563eb;
+}
+
+.bgBlue700 {
+  background-color: #1d4ed8;
+}
+
+.bgPurple600 {
+  background-color: #9333ea;
+}
+
+.bgPurple300 {
+  background-color: #d8b4fe;
+}
+
+.bgPurple700 {
+  background-color: #7e22ce;
+}
+
+.roundedFull {
+  border-radius: 9999px;
+}
+
+.fontSemibold {
+  font-weight: 600;
+}
+
+/* Add styles for the range input */
+.input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #374151;
+  border-radius: 4px;
+  outline: none;
+}
+
+.input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #60a5fa;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #60a5fa;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Add styles for the select dropdown */
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px; /* Space for the arrow */
+  background: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+  background-color: #2d3748;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.select:focus {
+  border-color: #60a5fa;
+  outline: none;
+}
+
+/* Add missing color classes for the tipping button */
+.bgGreen500 {
+  background-color: #10b981; /* Tailwind's green-500 */
+}
+
+.bgGreen600 {
+  background-color: #059669; /* Tailwind's green-600 for hover */
+}
+
+.bgGray500 {
+  background-color: #6b7280; /* Tailwind's gray-500 for disabled state */
+}
