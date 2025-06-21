@@ -83,7 +83,8 @@ useEffect(() => {
     let acalaApi: ApiPromise | null = null;
     setIsAcalaApiLoading(true); // Set Acala loading state
     try {
-      const acalaProvider = new WsProvider("wss://acala-polkadot.api.onfinality.io/public-ws");
+      //const acalaProvider = new WsProvider("wss://acala-polkadot.api.onfinality.io/public-ws");
+      const acalaProvider = new WsProvider("wss://acala-rpc-0.aca-api.network");
       // Add a timeout for Acala API as well
       acalaApi = await Promise.race([
         ApiPromise.create({ provider: acalaProvider }),
