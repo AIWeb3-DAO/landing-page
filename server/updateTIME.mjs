@@ -1,7 +1,7 @@
 
 // Import the functions you need from the SDKs you need
-import { initializeApp} from "firebase/app";
-import { collection, addDoc, getDocs, doc, setDoc, serverTimestamp , getFirestore } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { collection, addDoc, getDocs, doc, setDoc, serverTimestamp, getFirestore } from "firebase/firestore";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { formatBalance } from "@polkadot/util";
 
@@ -35,7 +35,8 @@ const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 // 🔹 Acala API Endpoint
-const ACA_CHAIN_WS = "wss://acala-polkadot.api.onfinality.io/public-ws";
+//const ACA_CHAIN_WS = "wss://acala-polkadot.api.onfinality.io/public-ws";
+const ACA_CHAIN_WS = "wss://acala-rpc-1.aca-api.network";
 const address = "5GQz97DoibBxkRjBg4zYQF2GzNipMMkEotX2zn8CW7xiLoVA"; // ✅ Address for the LOVA PUMP bot
 const addressTreasury = "5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT"  // this is for the aiweb3 treasury
 
@@ -74,7 +75,7 @@ const fetchBalances = async () => {
     const formattedLovaBalanceTreasury = formatBalance(lovaBalanceTreasury.free, {
       decimals: 12,
       withUnit: "LOVA",
-    });    
+    });
 
     return {
       acalaBalancePUMPBOT: formattedAcaBalance,
@@ -84,7 +85,12 @@ const fetchBalances = async () => {
     };
   } catch (error) {
     console.error("Error fetching balances:", error);
-    return { acalaBalance: "0 ACA", lovaBalance: "0 LOVA" };
+    return {
+      acalaBalancePUMPBOT: "0 ACA",
+      lovaBalancePUMPBOT: "0 LOVA",
+      acalaBalanceTreasury: "0 ACA",
+      lovaBalanceTreasury: "0 LOVA",
+    };
   }
 };
 const updateDatabase = async () => {

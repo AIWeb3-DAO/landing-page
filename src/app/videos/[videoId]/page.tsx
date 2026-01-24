@@ -3,7 +3,7 @@ import PlayePage from '@/components/videos/PlayePage'
 import React from 'react'
 import { headers } from 'next/headers'
 import { FB_DB } from '@/lib/fbClient'
-import { doc, getDoc,DocumentData, updateDoc,increment  } from 'firebase/firestore';
+import { doc, getDoc, DocumentData, updateDoc, increment } from 'firebase/firestore';
 import HeaderNav from '@/components/Header/HeaderNav';
 import { NavbarDemo } from '@/components/TopNavbar';
 
@@ -19,46 +19,47 @@ export default async function Page() {
 
 
   const fetchData = async () => {
-    if(FB_DB && id){
-    try {
-      const docRef = doc(FB_DB, 'youtube', id); 
-      const docSnap = await getDoc(docRef);
+    if (FB_DB && id) {
+      try {
+        const docRef = doc(FB_DB, 'youtube', id);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const data = (docSnap.data());
-        /*await updateDoc(docRef, {
-          views: increment(1),
-        });*/
-        return data
-      } else {
-        console.log('No such document!');
+        if (docSnap.exists()) {
+          const data = (docSnap.data());
+          /*await updateDoc(docRef, {
+            views: increment(1),
+          });*/
+          return data
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching document:', error);
+      } finally {
       }
-    } catch (error) {
-      console.error('Error fetching document:', error);
-    } finally {
     }
-  }};
+  };
 
-  const video =  await fetchData()
+  const video = await fetchData()
 
-   console.log("video information", video)
- 
-   
-   function formatTimestamp(seconds: number) {
+  console.log("video information", video)
+
+
+  function formatTimestamp(seconds: number) {
     // Convert seconds to milliseconds
     const milliseconds = seconds * 1000;
-  
+
     // Create a Date object
     const dateObject = new Date(milliseconds);
-  
+
     // Format the date into a human-readable string
     const humanReadableDate = dateObject.toLocaleString(); // Adjust this as needed
-  
+
     return humanReadableDate;
   }
 
   const readbaleTimeStamp = formatTimestamp(video?.timestamp?.seconds)
-console.log("readable time", readbaleTimeStamp)
+  console.log("readable time", readbaleTimeStamp)
 
 
   const readableTimeStamp = formatTimestamp(video?.timestamp?.seconds);
@@ -113,7 +114,7 @@ console.log("readable time", readbaleTimeStamp)
         </div>
         <h2 className="hidden xl:block">Related videos</h2>
       </div>
-      <WalletSubmission videoId={id} />
+      <WalletSubmission videoId={id || ""} />
 
 
     </div>

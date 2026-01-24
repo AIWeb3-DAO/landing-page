@@ -1,12 +1,13 @@
 
 "use client"
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { MdKeyboardArrowLeft } from "react-icons/md";
 //import { SUPABASE_KEY, SUPABASE_URL } from '@/constants'
 import { FiDatabase } from "react-icons/fi";
 import EventCard from './EventCard';
 import { supabaseClient } from '@/utils/spClient';
+import { logger } from '@/utils/logger';
 
 
 interface Event {
@@ -30,14 +31,14 @@ export default function EventsPage() {
     const { data, error } = await supabaseClient
       .from('dot_events')
       .select();
-    
+
     if (error) {
       setIsFetchingError(error.message);
-      console.log("something went wrong", error);
+      logger.error("something went wrong", error);
     } else {
       setEvents(data || []);
     }
-    
+
     setIsFetching(false);
   };
 
@@ -45,7 +46,7 @@ export default function EventsPage() {
     handleFetch();
   }, []);
 
-  console.log("events", events);
+  logger.log("events", events);
 
   if (events?.length === 0) {
     return (

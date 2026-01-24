@@ -13,7 +13,7 @@ export default function JoinUs() {
           <h3 className="text-xl font-semibold mb-2">Step-by-Step Guide</h3>
           <ol className="list-decimal ml-6 space-y-4">
             <li>
-              If you haven't joined the AIWeb3 Discord, join{" "}
+              If you haven&apos;t joined the AIWeb3 Discord, join{" "}
               <a
                 href="https://discord.com/invite/pQtZG8UQfk"
                 target="_blank"
@@ -38,7 +38,7 @@ export default function JoinUs() {
                 <code>!添加地址 substrate 5xxxxxx</code>
               </div>
               <span className="text-sm">
-                Replace <code>5xxxxxx</code> with your substrate address, which must start with "5" and is valid within the Polkadot ecosystem.
+                Replace <code>5xxxxxx</code> with your substrate address, which must start with &quot;5&quot; and is valid within the Polkadot ecosystem.
               </span>
               If everything went well, you should obtain the 紫粉L0 role (your name should appear in purple). This is essential to ensure future reward distribution.
             </li>
@@ -121,7 +121,7 @@ export default function JoinUs() {
           <p>-----------------------------------------------------------------------------</p>
 
           <br></br>
-          <WalletSubmission2 videoId="pdKXDUW8eqsi9nbJSfFL" /> 
+          <WalletSubmission2 videoId="pdKXDUW8eqsi9nbJSfFL" />
 
           {/* Video Tutorials */}
           <hr className="my-4" />

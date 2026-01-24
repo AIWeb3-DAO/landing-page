@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { NavbarDemo } from "@/components/TopNavbar";
 import { collection, getDocs, updateDoc, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { FB_DB } from "@/lib/fbClient";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {useWalletContext} from "@/components/wallet-context";
+import { useWalletContext } from "@/components/wallet-context";
 
 //const {accounts, isShowConnectModal, setIsShowConnectModal} = useWalletContext()
 
@@ -25,6 +25,15 @@ interface Video {
   totalTokens: number;
 }
 
+interface LeaderboardRecord {
+  id: string;
+  address: string;
+  totalKSM?: number;
+  totalKSMHydration?: number;
+  totalKSMKusama?: number;
+  [key: string]: any;
+}
+
 interface Balances {
   acalaBalancePUMPBOT: number;
   lovaBalancePUMPBOT: number;
@@ -35,7 +44,7 @@ interface Balances {
 export default function LOVA() {
   const { accounts, isShowConnectModal, setIsShowConnectModal } = useWalletContext();
 
-  const [isEligible, setIsEligible] = useState(null);
+  const [isEligible, setIsEligible] = useState<boolean | null>(null);
 
   const [hasClaimed, setHasClaimed] = useState(false);
 
@@ -48,7 +57,10 @@ export default function LOVA() {
   });
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
 
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
+
+  // Use a ref to store the latest rewardTime for the interval to access
+  const rewardTimeRef = useRef<number | null>(null);
 
   // Function to calculate time left until rewardTime
   const calculateTimeLeft = (rewardTime: number, currentTime: number) => {
@@ -73,16 +85,16 @@ export default function LOVA() {
         setHasClaimed(false); // Reset state if no wallet
         return;
       }
-    
+
       const address = accounts[0].address;
-    
+
       try {
         const snapshot = await getDocs(collection(FB_DB, "keyINFO", "airdrop", "addresses"));
         const matched = snapshot.docs.find(doc => doc.id === address);
-    
+
         if (matched) {
           setIsEligible(true);
-    
+
           const data = matched.data();
           if (data.claim === true) {
             setHasClaimed(true);
@@ -142,9 +154,9 @@ export default function LOVA() {
             const contributors =
               data.contributors && data.tokens
                 ? data.contributors.map((address: string, index: number) => ({
-                    address,
-                    amount: data.tokens[index] || 0,
-                  }))
+                  address,
+                  amount: data.tokens[index] || 0,
+                }))
                 : [];
 
             videosList.push({
@@ -193,6 +205,9 @@ export default function LOVA() {
         const timestamp = data.timestamp?.toMillis?.() || Date.now();
         const rewardTime = data.rewardTime; // Assuming stored as milliseconds
 
+        // Update the ref so the interval can see the latest value
+        rewardTimeRef.current = rewardTime;
+
         if (rewardTime) {
           setTimeLeft(calculateTimeLeft(rewardTime, Date.now()));
         } else {
@@ -206,36 +221,37 @@ export default function LOVA() {
       setTimeLeft("Error loading timer");
     });
 
-        // Assuming FB_DB is your Firestore database instance (imported elsewhere)
-        const fetchLeaderboardData = async () => {
-          try {
-            const recordsRef = collection(FB_DB, 'keyINFO', 'KusamaElastic', 'addresses');
-            const snapshot = await getDocs(recordsRef);
-            const records = snapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            const sorted = records
-              .sort((a, b) => (b.totalKSM || 0) - (a.totalKSM || 0))
-              .slice(0, 100);
-            setLeaderboard(sorted);
-          } catch (err) {
-            console.error('❌ Error fetching leaderboard data:', err);
-          }
-        };
+    // Assuming FB_DB is your Firestore database instance (imported elsewhere)
+    // Assuming FB_DB is your Firestore database instance (imported elsewhere)
+    const fetchLeaderboardData = async () => {
+      try {
+        const recordsRef = collection(FB_DB, 'keyINFO', 'KusamaElastic', 'addresses');
+        const snapshot = await getDocs(recordsRef);
+        const records = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as LeaderboardRecord[]; // Cast to expected type
+
+        const sorted = records
+          .sort((a, b) => (b.totalKSM || 0) - (a.totalKSM || 0))
+          .slice(0, 100);
+        setLeaderboard(sorted);
+      } catch (err) {
+        console.error('❌ Error fetching leaderboard data:', err);
+      }
+    };
 
     fetchLeaderboardData();
-    
+
 
     checkEligibility();
-  
+
     fetchVideos();
     fetchBalances();
 
     // Update time left every second
     const interval = setInterval(() => {
-      const timeDocData = timeDocRef ? timeDocRef._document?.data?.value.mapValue.fields : null;
-      const rewardTime = timeDocData?.rewardTime?.integerValue || timeDocData?.rewardTime?.doubleValue;
+      const rewardTime = rewardTimeRef.current;
       if (rewardTime) {
         setTimeLeft(calculateTimeLeft(rewardTime, Date.now()));
       }
@@ -289,12 +305,12 @@ export default function LOVA() {
               <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full font-semibold transition-all">
                 Vote and Earn
               </button>
-            </Link>   
+            </Link>
             <Link href="#ksm">
               <button className="px-6 py-3 bg-purple-300 hover:bg-purple-700 rounded-full font-semibold transition-all">
                 Kusama elastic scaling test and Earn
               </button>
-            </Link>  
+            </Link>
 
           </div>
         </motion.div>
@@ -396,7 +412,7 @@ export default function LOVA() {
 
               <p className="text-gray-300">
                 <span className="text-yellow-400 font-semibold"> ✅ LOVA value by AI Agent:</span>{" "}
-                75 LOVA = 1 ACA 
+                75 LOVA = 1 ACA
               </p>
 
               <p className="mt-6 text-gray-300">
@@ -444,120 +460,119 @@ export default function LOVA() {
       </section>
 
 
-      /* 🎉 Celebrate Elastic Scaling on Kusama */
-<section id="ksm" className="py-16 px-4 text-center bg-gradient-to-r from-blue-900/50 to-teal-900/50">
-  <div className="max-w-4xl mx-auto">
-    <motion.h2
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="text-4xl font-bold mb-6 text-white"
-    >
-      🎉 Celebrate Elastic Scaling on Kusama!
-    </motion.h2>
+      {/* 🎉 Celebrate Elastic Scaling on Kusama */}
+      <section id="ksm" className="py-16 px-4 text-center bg-gradient-to-r from-blue-900/50 to-teal-900/50">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl font-bold mb-6 text-white"
+          >
+            🎉 Celebrate Elastic Scaling on Kusama!
+          </motion.h2>
 
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="text-lg mb-8 text-gray-300"
-    >
-      <p>
-        🚀 <span className="text-teal-400 font-semibold">Kusama</span> now powers elastic scaling, enhancing blockchain performance like never before!
-      </p>
-      <p className="mt-4">
-        💪 Enjoy the benefits: Trade <strong>KSM</strong> on <span className="text-blue-400 font-semibold">Hydration</span>, mint <span className="text-yellow-400 font-semibold">vKSM</span> on Bifrost, or send KSM to your friends and spread the Web3 spirit!
-      </p>
-      <p className="mt-4">
-        🏆 The <span className="text-teal-400 font-semibold">KSM Transaction Challenge</span> is live. Check out our top users and view the complete leaderboard!
-      </p>
-      <p className="mt-6 text-gray-300">
-        📋 Ready to compete? Submit your address via this{" "}
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSdEqXDBl-wZC9tpTwa6I3nGYCD7hxMU44dWuJpO_MLahmQTGw/viewform"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-400 font-semibold hover:underline"
-        >
-          Google Form
-        </a>{" "}
-        and begin transacting with KSM today! 🚀
-      </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg mb-8 text-gray-300"
+          >
+            <p>
+              🚀 <span className="text-teal-400 font-semibold">Kusama</span> now powers elastic scaling, enhancing blockchain performance like never before!
+            </p>
+            <p className="mt-4">
+              💪 Enjoy the benefits: Trade <strong>KSM</strong> on <span className="text-blue-400 font-semibold">Hydration</span>, mint <span className="text-yellow-400 font-semibold">vKSM</span> on Bifrost, or send KSM to your friends and spread the Web3 spirit!
+            </p>
+            <p className="mt-4">
+              🏆 The <span className="text-teal-400 font-semibold">KSM Transaction Challenge</span> is live. Check out our top users and view the complete leaderboard!
+            </p>
+            <p className="mt-6 text-gray-300">
+              📋 Ready to compete? Submit your address via this{" "}
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdEqXDBl-wZC9tpTwa6I3nGYCD7hxMU44dWuJpO_MLahmQTGw/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 font-semibold hover:underline"
+              >
+                Google Form
+              </a>{" "}
+              and begin transacting with KSM today! 🚀
+            </p>
 
-      {/* Leaderboard Section */}
-      <div className="mt-8">
-        {/* Top 3 Users Highlight */}
-        <h3 className="text-2xl font-semibold text-white mb-4">🏆 Top 3 most active KSM Champions</h3>
-        <div className="mb-6">
-          {leaderboard.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {leaderboard.slice(0, 3).map((record, index) => (
-                <div
-                  key={record.id}
-                  className={`p-4 rounded-lg shadow-lg ${
-                    index === 0 ? "bg-yellow-600" : index === 1 ? "bg-gray-500" : "bg-orange-600"
-                  } text-white`}
-                >
-                  <p className="text-lg font-bold">#{index + 1}</p>
-                  <p>address: {record.address.slice(0,10) || "N/A"} ...</p>
-                  <p className="text-xl font-semibold mt-2">total KSM transaction: {record.totalKSM || "N/A"}</p>
-                  <p>
-                    KSM transaction # on Hydration: {record.totalKSMHydration || "N/A"}
-                  </p>
-                  <p>
-                  KSM transaction # on Kusama: {record.totalKSMKusama || "N/A"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-400">Loading top champions...</p>
-          )}
-        </div>
-
-        {/* Full Leaderboard Table */}
-        <h3 className="text-2xl font-semibold text-white mb-4">📊 Full Leaderboard (Top 100)</h3>
-        <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg">
-          <div className="max-h-96 overflow-y-auto">
-            <table className="w-full text-left text-gray-300">
-              <thead className="bg-teal-700 text-white sticky top-0">
-                <tr>
-                  <th className="px-4 py-2">Rank</th>
-                  <th className="px-4 py-2">Address</th>
-                  <th className="px-4 py-2">total amount of KSM transaction</th>
-                  <th className="px-4 py-2">KSM transaction # on Hydration chain</th>
-                  <th className="px-4 py-2">KSM transaction # on Kusama chain</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
+            {/* Leaderboard Section */}
+            <div className="mt-8">
+              {/* Top 3 Users Highlight */}
+              <h3 className="text-2xl font-semibold text-white mb-4">🏆 Top 3 most active KSM Champions</h3>
+              <div className="mb-6">
                 {leaderboard.length > 0 ? (
-                  leaderboard.map((record, index) => (
-                    <tr key={record.id} className="hover:bg-gray-700">
-                      <td className="px-4 py-2">{index + 1}</td>
-                      <td className="px-4 py-2">{record.address || "N/A"}</td>
-                      <td className="px-4 py-2">{record.totalKSM || "N/A"}</td>
-                      <td className="px-4 py-2 truncate max-w-xs">{record.totalKSMHydration || "N/A"}</td>
-                      <td className="px-4 py-2">{record.totalKSMKusama || "0"} KSM</td>
-                    </tr>
-                  ))
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {leaderboard.slice(0, 3).map((record, index) => (
+                      <div
+                        key={record.id}
+                        className={`p-4 rounded-lg shadow-lg ${index === 0 ? "bg-yellow-600" : index === 1 ? "bg-gray-500" : "bg-orange-600"
+                          } text-white`}
+                      >
+                        <p className="text-lg font-bold">#{index + 1}</p>
+                        <p>address: {record.address.slice(0, 10) || "N/A"} ...</p>
+                        <p className="text-xl font-semibold mt-2">total KSM transaction: {record.totalKSM || "N/A"}</p>
+                        <p>
+                          KSM transaction # on Hydration: {record.totalKSMHydration || "N/A"}
+                        </p>
+                        <p>
+                          KSM transaction # on Kusama: {record.totalKSMKusama || "N/A"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
-                  <tr>
-                    <td colSpan="5" className="px-4 py-2 text-center">
-                      Loading leaderboard data...
-                    </td>
-                  </tr>
+                  <p className="text-gray-400">Loading top champions...</p>
                 )}
-              </tbody>
-            </table>
-          </div>
+              </div>
+
+              {/* Full Leaderboard Table */}
+              <h3 className="text-2xl font-semibold text-white mb-4">📊 Full Leaderboard (Top 100)</h3>
+              <div className="w-full max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg">
+                <div className="max-h-96 overflow-y-auto">
+                  <table className="w-full text-left text-gray-300">
+                    <thead className="bg-teal-700 text-white sticky top-0">
+                      <tr>
+                        <th className="px-4 py-2">Rank</th>
+                        <th className="px-4 py-2">Address</th>
+                        <th className="px-4 py-2">total amount of KSM transaction</th>
+                        <th className="px-4 py-2">KSM transaction # on Hydration chain</th>
+                        <th className="px-4 py-2">KSM transaction # on Kusama chain</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {leaderboard.length > 0 ? (
+                        leaderboard.map((record, index) => (
+                          <tr key={record.id} className="hover:bg-gray-700">
+                            <td className="px-4 py-2">{index + 1}</td>
+                            <td className="px-4 py-2">{record.address || "N/A"}</td>
+                            <td className="px-4 py-2">{record.totalKSM || "N/A"}</td>
+                            <td className="px-4 py-2 truncate max-w-xs">{record.totalKSMHydration || "N/A"}</td>
+                            <td className="px-4 py-2">{record.totalKSMKusama || "0"} KSM</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="px-4 py-2 text-center">
+                            Loading leaderboard data...
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <p className="mt-4 text-gray-400 text-sm">
+                📜 Scroll to see the top 100 participants. The leaderboard updates dynamically based on KSM activity.
+              </p>
+            </div>
+          </motion.div>
         </div>
-        <p className="mt-4 text-gray-400 text-sm">
-          📜 Scroll to see the top 100 participants. The leaderboard updates dynamically based on KSM activity.
-        </p>
-      </div>
-    </motion.div>
-  </div>
-</section>
+      </section>
 
 
 
@@ -595,7 +610,7 @@ export default function LOVA() {
                 const weeklyProfit = parseFloat(profitPerLova);
                 const apy = weeklyProfit > 0 ? ((1 + weeklyProfit) ** 52 - 1) * 100 : 0;
                 const formattedApy = apy.toFixed(2);
-                
+
                 return (
                   <motion.div
                     key={i}
@@ -612,6 +627,7 @@ export default function LOVA() {
                           height={250}
                           alt="cover"
                           className="w-full h-48 md:h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                          unoptimized
                         />
                       </Link>
                     </div>
@@ -689,7 +705,7 @@ export default function LOVA() {
                           </button>
                         </Link>
                         <div className="mt-2 text-sm text-gray-400">
-                             Weekly Profit: {profitPerLova} LOVA per LOVA
+                          Weekly Profit: {profitPerLova} LOVA per LOVA
                         </div>
                         <div className="mt-2 text-sm text-gray-400">
                           {timeLeft !== null ? (

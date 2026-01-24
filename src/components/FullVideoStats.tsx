@@ -14,29 +14,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import TipModal from "./TipModal";
+//import TipModal from "./TipModal";
 import { ModalProvider, ModalTrigger, ModalBody, ModalContent } from "./ui/animated-modal";
 import { timeAgo } from "@/lib/utils";
 import { truncateText } from "@/utils/truncateTxt";
 import { useWalletContext } from "./wallet-context";
-import ConnectWallet from "./wallet-connect/connectWallet";
+//import ConnectWallet from "./wallet-connect/connectWallet";
 import { usePathname } from "next/navigation";
+import { logger } from "@/utils/logger";
+import dynamic from "next/dynamic";
 
-// Debug imports
-console.log({
-  ModalProvider,
-  ModalTrigger,
-  ModalBody,
-  ModalContent,
-  TipModal,
-  ShareButtons,
-  ConnectWallet,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+const ConnectWallet = dynamic(() => import("./wallet-connect/connectWallet"), {
+  ssr: false,
+});
+
+const TipModal = dynamic(() => import("./TipModal"), {
+  loading: () => <p>Loading...</p>,
 });
 
 type StatsProps = {
@@ -60,7 +53,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, 
   const pathname = usePathname();
   const [selectedSupport, setSelectedSupport] = useState<string | null>(null);
 
-  const id = videoId || (pathname.startsWith("/videos/") ? pathname.slice(8) : pathname);
+  const id = videoId || (pathname?.startsWith("/videos/") ? pathname.slice(8) : (pathname || ""));
 
   useEffect(() => {
     const incrementAndFetchViews = async () => {
@@ -73,17 +66,17 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, 
             const data = updatedDoc.data();
             setViewCount(data.views || 0);
           } else {
-            console.error("Document does not exist");
+            logger.error("Document does not exist");
           }
         } catch (error) {
-          console.error("Error incrementing and fetching views:", error);
+          logger.error("Error incrementing and fetching views:", error);
         }
       }
     };
     incrementAndFetchViews();
   }, [id]);
 
-  console.log("Rendering FullVideoStats, accounts:", accounts);
+
 
   return (
     <div className="flex flex-col md:flex-row justify-start md:justify-between md:items-center px-2 border-b border-gray-400/60 dark:border-gray-800 pb-2 my-3">
@@ -184,7 +177,7 @@ export default function FullVideoStats({ stats, tokenstats, createdAt, videoId, 
                       </tr>
                     </thead>
                     <tbody>
-                      {stats?.map((item, i) => (
+                      {stats?.map((item: string, i: number) => (
                         <tr key={i} className="border-t border-gray-700">
                           <td className="px-4 py-2">{truncateText(item, 20)}</td>
                           <td className="px-4 py-2">{tokenstats?.[i] ?? "N/A"}</td>

@@ -1,41 +1,95 @@
+"use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { BackgroundBeams } from "../components/ui/background-beams";
+import { FB_DB } from "@/lib/fbClient";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { logger } from "@/utils/logger";
 
 export function JoinMail() {
-  return (
-    <div className="h-[70vh]  my-5  w-full flex items-center justify-center">
-    <div className="h-[30rem] max-w-5xl w-full my-10 rounded-xl bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
-      <div className="max-w-2xl mx-auto p-4">
-        <h1 className="relative z-10 text-lg md:text-7xl  bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-600  text-center font-sans font-bold">
-          Join the maillist
-        </h1>
-        <p></p>
-       
-        <p className="text-neutral-500 max-w-lg mx-auto my-2 text-sm text-center relative z-10">
-          Welcome to Aiweb3, the best transactional email service on the web.
-          We provide reliable, scalable, and customizable email solutions for
-          your business. Whether you&apos;re sending order confirmations,
-          password reset emails, or promotional campaigns, MailJet has got you
-          covered.
-        </p>
-        <div className="flex flex-col gap-2 items-center justify-center  p-2 space-y-3 ">
-        <input
-          type="text"
-          placeholder="hi@manuarora.in"
-          className="rounded-lg border p-2 border-neutral-800 focus:ring-2 focus:ring-teal-500  w-full relative z-10 mt-4  bg-neutral-950 placeholder:text-neutral-700"
-        />
-      
-         <div className=" bg-white text-black w-full flex items-center justify-center max-w-72 mx-auto rounded-xl cursor-pointer  " >
-          <button className="w-full bg-white py-3 text-black rounded-xl cursor-pointer " >Join</button>
-         </div>
-         </div>
-      
-      </div>
-      
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-      <BackgroundBeams />
-    </div>
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleJoin = async () => {
+    if (!validateEmail(email)) {
+      setStatus("error");
+      setMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (!FB_DB) {
+      setStatus("error");
+      setMessage("Database unavailable.");
+      logger.error("Firebase DB is not initialized.");
+      return;
+    }
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      await addDoc(collection(FB_DB, "subscriptionList"), {
+        email: email,
+        timestamp: serverTimestamp(),
+      });
+      setStatus("success");
+      setMessage("Specifically, you have subscribed! Thank you.");
+      setEmail("");
+    } catch (error) {
+      logger.error("Error adding document: ", error);
+      setStatus("error");
+      setMessage("Something went wrong. Please try again later.");
+    }
+  };
+
+  return (
+    <div className="h-[40rem] w-full flex items-center justify-center relative overflow-hidden">
+      <div className="max-w-2xl w-full mx-auto p-8 relative z-20">
+        <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-400 text-center font-sans tracking-tight mb-8">
+          Join the <span className="text-gradient">Revolution</span>
+        </h1>
+
+        <p className="text-neutral-400 max-w-lg mx-auto mb-10 text-lg text-center leading-relaxed">
+          Stay ahead of the curve. Get exclusive updates, drops, and community news delivered straight to your inbox.
+        </p>
+
+        <div className="flex flex-col gap-4 items-center justify-center relative z-10 glass-card p-6 rounded-3xl border border-white/10">
+          <input
+            type="text"
+            placeholder="enter@your.email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-black/50 border border-white/10 rounded-full px-6 py-4 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300"
+          />
+
+          <button
+            className="w-full bg-white text-black font-bold text-lg py-4 rounded-full hover:bg-gradient-to-r hover:from-primary hover:to-secondary hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleJoin}
+            disabled={status === "loading" || status === "success"}
+          >
+            {status === "loading" ? "Processing..." : status === "success" ? "Welcome Aboard!" : "Join Waitlist"}
+          </button>
+
+          {message && (
+            <p className={`text-sm font-medium mt-2 ${status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+              {message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+        <BackgroundBeams />
+      </div>
     </div>
   );
 }

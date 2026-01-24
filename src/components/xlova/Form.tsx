@@ -24,7 +24,7 @@ const Form: React.FC = () => {
   const FIXED_TIP_AMOUNT = 88;               // the same amount of tip
   const TOKEN_TYPE = "LOVA";
 
-  const parseTokenBalance = (balance: string | undefined) => {
+  const parseTokenBalance = (balance: string | null | undefined) => {
     if (!balance || typeof balance !== "string") return 0;
     const [numericPart, unit] = balance.split(" ");
     const value = Number(numericPart) || 0;
@@ -197,11 +197,10 @@ const Form: React.FC = () => {
               type="button"
               onClick={handleTipAndSubmit}
               disabled={FIXED_TIP_AMOUNT > safeTokenBalance || isTippingLoading || isTippingSuccess}
-              className={`${styles.button} ${styles.roundedFull} ${
-                FIXED_TIP_AMOUNT <= safeTokenBalance && !isTippingLoading && !isTippingSuccess
+              className={`${styles.button} ${styles.roundedFull} ${FIXED_TIP_AMOUNT <= safeTokenBalance && !isTippingLoading && !isTippingSuccess
                   ? `${styles.bgGreen500} hover:${styles.bgGreen600}`
                   : `${styles.bgGray500} cursor-not-allowed`
-              } px-4 py-2 mt-2`}
+                } px-4 py-2 mt-2`}
             >
               {isTippingLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin inline-block" />

@@ -32,7 +32,7 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
   //   const numericPart = balance.split(" ")[0];
   //   return Number(numericPart) || 0;
   // };
-  const parseTokenBalance = (balance: string | undefined) => {
+  const parseTokenBalance = (balance: string | null | undefined) => {
     if (!balance || typeof balance !== "string") return 0;
     const [numericPart, unit] = balance.split(" ");
     const value = Number(numericPart) || 0;
@@ -82,10 +82,10 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
     const state = isTippingLoading
       ? "loading"
       : isTippingSuccess
-      ? "success"
-      : supportType === "LOVA in ACALA"
-      ? "acala"
-      : "tanssi";
+        ? "success"
+        : supportType === "LOVA in ACALA"
+          ? "acala"
+          : "tanssi";
     console.log("getModalState:", state);
     if (isTippingLoading) {
       return (
@@ -150,11 +150,10 @@ export default function TipModal({ videoId, contributorAddress, supportType }: P
             <button
               onClick={handleCustomTransfer}
               disabled={customAmount <= 0 || customAmount > safeTokenBalance || safeTokenBalance === 0}
-              className={`w-full py-2 rounded-lg text-white font-semibold mt-4 transition ${
-                customAmount > 0 && customAmount <= safeTokenBalance && safeTokenBalance > 0
+              className={`w-full py-2 rounded-lg text-white font-semibold mt-4 transition ${customAmount > 0 && customAmount <= safeTokenBalance && safeTokenBalance > 0
                   ? "bg-green-500 hover:bg-green-600 cursor-pointer"
                   : "bg-gray-500 cursor-not-allowed"
-              }`}
+                }`}
             >
               Send {customAmount.toFixed(2)} {getTokenName()}
             </button>

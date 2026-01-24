@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-export default function WalletSubmission({ videoId }) {
+export default function WalletSubmission({ videoId }: { videoId: string }) {
   const [walletAddress, setWalletAddress] = useState('');
   const [message, setMessage] = useState('');
 

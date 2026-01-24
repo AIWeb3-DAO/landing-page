@@ -1,11 +1,11 @@
 "use client"
 
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import HeaderNav from '../Header/HeaderNav'
 import VideoCard from './VideoCard'
-import { fireBaseConfig } from '@/lib/fbClient'
-import  {getFirestore, getDoc, collection, doc, getDocs}  from 'firebase/firestore'
-import {initializeApp}  from "firebase/app"
+import { FB_DB } from '@/lib/fbClient'
+import { getDoc, collection, doc, getDocs } from 'firebase/firestore'
+import { logger } from '@/utils/logger'
 
 
 interface Video {
@@ -17,6 +17,10 @@ interface Video {
   tokens: string[];
   description: string;
   currentRatio: string;
+  timestamp?: number; // Optional runtime property
+  totalTokens?: number; // Optional runtime property
+  recencyScore?: number; // Optional runtime property
+  combinedScore?: number; // Optional runtime property for sorting
 }
 
 export default function Watach() {
@@ -26,48 +30,45 @@ export default function Watach() {
   const [isLoading, setisLoading] = useState(true)
 
 
-  const app =  initializeApp(fireBaseConfig)
-  const db = getFirestore(app)
 
 
 
 
-  const fetchVideos = async () => { 
+  const fetchVideos = async () => {
     try {
-    
-      if (db) {
+
+      if (FB_DB) {
         // Fetch the current timestamp from keyINFO/time
-        const timeDoc = await getDoc(doc(db, 'keyINFO', 'time'));
+        const timeDoc = await getDoc(doc(FB_DB, 'keyINFO', 'time'));
         const currentTime = timeDoc.exists() ? timeDoc.data().timestamp.toMillis() : Date.now();
 
-        const querySnapshot = await getDocs(collection(db, 'youtube'));
-        
+        const querySnapshot = await getDocs(collection(FB_DB, 'youtube'));
+
         let videosList: Video[] = []; // Explicitly typed array for videos
-        
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           const url = new URL(data.youtubeURL);
           const videoId = url.searchParams.get('v');
-          //console.log("the video ID: " + videoId);
           if (videoId) {
             const videoTimestamp = data.timestamp.toMillis(); // Assuming `data.timestamp` is a Firestore Timestamp object
             const timeDifference = currentTime - videoTimestamp;
             const timeDifferenceInHours = Math.floor(timeDifference / (1000 * 60 * 60)); // Convert milliseconds to hours
-            const timeDifferenceInMins  = Math.floor(timeDifference / (1000 * 60)); // Convert milliseconds to minutes
+            const timeDifferenceInMins = Math.floor(timeDifference / (1000 * 60)); // Convert milliseconds to minutes
 
             // this code will calculate the ratio based on the timeDifferenceInHours
             // it is set to between 0 and 400 hours, and the ratio is between 30 and 50 
-            const max_HOURS = 400 
+            const max_HOURS = 400
             let hoursDIFF = timeDifferenceInHours;
             if (hoursDIFF < 0) {
               hoursDIFF = 0;
             }
-            if (hoursDIFF > max_HOURS){
+            if (hoursDIFF > max_HOURS) {
               hoursDIFF = max_HOURS;
             }
-            const slope = -20 / 400 ;       // (end_value - start_value) / total_time
+            const slope = -20 / 400;       // (end_value - start_value) / total_time
             const current_ratio = (30 - slope * hoursDIFF).toFixed(2);  // keep two decimal
-            
+
             // Calculate total tokens
             const totalTokens = data.tokens?.reduce((sum: number, token: number) => sum + token, 0) || 0;
             // Calculate the Recency Score
@@ -85,7 +86,7 @@ export default function Watach() {
             videosList.push({
               id: doc.id,
               youtubeURL: videoId,
-              youtubeTitle:data.youtubeTitle,
+              youtubeTitle: data.youtubeTitle,
               author: data.author,
               contributors: data.contributors || '',
               tokens: data.tokens,
@@ -98,59 +99,58 @@ export default function Watach() {
             });
             setisLoading(false)
           } else {
-            console.error('Invalid YouTube URL:', data.youtubeURL);
+            logger.error('Invalid YouTube URL:', data.youtubeURL);
             setisLoading(false)
           }
         });
-               console.log("the video list is: ", videosList);
-        
+
         // Sort the videos based on their combinedScore in descending order (higher score first)
-        videosList.sort((a, b) => b.combinedScore - a.combinedScore);
+        videosList.sort((a, b) => (b.combinedScore ?? 0) - (a.combinedScore ?? 0));
         setVideos(videosList);
         setisLoading(false)
-      }   
+      }
     } catch (error) {
-      console.error('Error fetching videos:', error);
+      logger.error('Error fetching videos:', error);
       setisLoading(false)
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     fetchVideos()
-   }, [])
-
-
-     
+  }, [])
 
 
 
-     if(isLoading){
-      return(
-        <div   className='w-full h-screen flex items-center justify-center'>
-        <p  className='uppercase text-xl'>Loading ....</p>
-        </div>
-      )
-     }
-   
+
+
+
+  if (isLoading) {
+    return (
+      <div className='w-full h-screen flex items-center justify-center'>
+        <p className='uppercase text-xl'>Loading ....</p>
+      </div>
+    )
+  }
+
 
   return (
     <>
-    <HeaderNav   />
+      <HeaderNav />
 
-  <div  className='h-[30vh] flex items-center justify-center'>
-     <div  className=' p-2  max-w-xl  mx-auto  '>
-      <h1  className='text-center text-2xl'>Check Polkadot eco videos, support the best content creators while also earn the reward!</h1>
-      
-      <h1  className='text-center text-2xl'>Special Event!~</h1>
-     </div>
-     </div>
-    
+      <div className='h-[30vh] flex items-center justify-center'>
+        <div className=' p-2  max-w-xl  mx-auto  '>
+          <h1 className='text-center text-2xl'>Check Polkadot eco videos, support the best content creators while also earn the reward!</h1>
+
+          <h1 className='text-center text-2xl'>Special Event!~</h1>
+        </div>
+      </div>
+
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 my-3  max-w-[90%]   mx-auto '>
 
-        {videos?.map((item, i)  =>  (
-           <VideoCard key={i} video={item}  />
+        {videos?.map((item, i) => (
+          <VideoCard key={i} video={item} />
         ))}
-     
+
       </div>
 
 
@@ -163,7 +163,7 @@ export default function Watach() {
 
 
 
-     {/*} <ReactPlayer url='https://www.youtube.com/watch?v=LXb3EKWsInQ' 
+      {/*} <ReactPlayer url='https://www.youtube.com/watch?v=LXb3EKWsInQ' 
 
         
         width={800}
@@ -181,8 +181,8 @@ export default function Watach() {
       </ModalContent>
     </ModalBody>
    </Modal>*/}
-      
-   
+
+
     </>
   )
 }

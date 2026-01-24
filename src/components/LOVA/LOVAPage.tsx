@@ -1,7 +1,7 @@
 "use client"
 
 
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { collection, query, orderBy, limit, getDocs, startAfter } from "firebase/firestore";
 import { FB_DB } from '@/lib/fbClient';
 import { FaXTwitter } from 'react-icons/fa6';
@@ -12,13 +12,13 @@ interface NewsItem {
   id: string;
   otherINFO: string;
   news: string;
-  timestamp: string;
+  timestamp: Timestamp;
   // Add other properties if needed
 }
 
 const formatTimestamp = (timestamp: Timestamp | null | undefined): string => {
   if (!timestamp) return '';
-  
+
   // Assuming timestamp is a Firestore Timestamp object
   const date = new Date(timestamp.seconds * 1000);
   return date.toLocaleString(); // Customize this as needed
@@ -77,7 +77,7 @@ export default function LOVAPage() {
             {news?.map((item, i) => (
               <div key={i} className='border-l-2 border-yellow-100 my-5 p-4'>
                 <div>
-                  <h1 className='font-semibold text-xl my-3'>{item?.otherINFO}</h1>  
+                  <h1 className='font-semibold text-xl my-3'>{item?.otherINFO}</h1>
                   <span className='text-sm text-gray-400'>{new Date(item?.timestamp?.seconds * 1000).toLocaleString()}</span>
                   <p>{item?.news}</p>
                 </div>
