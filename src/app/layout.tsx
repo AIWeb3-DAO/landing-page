@@ -5,6 +5,8 @@ import { NavbarDemo } from "@/components/TopNavbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
+import { AuthModalWrapper } from "@/components/auth/AuthModalWrapper";
+
 
 // Fonts
 const inter = Inter({
@@ -52,9 +54,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextTopLoader color="#22d3ee" showSpinner={false} />
+          <NavbarDemo />
           {children}
           <Footer />
+
+          <AuthModalWrapper />
         </ThemeProvider>
+
       </body>
     </html>
   );

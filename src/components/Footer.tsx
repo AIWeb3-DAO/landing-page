@@ -24,8 +24,8 @@ export default function Footer() {
               <div className="relative w-16 h-16 rounded-full overflow-hidden border border-white/10">
                 <Image
                   src={logo}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  className="object-cover"
                   alt="AIWeb3 Logo"
                 />
               </div>

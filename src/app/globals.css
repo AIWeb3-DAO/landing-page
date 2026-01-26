@@ -4,45 +4,53 @@
 
 @layer base {
   :root {
-    --background: 2 4 10; /* #02040a */
-    --foreground: 248 250 252; /* #f8fafc */
-    
+    --background: 2 4 10;
+    /* #02040a */
+    --foreground: 248 250 252;
+    /* #f8fafc */
+
     --card: 2 4 10;
     --card-foreground: 248 250 252;
- 
+
     --popover: 2 4 10;
     --popover-foreground: 248 250 252;
- 
-    --primary: 59 130 246; /* #3b82f6 */
+
+    --primary: 59 130 246;
+    /* #3b82f6 */
     --primary-foreground: 255 255 255;
- 
-    --secondary: 217 70 239; /* #d946ef */
+
+    --secondary: 217 70 239;
+    /* #d946ef */
     --secondary-foreground: 255 255 255;
- 
-    --muted: 15 23 42; /* Darker slate */
+
+    --muted: 15 23 42;
+    /* Darker slate */
     --muted-foreground: 148 163 184;
- 
-    --accent: 34 211 238; /* #22d3ee */
+
+    --accent: 34 211 238;
+    /* #22d3ee */
     --accent-foreground: 15 23 42;
- 
+
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
 
     --border: 30 41 59;
     --input: 30 41 59;
     --ring: 59 130 246;
- 
+
     --radius: 0.5rem;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
+
   html {
     @apply scroll-smooth;
   }
+
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -54,7 +62,7 @@
   .glass {
     @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl;
   }
-  
+
   .glass-card {
     @apply bg-black/40 backdrop-blur-md border border-white/5 shadow-2xl;
   }
@@ -62,10 +70,24 @@
   .text-glow {
     text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
   }
-  
+
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400;
   }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
 }
-
-

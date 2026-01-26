@@ -61,10 +61,9 @@ export function Hero2() {
             <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
             <Image
               src={"/img/value_image.png"}
-              layout="fill"
-              objectFit="contain"
+              fill
+              className="object-contain drop-shadow-2xl relative z-10"
               alt='AIWeb3 Values'
-              className="drop-shadow-2xl relative z-10"
             />
           </div>
         </motion.div>

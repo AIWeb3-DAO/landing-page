@@ -49,7 +49,7 @@ export const ecosystems = [
 export const investors = [
     {
         name: "Polkadot",
-        logo: "https://pbs.twimg.com/profile_images/1675780528992141312/AIth_3GW_400x400.jpg"
+        logo: "/img/Polkadot_Logo.png"
     },
     {
         name: "Kusama",
@@ -61,7 +61,7 @@ export const investors = [
     },
     {
         name: "Sub wallet",
-        logo: "https://pbs.twimg.com/profile_images/1651520550295212037/YUKs0gC5_400x400.jpg"
+        logo: "/img/Subwallet_Logo.png"
     },
     {
         name: "Astar network",
@@ -69,7 +69,7 @@ export const investors = [
     },
     {
         name: "Bifrost",
-        logo: "https://pbs.twimg.com/profile_images/1609115144730345473/Nohy-fN5_400x400.jpg"
+        logo: "/img/Bifrost_Logo.png"
     },
     {
         name: "Centrifuge",
@@ -128,7 +128,7 @@ export const SUPABASE_URL_CLIENT = rawUrl.startsWith("http") ? rawUrl : `https:/
 export const SUPABASE_NON_KEY_URL = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 //export const logo= "https://pbs.twimg.com/profile_images/1637269369658171392/CHS2SlUh_400x400.jpg"
 export const logo = "/img/logo.png"
-export const polkadot_logo = "https://pbs.twimg.com/profile_images/1675780528992141312/AIth_3GW_400x400.jpg"
+export const polkadot_logo = "/img/Polkadot_Logo.png"
 export const PLACE_HOLDER = `https://ipfs.subsocial.network/ipfs/bafybeiezgdmkzq3pou4z2vapf2kgje3dstk6fsgm4fx5zpgsd6ygdjpxea`
 
 

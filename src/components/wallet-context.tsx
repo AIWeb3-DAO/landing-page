@@ -7,7 +7,7 @@ import { useWallets } from "@polkadot-onboard/react";
 import { formatBalance } from "@polkadot/util";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { FB_DB } from "@/lib/fbClient";
-import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, getDoc, increment } from "firebase/firestore";
 
 type TokenType = "LOVE" | "LOVA";
 
@@ -18,6 +18,8 @@ type TransferTokensParams = {
   selectedAccount?: string;
   videoId?: string;
   contributor?: string;
+  wishId?: string;
+  authorWallet?: string;
 };
 
 interface WalletContextType {
@@ -219,6 +221,33 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       console.error("Error updating contributors and tokens:", error);
     }
   };
+  // Update wish tips and supporters
+  const updateWishTokensAndSupporters = async (wishId: string, amount: number) => {
+    try {
+      if (FB_DB) {
+        const wishRef = doc(FB_DB, "wishes", wishId);
+        const wishDoc = await getDoc(wishRef);
+        if (wishDoc.exists()) {
+          const data = wishDoc.data();
+          const newLikes = (data.likesCount || 0) + 1;
+          const newTips = (data.tipsValue || 0) + amount;
+          const newReposts = data.repostsCount || 0;
+
+          // Recalculate Hotness Score
+          const { calculateHotnessScore } = await import("@/utils/wishTreeUtils");
+          const newScore = calculateHotnessScore(newLikes, newReposts, newTips, data.timestamp?.seconds);
+
+          await updateDoc(wishRef, {
+            tipsValue: newTips,
+            likesCount: newLikes,
+            rankingScore: newScore
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error updating wish tokens:", error);
+    }
+  };
 
   const handleTransferTokens = async ({
     token,
@@ -227,74 +256,78 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     selectedAccount,
     videoId,
     contributor,
+    wishId,
+    authorWallet
   }: TransferTokensParams): Promise<void> => {
-    setTippingStates((prev) => ({ ...prev, [token]: { ...prev[token], isLoading: true } }));
+    setTippingStates((prev) => ({ ...prev, [token]: { ...prev[token], isLoading: true, isSuccess: false } }));
     try {
       const accountAddress = selectedAccount || accounts[0]?.address;
       if (!accountAddress || !signer) throw new Error("No account or signer available");
 
-      if (token === "LOVE" && api?.isReady) {
-        // Tanssi ($LOVE) transfer
-        const smallestUnit = toSmallestUnit(amount, 12);
-        const transferExtrinsic: SubmittableExtrinsic<"promise"> = api.tx.balances.transferKeepAlive(
-          recipientAddress,
-          smallestUnit
-        );
+      const isWishTip = !!(wishId && authorWallet);
+      const treasuryAmount = isWishTip ? amount * 0.15 : amount;
+      const authorAmount = isWishTip ? amount * 0.85 : 0;
 
-        await transferExtrinsic.signAndSend(accountAddress, { signer }, ({ status, txHash, dispatchError }) => {
+      if (token === "LOVE" && api?.isReady) {
+        const treasuryUnit = toSmallestUnit(treasuryAmount, 12);
+        const extrinsics = [
+          api.tx.balances.transferKeepAlive(recipientAddress, treasuryUnit)
+        ];
+
+        if (isWishTip) {
+          const authorUnit = toSmallestUnit(authorAmount, 12);
+          extrinsics.push(api.tx.balances.transferKeepAlive(authorWallet, authorUnit));
+        }
+
+        const tx = extrinsics.length > 1 ? api.tx.utility.batch(extrinsics) : extrinsics[0];
+
+        await tx.signAndSend(accountAddress, { signer }, ({ status, dispatchError }) => {
           if (dispatchError) {
-            if (dispatchError.isModule) {
-              const decoded = api.registry.findMetaError(dispatchError.asModule);
-              console.error(`Transaction failed: ${decoded.section}.${decoded.name} - ${decoded.docs.join(" ")}`);
-            } else {
-              console.error(`Transaction failed: ${dispatchError.toString()}`);
-            }
             setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
           } else if (status.isInBlock) {
-            //console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
-            // console.log(`Transaction hash: ${txHash.toString()}`);
             if (videoId && contributor) {
               updateContributorsAndTokens(videoId, contributor, amount).then(() => {
                 setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
               });
-            } else {
-              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
-            }
-          } else {
-            console.log(`Transaction status: ${status.type}`);
-          }
-        });
-      } else if (token === "LOVA" && apiAcala?.isReady) {
-        // Acala ($LOVA) transfer
-        const assetId = 18; // LOVA asset ID
-        const tokenAmount = toSmallestUnit(amount, 12); // Assuming 12 decimals for LOVA
-        const assetTransfer = apiAcala.tx.currencies.transfer(recipientAddress, { ForeignAsset: assetId }, tokenAmount);
-
-        await assetTransfer.signAndSend(accountAddress, { signer, nonce: -1 }, ({ status, txHash, dispatchError }) => {
-          if (dispatchError) {
-            if (dispatchError.isModule) {
-              const decoded = apiAcala.registry.findMetaError(dispatchError.asModule);
-              console.error(`Transaction failed: ${decoded.section}.${decoded.name} - ${decoded.docs.join(" ")}`);
-            } else {
-              console.error(`Transaction failed: ${dispatchError.toString()}`);
-            }
-            setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
-            getBalances(); // Refresh balances after transfer
-          } else if (status.isInBlock) {
-            //console.log(`Transaction included in block: ${status.asInBlock.toString()}`);
-            //console.log(`Transaction hash: ${txHash.toString()}`);
-            // here we use the ratio 15:1 for the point in the pool, so 2 DOT is around 12000 LOVA, 10u, would be 800 points in the pool
-            if (videoId && contributor) {
-              updateContributorsAndTokens(videoId, contributor, amount / 15).then(() => {
+            } else if (isWishTip) {
+              updateWishTokensAndSupporters(wishId, amount).then(() => {
                 setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
               });
             } else {
               setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
             }
-            getBalances(); // Refresh balances after transfer
-          } else {
-            console.log(`Transaction status: ${status.type}`);
-            getBalances(); // Refresh balances after transfer
+          }
+        });
+      } else if (token === "LOVA" && apiAcala?.isReady) {
+        const assetId = 18;
+        const treasuryUnit = toSmallestUnit(treasuryAmount, 12);
+        const extrinsics = [
+          apiAcala.tx.currencies.transfer(recipientAddress, { ForeignAsset: assetId }, treasuryUnit)
+        ];
+
+        if (isWishTip) {
+          const authorUnit = toSmallestUnit(authorAmount, 12);
+          extrinsics.push(apiAcala.tx.currencies.transfer(authorWallet, { ForeignAsset: assetId }, authorUnit));
+        }
+
+        const tx = extrinsics.length > 1 ? apiAcala.tx.utility.batch(extrinsics) : extrinsics[0];
+
+        await tx.signAndSend(accountAddress, { signer, nonce: -1 }, ({ status, dispatchError }) => {
+          if (dispatchError) {
+            setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
+          } else if (status.isInBlock) {
+            if (videoId && contributor) {
+              updateContributorsAndTokens(videoId, contributor, amount / 15).then(() => {
+                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+              });
+            } else if (isWishTip) {
+              updateWishTokensAndSupporters(wishId, amount).then(() => {
+                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+              });
+            } else {
+              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+            }
+            getBalances();
           }
         });
       } else {

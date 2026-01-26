@@ -28,6 +28,7 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.4.0",
     "axios": "^1.7.2",
+    "build": "^0.1.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dot-connect": "^0.13.2",

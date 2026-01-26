@@ -7,6 +7,8 @@ import { truncateText } from "@/utils/truncateTxt";
 import Identicon from '@polkadot/react-identicon';
 import dynamic from 'next/dynamic';
 import { motion } from "framer-motion";
+import { UserMenu } from "./UserMenu";
+
 
 const ConnectWallet = dynamic(() => import("./wallet-connect/connectWallet"), {
   ssr: false,
@@ -16,7 +18,7 @@ export function NavbarDemo() {
   const { accounts, setIsShowConnectModal } = useWalletContext();
 
   return (
-    <div className="w-full flex justify-center fixed top-5 z-50 px-4 pointer-events-none">
+    <div className="w-full flex justify-center fixed top-5 z-[999] px-4 pointer-events-none">
       <div className="pointer-events-auto w-full max-w-4xl relative">
         <Navbar
           accounts={accounts}
@@ -46,14 +48,14 @@ function Navbar({ className, accounts, onConnect }: { className?: string, accoun
       {/* Branding / Logo Area could go here */}
 
       {/* Centered Menu */}
-      <div className="flex-1 flex justify-center">
+      <div className="flex items-center justify-center">
         <Menu setActive={setActive}>
           <MenuItem setActive={setActive} active={active} item="Services">
             <div className="flex flex-col space-y-4 text-sm min-w-[180px]">
               <HoveredLink href="/about">About us</HoveredLink>
               <HoveredLink href="/news">Polkadot news</HoveredLink>
-              <HoveredLink href="/blog">Blog & Articles</HoveredLink>
               <HoveredLink href="/videos">Videos</HoveredLink>
+              <HoveredLink href="/credits">Get Credits</HoveredLink>
               <HoveredLink href="/lova">LOVA</HoveredLink>
               <HoveredLink href="/xlova">X LOVA</HoveredLink>
             </div>
@@ -89,24 +91,30 @@ function Navbar({ className, accounts, onConnect }: { className?: string, accoun
         </Menu>
       </div>
 
-      {/* Wallet Connection */}
-      <div
-        className="flex items-center cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 transition-all rounded-full px-4 py-2"
-        onClick={onConnect}
-      >
-        {accounts.length > 0 ? (
-          <div className="flex items-center space-x-2">
-            <div className="ring-2 ring-primary rounded-full overflow-hidden w-6 h-6">
-              <Identicon value={accounts[0]?.address} size={24} theme={"polkadot"} />
+      {/* User & Wallet Area */}
+      <div className="flex items-center gap-3 shrink-0 pointer-events-auto min-w-fit">
+        <div
+          className="flex items-center cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 transition-all rounded-full px-3 py-1.5"
+          onClick={onConnect}
+        >
+          {accounts.length > 0 ? (
+            <div className="flex items-center space-x-2">
+              <div className="ring-1 ring-primary rounded-full overflow-hidden w-5 h-5">
+                <Identicon value={accounts[0]?.address} size={20} theme={"polkadot"} />
+              </div>
+              <p className="text-[12px] font-medium text-white">
+                {accounts[0]?.address && truncateText(accounts[0]?.address, 4)}
+              </p>
             </div>
-            <p className="text-sm font-medium text-white">
-              {accounts[0]?.address && truncateText(accounts[0]?.address, 6)}
-            </p>
-          </div>
-        ) : (
-          <span className="text-sm font-medium text-white">Connect Wallet</span>
-        )}
+          ) : (
+            <span className="text-[12px] font-medium text-white">Wallet</span>
+          )}
+        </div>
+        <UserMenu />
       </div>
+
+
+
     </motion.div>
   );
 }
