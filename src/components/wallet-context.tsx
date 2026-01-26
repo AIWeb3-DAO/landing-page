@@ -27,7 +27,7 @@ interface WalletContextType {
   signer: any | null;
   selectedWallet: BaseWallet | null;
   connectWallet: (wallet: BaseWallet) => Promise<void>;
-  handleTransferTokens: (params: TransferTokensParams) => Promise<void>;
+  handleTransferTokens: (params: TransferTokensParams) => Promise<boolean>;
   balances: Record<TokenType, string | null>;
   tippingStates: Record<TokenType, { isLoading: boolean; isSuccess: boolean }>;
   isShowConnectModal: boolean;
@@ -258,85 +258,97 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     contributor,
     wishId,
     authorWallet
-  }: TransferTokensParams): Promise<void> => {
+  }: TransferTokensParams): Promise<boolean> => {
     setTippingStates((prev) => ({ ...prev, [token]: { ...prev[token], isLoading: true, isSuccess: false } }));
-    try {
-      const accountAddress = selectedAccount || accounts[0]?.address;
-      if (!accountAddress || !signer) throw new Error("No account or signer available");
 
-      const isWishTip = !!(wishId && authorWallet);
-      const treasuryAmount = isWishTip ? amount * 0.15 : amount;
-      const authorAmount = isWishTip ? amount * 0.85 : 0;
+    return new Promise(async (resolve) => {
+      try {
+        const accountAddress = selectedAccount || accounts[0]?.address;
+        if (!accountAddress || !signer) throw new Error("No account or signer available");
 
-      if (token === "LOVE" && api?.isReady) {
-        const treasuryUnit = toSmallestUnit(treasuryAmount, 12);
-        const extrinsics = [
-          api.tx.balances.transferKeepAlive(recipientAddress, treasuryUnit)
-        ];
+        const isWishTip = !!(wishId && authorWallet);
+        const treasuryAmount = isWishTip ? amount * 0.15 : amount;
+        const authorAmount = isWishTip ? amount * 0.85 : 0;
 
-        if (isWishTip) {
-          const authorUnit = toSmallestUnit(authorAmount, 12);
-          extrinsics.push(api.tx.balances.transferKeepAlive(authorWallet, authorUnit));
-        }
+        if (token === "LOVE" && api?.isReady) {
+          const treasuryUnit = toSmallestUnit(treasuryAmount, 12);
+          const extrinsics = [
+            api.tx.balances.transferKeepAlive(recipientAddress, treasuryUnit)
+          ];
 
-        const tx = extrinsics.length > 1 ? api.tx.utility.batch(extrinsics) : extrinsics[0];
-
-        await tx.signAndSend(accountAddress, { signer }, ({ status, dispatchError }) => {
-          if (dispatchError) {
-            setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
-          } else if (status.isInBlock) {
-            if (videoId && contributor) {
-              updateContributorsAndTokens(videoId, contributor, amount).then(() => {
-                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
-              });
-            } else if (isWishTip) {
-              updateWishTokensAndSupporters(wishId, amount).then(() => {
-                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
-              });
-            } else {
-              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
-            }
+          if (isWishTip) {
+            const authorUnit = toSmallestUnit(authorAmount, 12);
+            extrinsics.push(api.tx.balances.transferKeepAlive(authorWallet, authorUnit));
           }
-        });
-      } else if (token === "LOVA" && apiAcala?.isReady) {
-        const assetId = 18;
-        const treasuryUnit = toSmallestUnit(treasuryAmount, 12);
-        const extrinsics = [
-          apiAcala.tx.currencies.transfer(recipientAddress, { ForeignAsset: assetId }, treasuryUnit)
-        ];
 
-        if (isWishTip) {
-          const authorUnit = toSmallestUnit(authorAmount, 12);
-          extrinsics.push(apiAcala.tx.currencies.transfer(authorWallet, { ForeignAsset: assetId }, authorUnit));
-        }
+          const tx = extrinsics.length > 1 ? api.tx.utility.batch(extrinsics) : extrinsics[0];
 
-        const tx = extrinsics.length > 1 ? apiAcala.tx.utility.batch(extrinsics) : extrinsics[0];
-
-        await tx.signAndSend(accountAddress, { signer, nonce: -1 }, ({ status, dispatchError }) => {
-          if (dispatchError) {
-            setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
-          } else if (status.isInBlock) {
-            if (videoId && contributor) {
-              updateContributorsAndTokens(videoId, contributor, amount / 15).then(() => {
+          await tx.signAndSend(accountAddress, { signer }, ({ status, dispatchError }) => {
+            if (dispatchError) {
+              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
+              resolve(false);
+            } else if (status.isInBlock) {
+              if (videoId && contributor) {
+                updateContributorsAndTokens(videoId, contributor, amount).then(() => {
+                  setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+                  resolve(true);
+                });
+              } else if (isWishTip) {
+                updateWishTokensAndSupporters(wishId, amount).then(() => {
+                  setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+                  resolve(true);
+                });
+              } else {
                 setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
-              });
-            } else if (isWishTip) {
-              updateWishTokensAndSupporters(wishId, amount).then(() => {
-                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
-              });
-            } else {
-              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+                resolve(true);
+              }
             }
-            getBalances();
+          });
+        } else if (token === "LOVA" && apiAcala?.isReady) {
+          const assetId = 18;
+          const treasuryUnit = toSmallestUnit(treasuryAmount, 12);
+          const extrinsics = [
+            apiAcala.tx.currencies.transfer(recipientAddress, { ForeignAsset: assetId }, treasuryUnit)
+          ];
+
+          if (isWishTip) {
+            const authorUnit = toSmallestUnit(authorAmount, 12);
+            extrinsics.push(apiAcala.tx.currencies.transfer(authorWallet, { ForeignAsset: assetId }, authorUnit));
           }
-        });
-      } else {
-        throw new Error("API not ready or invalid token type");
+
+          const tx = extrinsics.length > 1 ? apiAcala.tx.utility.batch(extrinsics) : extrinsics[0];
+
+          await tx.signAndSend(accountAddress, { signer, nonce: -1 }, ({ status, dispatchError }) => {
+            if (dispatchError) {
+              setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
+              resolve(false);
+            } else if (status.isInBlock) {
+              if (videoId && contributor) {
+                updateContributorsAndTokens(videoId, contributor, amount / 15).then(() => {
+                  setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+                  resolve(true);
+                });
+              } else if (isWishTip) {
+                updateWishTokensAndSupporters(wishId, amount).then(() => {
+                  setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+                  resolve(true);
+                });
+              } else {
+                setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: true } }));
+                resolve(true);
+              }
+              getBalances();
+            }
+          });
+        } else {
+          throw new Error("API not ready or invalid token type");
+        }
+      } catch (error) {
+        console.error(`An error occurred during the ${token} transfer:`, error);
+        setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
+        resolve(false);
       }
-    } catch (error) {
-      console.error(`An error occurred during the ${token} transfer:`, error);
-      setTippingStates((prev) => ({ ...prev, [token]: { isLoading: false, isSuccess: false } }));
-    }
+    });
   };
 
   const getBalances = async () => {

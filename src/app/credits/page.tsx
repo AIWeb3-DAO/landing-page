@@ -34,16 +34,20 @@ export default function CreditPurchasePage() {
 
             // 1. Process LOVA Payment
             // Treasury address used for all energy purchases
-            await handleTransferTokens({
+            const paySuccess = await handleTransferTokens({
                 token: "LOVA",
                 amount: pkg.price,
                 recipientAddress: "5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT",
             });
 
             // 2. Add Credits on Success
-            const success = await addCredits(pkg.credits);
-            if (success) {
-                alert(`Ritual complete! ${pkg.credits} Energy added to your account.`);
+            if (paySuccess) {
+                const success = await addCredits(pkg.credits);
+                if (success) {
+                    alert(`Ritual complete! ${pkg.credits} Energy added to your account.`);
+                }
+            } else {
+                alert("Transaction failed or was cancelled. Energy ritual incomplete.");
             }
         } catch (error) {
             console.error("Purchase failed:", error);
@@ -108,8 +112,8 @@ export default function CreditPurchasePage() {
                                     onClick={() => handleBuy(pkg)}
                                     disabled={buyingId === pkg.id || tippingStates.LOVA.isLoading}
                                     className={`w-full rounded-2xl h-12 font-bold transition-all ${pkg.popular
-                                            ? "bg-amber-500 hover:bg-amber-600 text-black"
-                                            : "bg-white/10 hover:bg-white/20 text-white"
+                                        ? "bg-amber-500 hover:bg-amber-600 text-black"
+                                        : "bg-white/10 hover:bg-white/20 text-white"
                                         }`}
                                 >
                                     {buyingId === pkg.id ? <Loader2 className="animate-spin" /> : "Purchase Energy"}
