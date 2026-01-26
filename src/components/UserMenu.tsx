@@ -80,16 +80,6 @@ export const UserMenu = () => {
             </div>
 
 
-            {/* Temporary Logout Button for Debugging */}
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="rounded-full border-red-500/50 text-red-500 hover:bg-red-500/10 h-8 text-[10px]"
-            >
-                Log Out (Debug)
-            </Button>
-
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button

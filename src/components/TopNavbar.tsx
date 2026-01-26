@@ -8,6 +8,8 @@ import Identicon from '@polkadot/react-identicon';
 import dynamic from 'next/dynamic';
 import { motion } from "framer-motion";
 import { UserMenu } from "./UserMenu";
+import Link from "next/link";
+import Image from "next/image";
 
 
 const ConnectWallet = dynamic(() => import("./wallet-connect/connectWallet"), {
@@ -45,7 +47,19 @@ function Navbar({ className, accounts, onConnect }: { className?: string, accoun
         className
       )}
     >
-      {/* Branding / Logo Area could go here */}
+      {/* Branding / Logo Area */}
+      <Link href="/" className="flex items-center gap-2 hover:scale-105 transition-transform active:scale-95">
+        <Image
+          src="/img/logo.png"
+          alt="AIWeb3 Logo"
+          width={32}
+          height={32}
+          className="rounded-full overflow-hidden border border-white/20 shadow-glow-sm"
+        />
+        <span className="hidden md:block font-bold text-lg bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+          Home
+        </span>
+      </Link>
 
       {/* Centered Menu */}
       <div className="flex items-center justify-center">

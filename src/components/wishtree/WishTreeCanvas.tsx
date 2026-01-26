@@ -133,11 +133,17 @@ export const WishTreeCanvas = () => {
     };
 
     return (
-        <div className="relative w-full h-[90vh] bg-black overflow-hidden flex flex-col items-center mt-20 rounded-3xl border border-white/5 shadow-2xl">
-            {/* Background - The Tree Visualization */}
-            <div className="absolute inset-0 pointer-events-none opacity-60 flex justify-center">
-                <div className="absolute bottom-0 w-8 h-full bg-gradient-to-t from-amber-700 via-amber-900/50 to-transparent blur-sm" />
-                <div className="absolute bottom-1/4 w-[500px] h-[500px] border-t border-amber-800/20 rounded-full" />
+        <div
+            className="relative w-full h-[90vh] overflow-hidden flex flex-col items-center mt-20 rounded-3xl border border-white/5 shadow-2xl bg-cover bg-center"
+            style={{ backgroundImage: `url('/img/wishtree_bg.png')` }}
+        >
+            {/* Dark Overlay for Readability */}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+
+            {/* Background - The Tree Visualization (Enhanced with new background) */}
+            <div className="absolute inset-0 pointer-events-none opacity-40 flex justify-center">
+                <div className="absolute bottom-0 w-8 h-full bg-gradient-to-t from-amber-700/50 via-amber-900/20 to-transparent blur-sm" />
+                <div className="absolute bottom-1/4 w-[500px] h-[500px] border-t border-amber-800/10 rounded-full" />
                 <div className="absolute bottom-0 w-full max-w-lg h-1/2 bg-amber-500/5 blur-[100px]" />
             </div>
 
