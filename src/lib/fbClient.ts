@@ -18,3 +18,6 @@ export const FB_DB = getFirestore(FB_APP);
 
 import { getAuth } from "firebase/auth";
 export const FB_AUTH = getAuth(FB_APP);
+
+import { getStorage } from "firebase/storage";
+export const FB_STORAGE = getStorage(FB_APP);

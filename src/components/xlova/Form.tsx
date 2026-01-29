@@ -1,7 +1,7 @@
 // components/xlova/Form.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FB_DB } from "@/lib/fbClient";
 import { collection, addDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
@@ -48,7 +48,7 @@ const Form: React.FC = () => {
 
   const recipientAddress = "5DPVjCxjTHK4MfWf1HBYbqSCXTpyTw5mtijuvjdsttNvWyHT";
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     if (!name) {
       setError("Name is required");
       return false;
@@ -74,7 +74,7 @@ const Form: React.FC = () => {
       return false;
     }
     return true;
-  };
+  }, [name, message, tweetLink]);
 
   const handleTipAndSubmit = async () => {
     // Validate the form before proceeding
@@ -125,7 +125,7 @@ const Form: React.FC = () => {
     };
 
     updateFirebase();
-  }, [isTippingSuccess, name, tweetLink, message, contributorAddress]);
+  }, [isTippingSuccess, name, tweetLink, message, contributorAddress, validateForm]);
 
   const getTokenName = () => "$LOVA";
 
@@ -198,8 +198,8 @@ const Form: React.FC = () => {
               onClick={handleTipAndSubmit}
               disabled={FIXED_TIP_AMOUNT > safeTokenBalance || isTippingLoading || isTippingSuccess}
               className={`${styles.button} ${styles.roundedFull} ${FIXED_TIP_AMOUNT <= safeTokenBalance && !isTippingLoading && !isTippingSuccess
-                  ? `${styles.bgGreen500} hover:${styles.bgGreen600}`
-                  : `${styles.bgGray500} cursor-not-allowed`
+                ? `${styles.bgGreen500} hover:${styles.bgGreen600}`
+                : `${styles.bgGray500} cursor-not-allowed`
                 } px-4 py-2 mt-2`}
             >
               {isTippingLoading ? (
