@@ -94,8 +94,33 @@ export default function ArticleDetailPage() {
 
                     // Fetch Comments
                     const commentsRef = collection(FB_DB, "article_comments");
-                    const q = query(commentsRef, where("articleId", "==", id), orderBy("createdAt", "desc"));
-                    const querySnapshot = await getDocs(q);
+                    let querySnapshot;
+
+                    try {
+                        // Attempt to fetch with sorting (requires index)
+                        const q = query(commentsRef, where("articleId", "==", id), orderBy("createdAt", "desc"));
+                        querySnapshot = await getDocs(q);
+                    } catch (error: any) {
+                        // Fallback: if index is missing, fetch without sorting and sort in memory
+                        if (error.code === 'failed-precondition' || error.message.includes('index')) {
+                            console.warn("Firestore index missing for article_comments. Falling back to in-memory sort.", error.message);
+                            const qFallback = query(commentsRef, where("articleId", "==", id));
+                            querySnapshot = await getDocs(qFallback);
+
+                            // Map and sort in memory
+                            const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            docs.sort((a: any, b: any) => {
+                                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : 0;
+                                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : 0;
+                                return dateB - dateA;
+                            });
+                            setComments(docs);
+                            return; // Skip the default setter below
+                        } else {
+                            throw error; // Rethrow other errors
+                        }
+                    }
+
                     setComments(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
                 } else {
                     router.push('/articles');
