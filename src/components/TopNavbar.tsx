@@ -71,6 +71,7 @@ function Navbar({ className, accounts, onConnect }: { className?: string, accoun
               <HoveredLink href="/news">Polkadot news</HoveredLink>
               <HoveredLink href="/videos">Videos</HoveredLink>
               <HoveredLink href="/credits">Get Credits</HoveredLink>
+              <HoveredLink href="/voice-generation">Voice Generation</HoveredLink>
               <HoveredLink href="/lova">LOVA</HoveredLink>
               <HoveredLink href="/xlova">X LOVA</HoveredLink>
             </div>

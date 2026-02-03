@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Loader2, ArrowLeft, Image as ImageIcon, Upload, X } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 function NewArticleContent() {
     const { user, userData } = useUser();
@@ -262,7 +263,7 @@ function NewArticleContent() {
                                 <div className="rounded-2xl overflow-hidden border border-white/10 aspect-video bg-white/5 relative group">
                                     {thumbnail ? (
                                         <>
-                                            <img src={thumbnail} alt="Preview" className="w-full h-full object-cover" />
+                                            <Image src={thumbnail} alt="Preview" fill className="object-cover" />
                                             <button
                                                 type="button"
                                                 onClick={() => setThumbnail('')}

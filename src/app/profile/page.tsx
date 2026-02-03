@@ -22,6 +22,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FB_AUTH } from "@/lib/fbClient";
 import Identicon from '@polkadot/react-identicon';
 import { truncateText } from "@/utils/truncateTxt";
+import Image from "next/image";
 
 export default function ProfilePage() {
     const { user, userData, loading, updateProfile } = useUser();
@@ -77,9 +78,9 @@ export default function ProfilePage() {
                 {/* Profile Header */}
                 <div className="flex flex-col md:flex-row items-center gap-8 bg-white/5 border border-white/10 p-8 rounded-[2.5rem] backdrop-blur-xl">
                     <div className="relative">
-                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center relative">
                             {user.photoURL ? (
-                                <img src={user.photoURL} alt="Avatar" className="w-full h-full object-cover" />
+                                <Image src={user.photoURL} alt="Avatar" fill className="object-cover" />
                             ) : (
                                 <UserIcon size={64} className="text-primary/40" />
                             )}

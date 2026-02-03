@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { truncateText } from '@/utils/truncateTxt';
 
+import Image from 'next/image';
+
 // Simple Support Modal
 const SupportModal = ({ isOpen, onClose, onSupport, authorName }: any) => {
     const [amount, setAmount] = useState(100);
@@ -236,9 +238,9 @@ export default function ArticleDetailPage() {
 
                     <div className="flex flex-wrap items-center justify-between gap-6 mb-10 border-y border-white/5 py-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center relative">
                                 {article.authorPhoto ? (
-                                    <img src={article.authorPhoto} alt={article.authorName} className="w-full h-full object-cover" />
+                                    <Image src={article.authorPhoto} alt={article.authorName} fill className="object-cover" />
                                 ) : (
                                     <UserIcon className="w-6 h-6 text-white/20" />
                                 )}
@@ -278,8 +280,8 @@ export default function ArticleDetailPage() {
                     </div>
 
                     {article.thumbnail && (
-                        <div className="mb-10 rounded-3xl overflow-hidden aspect-video border border-white/10 shadow-2xl">
-                            <img src={article.thumbnail} alt={article.title} className="w-full h-full object-cover" />
+                        <div className="mb-10 rounded-3xl overflow-hidden aspect-video border border-white/10 shadow-2xl relative">
+                            <Image src={article.thumbnail} alt={article.title} fill className="object-cover" />
                         </div>
                     )}
 
@@ -346,9 +348,9 @@ export default function ArticleDetailPage() {
                             {comments.map((comment) => (
                                 <div key={comment.id} className="bg-white/5 border border-white/5 rounded-2xl p-6 transition-all hover:bg-white/10">
                                     <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+                                        <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center relative">
                                             {comment.userPhoto ? (
-                                                <img src={comment.userPhoto} alt={comment.userName} className="w-full h-full object-cover" />
+                                                <Image src={comment.userPhoto} alt={comment.userName} fill className="object-cover" />
                                             ) : (
                                                 <UserIcon className="w-5 h-5 text-white/20" />
                                             )}
