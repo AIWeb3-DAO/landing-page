@@ -29,7 +29,7 @@ export const WishDetailModal: React.FC<WishDetailModalProps> = ({ wish, onClose,
     const handleRepostToX = async () => {
         if (!wish || !wish.id) return;
         const text = `I just supported a blessing on the AIWeb3 WishTree! 🙏\n\n"${wish.message}"\n\nJoin the sanctuary and make your wish:`;
-        const url = window.location.origin;
+        const url = `${window.location.origin}/?wishId=${wish.id}`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, "_blank");
 
         // Log repost and update score

@@ -7,11 +7,14 @@ import TrustedBy from "@/components/supporters/TrustedBy";
 import Image from "next/image";
 import { NavbarDemo } from "@/components/TopNavbar";
 import { WishTreeCanvas } from "@/components/wishtree/WishTreeCanvas";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between max-w-7xl mx-auto pt-20">
-      <WishTreeCanvas />
+      <Suspense fallback={null}>
+        <WishTreeCanvas />
+      </Suspense>
 
 
       <Hero2 />

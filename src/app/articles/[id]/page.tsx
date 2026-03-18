@@ -7,7 +7,7 @@ import { FB_DB } from '@/lib/fbClient';
 import { useUser } from '@/components/user-context';
 import { NavbarDemo } from '@/components/TopNavbar';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Heart, MessageSquare, Share2, Coins, User as UserIcon, X, Send } from 'lucide-react';
+import { Loader2, ArrowLeft, Heart, MessageSquare, Share2, Coins, User as UserIcon, X, Send, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { truncateText } from '@/utils/truncateTxt';
@@ -93,6 +93,15 @@ export default function ArticleDetailPage() {
                 const articleDoc = await getDoc(doc(FB_DB, "articles", id as string));
                 if (articleDoc.exists()) {
                     setArticle({ id: articleDoc.id, ...articleDoc.data() });
+
+                    // Increment View Count
+                    try {
+                        await updateDoc(doc(FB_DB, "articles", id as string), {
+                            views: increment(1)
+                        });
+                    } catch (err) {
+                        console.error("Error incrementing view count:", err);
+                    }
 
                     // Fetch Comments
                     const commentsRef = collection(FB_DB, "article_comments");
@@ -247,7 +256,13 @@ export default function ArticleDetailPage() {
                             </div>
                             <div>
                                 <p className="text-white font-medium">{article.authorName}</p>
-                                <p className="text-xs text-white/40">{article.createdAt?.toDate ? article.createdAt.toDate().toLocaleDateString() : 'Just now'}</p>
+                                <div className="flex items-center gap-3 text-xs text-white/40">
+                                    <span>{article.createdAt?.toDate ? article.createdAt.toDate().toLocaleDateString() : 'Just now'}</span>
+                                    <span>•</span>
+                                    <span className="flex items-center gap-1">
+                                        <Eye className="w-3 h-3" /> {article.views || 0} views
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

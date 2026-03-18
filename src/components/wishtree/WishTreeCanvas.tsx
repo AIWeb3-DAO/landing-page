@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FB_DB } from "@/lib/fbClient";
-import { collection, query, orderBy, limit, onSnapshot, doc, updateDoc, increment } from "firebase/firestore";
+import { collection, query, orderBy, limit, onSnapshot, doc, updateDoc, increment, getDoc } from "firebase/firestore";
 import { Wish } from "@/types/wishTree";
 import { WishCard } from "./WishCard";
 import { MakeAWishForm } from "./MakeAWishForm";
@@ -18,6 +19,7 @@ export const WishTreeCanvas = () => {
     const [wishes, setWishes] = useState<Wish[]>([]);
     const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const searchParams = useSearchParams();
 
     // Fetch Wishes Real-time
     useEffect(() => {
@@ -64,6 +66,22 @@ export const WishTreeCanvas = () => {
 
         return () => unsubscribe();
     }, []);
+
+    // Handle Direct Link to Wish
+    useEffect(() => {
+        if (!searchParams) return;
+        const wishId = searchParams.get("wishId");
+        if (wishId && FB_DB) {
+            const fetchWish = async () => {
+                const wishRef = doc(FB_DB, "wishes", wishId);
+                const wishSnap = await getDoc(wishRef);
+                if (wishSnap.exists()) {
+                    setSelectedWish({ id: wishSnap.id, ...wishSnap.data() } as Wish);
+                }
+            };
+            fetchWish();
+        }
+    }, [searchParams]);
 
     const { user, consumeCredits, setIsAuthModalOpen } = useUser();
 
