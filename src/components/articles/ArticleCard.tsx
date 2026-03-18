@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { truncateText } from '@/utils/truncateTxt';
-import { Calendar, MessageSquare, Heart, Coins } from 'lucide-react';
+import { Calendar, MessageSquare, Heart, Coins, Eye } from 'lucide-react';
 
 interface ArticleCardProps {
     article: {
@@ -15,6 +15,7 @@ interface ArticleCardProps {
         createdAt: any;
         creditsReceived?: number;
         commentsCount?: number;
+        views?: number;
     };
 }
 
@@ -63,6 +64,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                             <span className="flex items-center gap-1 text-[12px] text-white/40">
                                 <Coins className="w-3 h-3" />
                                 {article.creditsReceived || 0}
+                            </span>
+                            <span className="flex items-center gap-1 text-[12px] text-white/40">
+                                <Eye className="w-3 h-3" />
+                                {article.views || 0}
                             </span>
                         </div>
                         <span className="text-xs font-semibold text-primary/80 group-hover:text-primary flex items-center gap-1">
