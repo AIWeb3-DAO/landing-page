@@ -12,6 +12,7 @@ interface UserData {
     walletAddress?: string;
     email: string;
     loginMethods: string[];
+    apiKey?: string;
     updatedAt: any;
 }
 

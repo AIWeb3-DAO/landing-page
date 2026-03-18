@@ -16,12 +16,17 @@ import {
     Link as LinkIcon,
     Unlink,
     CheckCircle2,
-    Loader2
+    Loader2,
+    Key,
+    Copy,
+    RefreshCw,
+    Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FB_AUTH } from "@/lib/fbClient";
 import Identicon from '@polkadot/react-identicon';
 import { truncateText } from "@/utils/truncateTxt";
+import { cn } from "@/utils/cn";
 import Image from "next/image";
 
 export default function ProfilePage() {
@@ -31,6 +36,60 @@ export default function ProfilePage() {
     const [displayName, setDisplayName] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
+    const [isGeneratingKey, setIsGeneratingKey] = useState(false);
+    const [exampleLang, setExampleLang] = useState<'curl' | 'python'>('curl');
+    const [isFromFile, setIsFromFile] = useState(false);
+
+    const handleGenerateKey = async () => {
+        if (!user) return;
+        setIsGeneratingKey(true);
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch("/api/generate-key", { 
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setMessage({ text: "API Key generated successfully!", type: "success" });
+            } else {
+                setMessage({ text: data.error || "Failed to generate key", type: "error" });
+            }
+        } catch (error) {
+            setMessage({ text: "Failed to connect to server.", type: "error" });
+        } finally {
+            setIsGeneratingKey(false);
+        }
+    };
+
+    const handleDeleteKey = async () => {
+        if (!user) return;
+        if (!confirm("Are you sure you want to delete your API key? Any apps using it will stop working immediately.")) return;
+        setIsGeneratingKey(true);
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch("/api/generate-key", { 
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setMessage({ text: "API Key deleted.", type: "success" });
+            } else {
+                setMessage({ text: "Failed to delete key", type: "error" });
+            }
+        } catch (error) {
+            setMessage({ text: "Failed to connect to server.", type: "error" });
+        } finally {
+            setIsGeneratingKey(false);
+        }
+    };
+
+    const handleCopyKey = () => {
+        if (userData?.apiKey) {
+            navigator.clipboard.writeText(userData.apiKey);
+            setMessage({ text: "API Key copied to clipboard!", type: "success" });
+        }
+    };
 
     useEffect(() => {
         if (user?.displayName) {
@@ -165,6 +224,205 @@ export default function ProfilePage() {
                                 {isSaving ? <Loader2 className="animate-spin" /> : <Save size={18} />}
                                 Save Identity
                             </Button>
+                        </section>
+
+                        {/* Developer API Access */}
+                        <section className="bg-white/5 border border-white/10 p-8 rounded-[2rem] space-y-6">
+                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                <Key className="text-primary" /> Developer API Access
+                            </h3>
+                            <p className="text-xs text-gray-500 leading-relaxed italic">
+                                Your API key grants programmatic access to publish articles bypassing the standard interface. Publishing via API consumes 50 Energy per article. Keep this key secret, as anyone with it can spend your energy.
+                            </p>
+
+                            {!userData?.apiKey ? (
+                                <div className="space-y-4 text-center p-6 border border-white/5 rounded-2xl bg-black/20">
+                                    <p className="text-sm font-medium text-gray-400">Generate an API key to get started.</p>
+                                    <Button
+                                        onClick={handleGenerateKey}
+                                        disabled={isGeneratingKey}
+                                        className="bg-primary hover:bg-primary/90 text-white font-bold rounded-xl"
+                                    >
+                                        {isGeneratingKey ? <Loader2 className="animate-spin w-4 h-4 mr-2" /> : <Key className="w-4 h-4 mr-2" />}
+                                        Generate New API Key
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Your Active API Key</label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                type="text"
+                                                value={userData.apiKey}
+                                                readOnly
+                                                className="bg-black/40 border-white/10 text-primary font-mono h-12 rounded-xl focus:ring-primary truncate"
+                                            />
+                                            <Button
+                                                onClick={handleCopyKey}
+                                                variant="outline"
+                                                className="h-12 border-white/10 text-gray-400 hover:text-white bg-white/5"
+                                            >
+                                                <Copy size={16} />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end gap-2 mt-4">
+                                        <Button
+                                            onClick={handleGenerateKey}
+                                            disabled={isGeneratingKey}
+                                            variant="outline"
+                                            className="border-white/10 text-gray-400 hover:text-white text-xs bg-transparent"
+                                        >
+                                            {isGeneratingKey ? <Loader2 className="animate-spin w-3 h-3 mr-2" /> : <RefreshCw className="w-3 h-3 mr-2" />}
+                                            Regenerate
+                                        </Button>
+                                        <Button
+                                            onClick={handleDeleteKey}
+                                            disabled={isGeneratingKey}
+                                            variant="outline"
+                                            className="border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs bg-transparent"
+                                        >
+                                            <Trash2 className="w-3 h-3 mr-2" />
+                                            Delete Key
+                                        </Button>
+                                    </div>
+
+                                    {/* API Usage Example */}
+                                    <div className="mt-8 p-6 bg-black/40 border border-white/10 rounded-2xl space-y-4">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                                                How to use your API Key
+                                            </h4>
+                                            <div className="flex bg-white/5 rounded-lg p-1 grow-0 self-start">
+                                                <button
+                                                    onClick={() => setExampleLang('curl')}
+                                                    className={cn(
+                                                        "px-3 py-1 text-[10px] font-bold rounded-md transition-all",
+                                                        exampleLang === 'curl' ? "bg-primary text-white" : "text-gray-500 hover:text-gray-300"
+                                                    )}
+                                                >
+                                                    cURL
+                                                </button>
+                                                <button
+                                                    onClick={() => setExampleLang('python')}
+                                                    className={cn(
+                                                        "px-3 py-1 text-[10px] font-bold rounded-md transition-all",
+                                                        exampleLang === 'python' ? "bg-primary text-white" : "text-gray-500 hover:text-gray-300"
+                                                    )}
+                                                >
+                                                    Python
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-4 bg-white/5 p-3 rounded-xl">
+                                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Example Type:</span>
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => setIsFromFile(false)}
+                                                    className={cn("text-[10px] px-2 py-1 rounded border transition-all", !isFromFile ? "border-primary/50 text-white bg-primary/20" : "border-white/5 text-gray-400")}
+                                                >
+                                                    Direct Text
+                                                </button>
+                                                <button 
+                                                    onClick={() => setIsFromFile(true)}
+                                                    className={cn("text-[10px] px-2 py-1 rounded border transition-all", isFromFile ? "border-primary/50 text-white bg-primary/20" : "border-white/5 text-gray-400")}
+                                                >
+                                                    From .md File
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <p className="text-xs text-gray-400">
+                                            Send a <code className="text-primary bg-primary/10 px-1 py-0.5 rounded">POST</code> request to <code className="text-white">/api/articles</code> to publish directly. Cost: 50 Energy.
+                                        </p>
+                                        <pre className="text-xs text-gray-300 bg-black/80 p-4 border border-white/5 rounded-xl overflow-x-auto font-mono whitespace-pre-wrap">
+                                            {exampleLang === 'curl' ? (
+                                                isFromFile ? (
+                                                    `# Uses jq to properly escape markdown for JSON
+jq -n --arg content "$(cat article.md)" \\
+  --arg title "My New Article" \\
+  '{title: $title, content: $content, tags: ["web3"]}' | \\
+curl -X POST https://aiweb3.org/api/articles \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer ${userData.apiKey}" \\
+  -d @-`
+                                                ) : (
+                                                    `curl -X POST https://aiweb3.org/api/articles \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer ${userData.apiKey}" \\
+  -d '{
+    "title": "My First API Post",
+    "content": "Hello from the developer API! This article was published automatically.",
+    "tags": ["web3", "ai"]
+  }'`
+                                                )
+                                            ) : (
+                                                isFromFile ? (
+                                                    `import requests
+
+# Read markdown content from local file
+with open("article.md", "r", encoding="utf-8") as f:
+    markdown_content = f.read()
+
+url = "https://aiweb3.org/api/articles"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer ${userData.apiKey}"
+}
+data = {
+    "title": "My Python Posted Article",
+    "content": markdown_content,
+    "tags": ["python", "markdown"]
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())`
+                                                ) : (
+                                                    `import requests
+
+url = "https://aiweb3.org/api/articles"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer ${userData.apiKey}"
+}
+data = {
+    "title": "My First API Post",
+    "content": "Hello from the developer API! This article was published automatically.",
+    "tags": ["web3", "ai"]
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())`
+                                                )
+                                            )}
+                                        </pre>
+
+                                        {isFromFile && (
+                                            <div className="space-y-2">
+                                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Sample article.md:</p>
+                                                <pre className="text-[10px] text-gray-400 bg-black/40 p-4 border border-white/5 rounded-xl font-mono">
+{`# Title
+
+This is normal text
+
+**This is bold**
+
+- item 1
+- item 2
+
+## Section
+
+> quote
+
+[link](https://example.com)`}
+                                                </pre>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </section>
                     </div>
 

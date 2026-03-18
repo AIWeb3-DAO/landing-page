@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { doc, getDoc, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp, updateDoc, increment, deleteDoc } from 'firebase/firestore';
 import { FB_DB } from '@/lib/fbClient';
 import { useUser } from '@/components/user-context';
 import { NavbarDemo } from '@/components/TopNavbar';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Heart, MessageSquare, Share2, Coins, User as UserIcon, X, Send, Eye } from 'lucide-react';
+import { Loader2, ArrowLeft, Heart, MessageSquare, Share2, Coins, User as UserIcon, X, Send, Eye, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { truncateText } from '@/utils/truncateTxt';
@@ -215,6 +215,18 @@ export default function ArticleDetailPage() {
         window.open(shareUrl, '_blank');
     };
 
+    const handleDelete = async () => {
+        if (!confirm("Are you sure you want to delete this article? This action cannot be undone.")) return;
+        
+        try {
+            await deleteDoc(doc(FB_DB, "articles", id));
+            router.push('/articles');
+        } catch (error) {
+            console.error("Error deleting article:", error);
+            alert("Failed to delete article. Please try again.");
+        }
+    };
+
     if (loading) {
         return (
             <div className="w-full min-h-screen bg-black flex flex-col items-center justify-center gap-4">
@@ -276,11 +288,20 @@ export default function ArticleDetailPage() {
                             </Button>
 
                             {user && user.uid === article.authorId && (
-                                <Link href={`/articles/new?id=${article.id}`}>
-                                    <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-full px-6 py-2 flex items-center gap-2">
-                                        Edit Article
+                                <div className="flex gap-2">
+                                    <Link href={`/articles/new?id=${article.id}`}>
+                                        <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-full px-6 py-2 flex items-center gap-2">
+                                            Edit Article
+                                        </Button>
+                                    </Link>
+                                    <Button 
+                                        onClick={handleDelete}
+                                        className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-full px-6 py-2 flex items-center gap-2"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                        Delete
                                     </Button>
-                                </Link>
+                                </div>
                             )}
 
                             <div className="flex gap-2">
