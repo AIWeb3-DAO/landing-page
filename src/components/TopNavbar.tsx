@@ -68,7 +68,7 @@ function Navbar({ className, accounts, onConnect }: { className?: string, accoun
             <div className="flex flex-col space-y-4 text-sm min-w-[180px]">
               <HoveredLink href="/about">About us</HoveredLink>
               <HoveredLink href="/articles">Articles</HoveredLink>
-              <HoveredLink href="/news">Polkadot news</HoveredLink>
+              <HoveredLink href="/news">news (新闻)</HoveredLink>
               <HoveredLink href="/videos">Videos</HoveredLink>
               <HoveredLink href="/credits">Get Credits</HoveredLink>
               <HoveredLink href="/voice-generation">Voice Generation</HoveredLink>
