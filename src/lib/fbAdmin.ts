@@ -1,18 +1,27 @@
-import * as admin from 'firebase-admin';
+import {
+  getApps,
+  initializeApp,
+  cert,
+} from "firebase-admin/app";
 
-if (!admin.apps.length) {
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+import { getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
+import { getAuth } from "firebase-admin/auth";
 
-    admin.initializeApp({
-        credential: admin.credential.cert({
-            projectId: process.env.NEXT_PUBLIC_REACT_APP_FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: privateKey,
-        }),
-        storageBucket: process.env.NEXT_PUBLIC_REACT_APP_FIREBASE_STORAGE_BUCKET,
+const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+
+const app = getApps().length
+  ? getApps()[0]
+  : initializeApp({
+      credential: cert({
+        projectId: process.env.NEXT_PUBLIC_REACT_APP_FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: privateKey,
+      }),
+      storageBucket:
+        process.env.NEXT_PUBLIC_REACT_APP_FIREBASE_STORAGE_BUCKET,
     });
-}
 
-export const adminDb = admin.firestore();
-export const adminStorage = admin.storage();
-export const adminAuth = admin.auth();
+export const adminDb = getFirestore(app);
+export const adminStorage = getStorage(app);
+export const adminAuth = getAuth(app);

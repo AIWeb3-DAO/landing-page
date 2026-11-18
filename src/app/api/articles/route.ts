@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb, adminAuth } from "@/lib/fbAdmin";
 import * as admin from "firebase-admin";
 import { marked } from "marked";
+import { FieldValue } from "firebase-admin/firestore";
 
 const ARTICLE_COST = 50;
 
@@ -63,10 +64,9 @@ export async function POST(req: NextRequest) {
 
         // Decrement credits
         batch.update(userDoc.ref, {
-            credits: admin.firestore.FieldValue.increment(-ARTICLE_COST),
+	    credits: FieldValue.increment(-ARTICLE_COST),
             updatedAt: new Date()
         });
-
         // Create article
         const newArticleRef = adminDb.collection("articles").doc();
         batch.set(newArticleRef, {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
             authorId: uid,
             authorName: authorName,
             status: "published",
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: FieldValue.serverTimestamp(),
             source: "api"
         });
 

@@ -1,3 +1,4 @@
+import { FieldValue } from "firebase-admin/firestore";
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth, adminDb } from "@/lib/fbAdmin";
 import * as admin from "firebase-admin";
@@ -43,7 +44,7 @@ export async function DELETE(req: NextRequest) {
 
         // Remove the API Key
         await adminDb.collection("users").doc(uid).update({
-            apiKey: admin.firestore.FieldValue.delete(),
+            apiKey: FieldValue.delete(),
             updatedAt: new Date()
         });
 
